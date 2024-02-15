@@ -71,4 +71,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
+
+    val roomVersion = rootProject.extra["roomVersion"]
+    implementation("androidx.room:room-runtime:$roomVersion")
 }
