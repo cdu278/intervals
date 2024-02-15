@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="monthsGenitiveFmt">
+        <item>January %d</item>
+        <item>February %d</item>
+        <item>March %d</item>
+        <item>April %d</item>
+        <item>May %d</item>
+        <item>June %d</item>
+        <item>July %d</item>
+        <item>August %d</item>
+        <item>September %d</item>
+        <item>October %d</item>
+        <item>November %d</item>
+        <item>December %d</item>
+    </string-array>
+</resources>
