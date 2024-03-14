@@ -19,9 +19,17 @@ internal data class UiRepetition(
             val mode: Mode,
             val data: UiInput<String>,
             val error: String?,
+            val hintState: HintState?,
         ) : State {
 
             enum class Mode { Repetition, Remembering }
+
+            sealed interface HintState {
+
+                data object Hidden : HintState
+
+                data class Shown(val text: String) : HintState
+            }
         }
 
         data object Forgotten : State

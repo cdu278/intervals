@@ -124,6 +124,7 @@ class NewMemoEditorComponent<Errors>(
                         repetitionState = RepetitionState.Repetition(
                             date = nextRepetition,
                             stage,
+                            hintShown = false,
                         ),
                         hint = input.hint.takeIf { it.isNotBlank() },
                     )

@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import midget17468.compose.composable.ErrorText
 import midget17468.compose.composable.TextInput
 import midget17468.compose.defaultMargin
 import midget17468.compose.doubleMargin
@@ -80,15 +81,13 @@ fun NewMemo(
                     label = { Text(stringResource(FoundationR.string.hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
+                        .height(150.dp)
                         .padding(top = defaultMargin)
                 )
             }
 
-            Text(
+            ErrorText(
                 text = model.error ?: "",
-                color = MaterialTheme.colorScheme.error,
-                fontSize = 12.sp,
                 modifier = Modifier
                     .padding(top = defaultMargin)
             )

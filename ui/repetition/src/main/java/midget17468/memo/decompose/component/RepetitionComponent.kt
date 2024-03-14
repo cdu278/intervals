@@ -18,6 +18,7 @@ import midget17468.memo.model.domain.RepetitionStage
 import midget17468.memo.model.domain.RepetitionState
 import midget17468.memo.model.input.RepetitionInput
 import midget17468.memo.model.ui.UiRepetition
+import midget17468.memo.model.ui.UiRepetition.State.Checking.HintState
 import midget17468.memo.repetitions.SpacedRepetitions
 import midget17468.memo.repetitions.notifications.RepetitionsNotifications
 import midget17468.memo.repository.MemoRepository
@@ -79,7 +80,15 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                         state = when (input) {
                             is RepetitionInput.Forgotten ->
                                 UiState.Forgotten
-                            is CheckingInput ->
+                            is CheckingInput -> {
+                                val hintState =
+                                    memo.hint?.let { hint ->
+                                        if (input.hintShown) {
+                                            HintState.Shown(hint)
+                                        } else {
+                                            HintState.Hidden
+                                        }
+                                    }
                                 when (val state = memo.repetitionState) {
                                     is RepetitionState.Repetition ->
                                         if (currentTime() >= state.date) {
@@ -87,6 +96,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                                                 mode = UiState.Checking.Mode.Repetition,
                                                 data = UiInput(input.data, changeData),
                                                 error = input.error,
+                                                hintState,
                                             )
                                         } else {
                                             UiState.RepetitionAt(
@@ -101,13 +111,27 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                                             mode = UiState.Checking.Mode.Remembering,
                                             data = UiInput(input.data, changeData),
                                             error = input.error,
+                                            hintState,
                                         )
                                 }
+                            }
                         }
                     )
                 )
             }
         }
+
+    fun showHint() {
+        coroutineScope.launch {
+            repository.update(
+                memoId,
+                updatedState = { it.repetitionState.withHintShown(true) }
+            )
+            input
+                .subtype(RepetitionInput.Checking::class)
+                .update { it.copy(hintShown = true) }
+        }
+    }
 
     fun check() {
         coroutineScope.launch {
@@ -116,7 +140,12 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
             if (memo.memoData.matches(data)) {
                 val nextStage =
                     when (val state = memo.repetitionState) {
-                        is RepetitionState.Repetition -> state.stage.next()
+                        is RepetitionState.Repetition ->
+                            if (state.hintShown) {
+                                state.stage
+                            } else {
+                                state.stage.next()
+                            }
                         is RepetitionState.Forgotten -> RepetitionStage.Initial
                     }
 
@@ -128,6 +157,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                         RepetitionState.Repetition(
                             date = nextRepetition,
                             nextStage,
+                            hintShown = false
                         )
                     }
                 )
@@ -143,7 +173,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
         coroutineScope.launch {
             repository.update(
                 memoId,
-                updatedState = { RepetitionState.Forgotten }
+                updatedState = { RepetitionState.Forgotten() }
             )
             input.update { RepetitionInput.Forgotten }
         }

@@ -1,11 +1,15 @@
 package midget17468.memo.compose.composable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,9 +21,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import midget17468.compose.composable.ErrorText
 import midget17468.compose.composable.PasswordField
 import midget17468.compose.composable.TextInput
 import midget17468.compose.defaultMargin
+import midget17468.compose.halfMargin
 import midget17468.memo.compose.string.NextRepetitionDateStrings
 import midget17468.memo.compose.string.UppercaseRepetitionDateString
 import midget17468.memo.decompose.component.RepetitionComponent
@@ -28,6 +34,8 @@ import midget17468.memo.model.ui.NextRepetitionDate
 import midget17468.memo.model.ui.NextRepetitionDate.Today
 import midget17468.memo.model.ui.NextRepetitionDate.Tomorrow
 import midget17468.memo.model.ui.UiRepetition.State.Checking
+import midget17468.memo.model.ui.UiRepetition.State.Checking.HintState.Hidden
+import midget17468.memo.model.ui.UiRepetition.State.Checking.HintState.Shown
 import midget17468.memo.model.ui.UiRepetition.State.Checking.Mode.Remembering
 import midget17468.memo.model.ui.UiRepetition.State.Checking.Mode.Repetition
 import midget17468.memo.model.ui.UiRepetition.State.Forgotten
@@ -69,6 +77,7 @@ fun RepetitionScreen(
 
                 val buttonWidth = 230.dp
                 val infoFontSize = 18.sp
+                val dataInputWidth = 300.dp
                 when (val state = repetition.state) {
                     is Checking -> {
                         TextInput(text = state.data) {
@@ -79,23 +88,31 @@ fun RepetitionScreen(
                                         onValueChange,
                                         fontSize = 24.sp,
                                         modifier = Modifier
-                                            .width(300.dp)
+                                            .width(dataInputWidth)
                                     )
                             }
+                        }
+
+                        state.hintState?.let {
+                            RepetitionHint(
+                                state = it,
+                                showHint = component::showHint,
+                                modifier = Modifier
+                                    .width(dataInputWidth)
+                            )
                         }
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(
+                            ErrorText(
                                 text = state.error ?: "",
-                                color = MaterialTheme.colorScheme.error,
                             )
                             Button(
                                 onClick = component::check,
                                 enabled = state.error == null,
                                 modifier = Modifier
-                                    .padding(vertical = defaultMargin)
+                                    .padding(top = halfMargin)
                                     .width(buttonWidth)
                             ) {
                                 Text(stringResource(R.string.repetition_check))
@@ -123,7 +140,6 @@ fun RepetitionScreen(
                         Button(
                             onClick = component::close,
                             modifier = Modifier
-                                .padding(bottom = defaultMargin)
                                 .width(buttonWidth)
                         ) {
                             Text(stringResource(FoundationR.string.gotIt))
@@ -139,7 +155,6 @@ fun RepetitionScreen(
                         Button(
                             onClick = component::close,
                             modifier = Modifier
-                                .padding(bottom = defaultMargin)
                                 .width(buttonWidth)
                         ) {
                             Text(stringResource(FoundationR.string.gotIt))
