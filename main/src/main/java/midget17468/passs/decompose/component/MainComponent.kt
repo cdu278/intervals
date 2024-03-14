@@ -1,40 +1,60 @@
 package midget17468.passs.decompose.component
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.datetime.LocalDateTime
-import midget17468.passs.computable.parametrized.ParametrizedComputable
-import midget17468.passs.decompose.context.coroutineScope
-import midget17468.passs.decompose.retained.flow.retainedFlow
-import midget17468.passs.directions.MainDirections
-import midget17468.passs.flow.sharingStarted.uiModelSharingStarted
-import midget17468.passs.model.ui.UiPasswordList
-import midget17468.passs.model.ui.UiPasswordItem
-import midget17468.passs.model.ui.ViewAction
-import midget17468.passs.repository.MainRepository
+import com.arkivanov.decompose.childContext
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
+import com.arkivanov.essenty.lifecycle.doOnResume
+import midget17468.hash.algorithm.HashAlgorithm
+import midget17468.memo.MemoDb
+import midget17468.memo.decompose.component.MemoListComponent
+import midget17468.memo.decompose.component.NewMemoFlowComponent
+import midget17468.memo.decompose.instance.MemoRepositoryInstance
+import midget17468.memo.model.domain.NewMemoValidationErrors
+import midget17468.memo.repetitions.SpacedRepetitions
+import midget17468.memo.repetitions.notifications.RepetitionsNotifications
+import midget17468.memo.repetitions.strategy.FakeSpaceRepetitionStrategy
+import midget17468.memo.repetitions.strategy.SpaceRepetitionStrategy
+import midget17468.repository.updates.RepositoryUpdates
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class MainComponent(
     context: ComponentContext,
-    repository: MainRepository,
-    private val directions: MainDirections,
-    private val nextCheckDate: ParametrizedComputable<LocalDateTime, UiPasswordItem.NextCheckDate>,
+    memoDb: MemoDb,
+    errors: NewMemoValidationErrors,
+    repetitionNotifications: RepetitionsNotifications,
+    hashAlgorithm: HashAlgorithm,
+    repeatMemo: (id: Int) -> Unit,
+    spaceRepetitionStrategy: SpaceRepetitionStrategy,
 ) : ComponentContext by context {
 
-    private val retainedItemsFlow = retainedFlow(key = "items", repository.readItems())
+    private val repositoryUpdates =
+        instanceKeeper.getOrCreateSimple("repositoryUpdates") { RepositoryUpdates() }
 
-    val uiModelFlow: StateFlow<UiPasswordList> =
-        retainedItemsFlow
-            .map { items ->
-                UiPasswordList.Loaded(items = items.sortedBy { it.nextCheckDate }.map { item ->
-                    UiPasswordItem(
-                        item.id,
-                        item.type,
-                        nextCheckDate(item.nextCheckDate),
-                        open = ViewAction { directions.toItem(item.id) },
-                    )
-                })
-            }
-            .stateIn(coroutineScope(), uiModelSharingStarted, initialValue = UiPasswordList.Loading)
+    private val repository =
+        instanceKeeper.getOrCreate {
+            MemoRepositoryInstance(memoDb.memoQueries, repositoryUpdates)
+        }
+
+    init {
+        lifecycle.doOnResume { repositoryUpdates.post() }
+    }
+
+    val memoListComponent =
+        MemoListComponent(
+            childContext("passwordList"),
+            repository,
+            repeatMemo,
+        )
+
+    val newMemoFlowComponent =
+        NewMemoFlowComponent(
+            childContext("newMemoFlow"),
+            errors,
+            repetitionNotifications,
+            repository,
+            hashAlgorithm,
+            spacedRepetitions = SpacedRepetitions(spaceRepetitionStrategy),
+        )
 }

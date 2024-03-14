@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -52,12 +53,18 @@ android {
 
 dependencies {
     implementation(project(":main"))
+    implementation(project(":memo"))
+    implementation(project(":foundation"))
+    implementation(project(":android-foundation"))
+    implementation(project(":ui:repetition"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.extra["lifecycleVersion"]}")
 
-    implementation("androidx.activity:activity-compose:${rootProject.extra["activityVersion"]}")
+    val activityVersion = rootProject.extra["activityVersion"]
+    implementation("androidx.activity:activity-compose:$activityVersion")
+    implementation("androidx.activity:activity-ktx:$activityVersion")
 
     implementation(platform("androidx.compose:compose-bom:${rootProject.extra["composeVersion"]}"))
     implementation("androidx.compose.ui:ui")
@@ -72,6 +79,9 @@ dependencies {
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
 
-    val roomVersion = rootProject.extra["roomVersion"]
-    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.work:work-runtime-ktx:${rootProject.extra["workmanagerVersion"]}")
+
+    implementation("app.cash.sqldelight:android-driver:${rootProject.extra["sqldelightVersion"]}")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:${rootProject.extra["serializationVersion"]}")
 }

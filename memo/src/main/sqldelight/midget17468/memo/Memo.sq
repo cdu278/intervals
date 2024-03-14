@@ -1,0 +1,35 @@
+import kotlinx.datetime.LocalDateTime;
+import midget17468.memo.data.MemoData;
+import midget17468.memo.model.domain.MemoType;
+import kotlin.Int;
+import midget17468.memo.model.domain.RepetitionState;
+
+CREATE TABLE memo(
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT NOT NULL,
+    type TEXT AS MemoType NOT NULL,
+    label TEXT NOT NULL,
+    memoData TEXT AS MemoData NOT NULL,
+    repetitionState TEXT AS RepetitionState NOT NULL,
+    hint TEXT
+);
+
+selectItems:
+SELECT id, type, label, repetitionState
+FROM memo;
+
+selectById:
+SELECT *
+FROM memo
+WHERE id = ?;
+
+insert:
+INSERT INTO memo(type, label, memoData, repetitionState, hint)
+VALUES ?;
+
+update:
+UPDATE memo
+SET repetitionState = ?
+WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

@@ -1,7 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -41,6 +42,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":foundation"))
+    implementation(project(":ui:memo-list"))
+    implementation(project(":ui:editor-flow"))
+    implementation(project(":memo"))
+
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
     implementation("androidx.appcompat:appcompat:${rootProject.extra["appcompatVersion"]}")
@@ -57,9 +63,4 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
-
-    val roomVersion = rootProject.extra["roomVersion"]
-    implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
 }

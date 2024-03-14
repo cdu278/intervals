@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Passs</string>
+    <string name="app_name">Memo</string>
+    <string name="repetitionNotification_channel_name">Repetition notifications</string>
+    <string name="emptyLabel">Please enter label</string>
+    <string name="emptyPassword">Please enter password</string>
+    <string name="passwordsDontMatch">Passwords don\'t match</string>
+    <string name="repetitionNotification_messageFmt">It\'s time to repeat the %s \"%s\"</string>
 </resources>

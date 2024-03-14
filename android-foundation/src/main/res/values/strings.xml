@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password">Password</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="save">Save</string>
+    <string name="hint">Hint</string>
+    <string name="label">Label</string>
+    <string name="gotIt">Got it</string>
+</resources>
