@@ -22,23 +22,22 @@ fun MemoIcon(
 ) {
     Surface(
         shape = RoundedCornerShape(percent = 50),
-        color = MaterialTheme.colorScheme.primary,
-        content = {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(
-                        id = when (type) {
-                            MemoType.Password -> R.string.memoItem_icon_text_password
-                        }
-                    ),
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Black,
-                )
-            }
-        },
-        modifier = modifier,
-    )
+        color = MaterialTheme.colorScheme.secondary,
+        modifier = modifier
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(
+                    id = when (type) {
+                        MemoType.Password -> R.string.memoItem_icon_text_password
+                    }
+                ),
+                fontFamily = FontFamily.Monospace,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Black,
+            )
+        }
+    }
 }
