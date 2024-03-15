@@ -16,4 +16,6 @@ interface MemoRepository {
     fun flowById(id: Int): Flow<Memo>
 
     suspend fun update(id: Int, updatedState: (Memo) -> RepetitionState)
+
+    suspend fun delete(id: Int, onCommit: () -> Unit = { })
 }

@@ -3,6 +3,7 @@ package midget17468.memo.decompose.component
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import midget17468.compose.context.coroutineScope
@@ -13,13 +14,15 @@ import midget17468.memo.model.domain.RepetitionState.Forgotten
 import midget17468.memo.model.domain.RepetitionState.Repetition
 import midget17468.memo.model.input.MemoListInput
 import midget17468.memo.model.ui.UiMemoItem
+import midget17468.memo.repetitions.notifications.RepetitionsNotifications
 import midget17468.memo.repository.MemoRepository
 import midget17468.model.ui.Loadable
 import midget17468.model.ui.UiAction
 
 class MemoListComponent internal constructor(
     context: ComponentContext,
-    repository: MemoRepository,
+    private val repository: MemoRepository,
+    private val repetitionNotifications: RepetitionsNotifications,
     private val repeat: (memoId: Int) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping,
     private val currentTime: () -> LocalDateTime,
@@ -28,10 +31,12 @@ class MemoListComponent internal constructor(
     constructor(
         context: ComponentContext,
         repository: MemoRepository,
+        repetitionNotifications: RepetitionsNotifications,
         repeat: (memoId: Int) -> Unit,
     ) : this(
         context,
         repository,
+        repetitionNotifications,
         repeat,
         nextRepetitionDateMapping = NextRepetitionDateMapping(),
         currentTime = { Clock.System.currentTime() },
@@ -47,8 +52,10 @@ class MemoListComponent internal constructor(
         stateKeeper.register("input", MemoListInput.serializer()) { input.value }
     }
 
+    private val coroutineScope = coroutineScope()
+
     internal val uiModelFlow: StateFlow<Loadable<List<UiMemoItem>>> =
-        input.handle(coroutineScope(), initialValue = Loadable.Loading) { input ->
+        input.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
             repository
                 .itemsFlow
                 .map { items ->
@@ -76,7 +83,7 @@ class MemoListComponent internal constructor(
                                     input.idOfExpanded == item.id,
                                     toggle = UiAction { toggleExpanded(item.id) }
                                 ),
-                                delete = UiAction.NoOp,
+                                delete = UiAction { delete(item.id) },
                             )
                         }
                     )
@@ -92,6 +99,14 @@ class MemoListComponent internal constructor(
                     id
                 }
             )
+        }
+    }
+
+    private fun delete(id: Int) {
+        coroutineScope.launch {
+            repository.delete(id, onCommit = {
+                launch { repetitionNotifications.remove(id) }
+            })
         }
     }
 }

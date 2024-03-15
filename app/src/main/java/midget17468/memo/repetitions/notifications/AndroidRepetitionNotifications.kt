@@ -2,6 +2,7 @@ package midget17468.memo.repetitions.notifications
 
 import android.content.Context
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import kotlinx.datetime.Clock
@@ -31,10 +32,14 @@ class AndroidRepetitionNotifications(
         timeZone = { TimeZone.currentSystemDefault() },
     )
 
+    private fun workName(id: Int): String = "repetitionNotification(memoId=$id)"
+
     override suspend fun schedule(memoId: Int, date: LocalDateTime) {
         if (notifications.permission.isGranted()) {
             val delay = date.toInstant(timeZone()) - clock.now()
-            workManager.enqueue(
+            workManager.enqueueUniqueWork(
+                workName(memoId),
+                ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.Builder(RepetitionNotificationWorker::class.java)
                     .setInputData(
                         Data.Builder()
@@ -48,6 +53,7 @@ class AndroidRepetitionNotifications(
     }
 
     override suspend fun remove(memoId: Int) {
+        workManager.cancelUniqueWork(workName(memoId))
         notifications.cancel(RepetitionNotificationIdentity(memoId))
     }
 }

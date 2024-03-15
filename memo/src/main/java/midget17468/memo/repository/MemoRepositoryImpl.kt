@@ -76,4 +76,16 @@ private class MemoRepositoryImpl(
         }
         updates.post()
     }
+
+    override suspend fun delete(id: Int, onCommit: () -> Unit) {
+        withContext(Dispatchers.IO) {
+            queries.transaction {
+                afterCommit {
+                    updates.post()
+                    onCommit()
+                }
+                queries.delete(id)
+            }
+        }
+    }
 }

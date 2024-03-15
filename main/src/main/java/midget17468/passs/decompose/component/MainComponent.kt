@@ -45,6 +45,7 @@ class MainComponent(
         MemoListComponent(
             childContext("passwordList"),
             repository,
+            repetitionNotifications,
             repeatMemo,
         )
 

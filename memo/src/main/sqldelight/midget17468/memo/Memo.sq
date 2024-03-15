@@ -31,5 +31,9 @@ UPDATE memo
 SET repetitionState = ?
 WHERE id = ?;
 
+delete:
+DELETE FROM memo
+WHERE id = ?;
+
 lastInsertRowId:
 SELECT last_insert_rowid();
