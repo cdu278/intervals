@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import midget17468.compose.defaultMargin
+import midget17468.compose.halfMargin
 import midget17468.memo.model.ui.UiMemoItem
 
 @Composable
@@ -32,13 +33,16 @@ internal fun MemoItem(
             primaryStyle,
             secondaryStyle,
             modifier = Modifier
-                .width(170.dp)
+                .weight(1f)
+                .padding(end = halfMargin)
         )
         MemoState(
             item.state,
-            repeat = item.repeat,
+            item.repeat,
             primaryStyle,
             secondaryStyle,
+            modifier = Modifier
+                .width(125.dp)
         )
     }
 }

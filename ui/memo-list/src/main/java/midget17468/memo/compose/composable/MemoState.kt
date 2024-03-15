@@ -1,7 +1,7 @@
 package midget17468.memo.compose.composable
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +22,7 @@ internal fun MemoState(
     Box(modifier = modifier) {
         when (state) {
             is Repetition ->
-                Button(onClick = repeat) {
+                OutlinedButton(onClick = repeat) {
                     Text(stringResource(R.string.memoItem_repeat))
                 }
             is RepetitionAt ->
@@ -32,7 +32,7 @@ internal fun MemoState(
                     secondaryStyle,
                 )
             is Forgotten ->
-                Button(onClick = repeat) {
+                OutlinedButton(onClick = repeat) {
                     Text(stringResource(R.string.memoItem_iRemember))
                 }
         }
