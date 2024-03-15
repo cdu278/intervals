@@ -7,4 +7,5 @@
     <string name="hint">Hint</string>
     <string name="label">Label</string>
     <string name="gotIt">Got it</string>
+    <string name="delete">Delete</string>
 </resources>

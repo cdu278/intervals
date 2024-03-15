@@ -11,4 +11,9 @@ class UiAction(
     }
 
     override fun hashCode(): Int = javaClass.hashCode()
+
+    companion object {
+
+        val NoOp: UiAction = UiAction {  }
+    }
 }

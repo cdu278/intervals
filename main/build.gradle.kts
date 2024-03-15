@@ -43,6 +43,7 @@ android {
 
 dependencies {
     implementation(project(":foundation"))
+    implementation(project(":android-foundation"))
     implementation(project(":ui:memo-list"))
     implementation(project(":ui:editor-flow"))
     implementation(project(":memo"))

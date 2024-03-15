@@ -3,9 +3,11 @@ package midget17468.passs.compose.composable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import midget17468.compose.defaultMargin
 import midget17468.memo.compose.composable.MemoList
 import midget17468.memo.compose.composable.NewMemoFlow
 import midget17468.passs.decompose.component.MainComponent
@@ -15,13 +17,12 @@ fun MainScreen(
     component: MainComponent,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         MemoList(
             component.memoListComponent,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(defaultMargin)
                 .align(Alignment.TopCenter)
         )
         NewMemoFlow(

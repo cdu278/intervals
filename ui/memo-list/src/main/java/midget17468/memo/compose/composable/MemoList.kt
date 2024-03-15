@@ -1,5 +1,6 @@
 package midget17468.memo.compose.composable
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import midget17468.compose.doubleMargin
+import midget17468.compose.halfMargin
 import midget17468.memo.decompose.component.MemoListComponent
 import midget17468.memo.memo_list.R
 import midget17468.memo.model.ui.UiMemoItem
@@ -36,6 +38,7 @@ fun MemoList(
                 val items = m.value
                 if (items.isNotEmpty()) {
                     LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(halfMargin),
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
