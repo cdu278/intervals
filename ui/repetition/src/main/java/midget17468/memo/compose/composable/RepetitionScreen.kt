@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import midget17468.compose.composable.ErrorText
 import midget17468.compose.composable.PasswordField
 import midget17468.compose.composable.TextInput
+import midget17468.compose.composable.TextPasswordField
 import midget17468.compose.defaultMargin
 import midget17468.compose.halfMargin
 import midget17468.memo.compose.string.NextRepetitionDateStrings
@@ -77,29 +78,33 @@ fun RepetitionScreen(
 
                 val buttonWidth = 230.dp
                 val infoFontSize = 18.sp
-                val dataInputWidth = 300.dp
                 when (val state = repetition.state) {
                     is Checking -> {
-                        TextInput(text = state.data) {
-                            when (repetition.type) {
-                                Password ->
-                                    PasswordField(
-                                        value,
-                                        onValueChange,
-                                        fontSize = 24.sp,
-                                        modifier = Modifier
-                                            .width(dataInputWidth)
-                                    )
+                        Column(
+                            modifier = Modifier
+                                .width(300.dp)
+                        ) {
+                            TextInput(text = state.data) {
+                                when (repetition.type) {
+                                    Password ->
+                                        TextPasswordField(
+                                            value,
+                                            onValueChange,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                        )
+                                }
                             }
-                        }
 
-                        state.hintState?.let {
-                            RepetitionHint(
-                                state = it,
-                                showHint = component::showHint,
-                                modifier = Modifier
-                                    .width(dataInputWidth)
-                            )
+                            state.hintState?.let {
+                                RepetitionHint(
+                                    state = it,
+                                    showHint = component::showHint,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = defaultMargin)
+                                )
+                            }
                         }
 
                         Column(

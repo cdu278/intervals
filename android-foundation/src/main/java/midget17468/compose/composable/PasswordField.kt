@@ -1,5 +1,6 @@
 package midget17468.compose.composable
 
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -13,6 +14,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PasswordField(
@@ -50,6 +53,7 @@ fun PasswordField(
                 errorTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 cursorColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ),
-        modifier = modifier,
+        modifier = modifier
+            .defaultMinSize(minWidth = 240.dp),
     )
 }

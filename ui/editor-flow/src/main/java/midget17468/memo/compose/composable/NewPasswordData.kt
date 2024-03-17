@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import midget17468.compose.composable.PasswordField
 import midget17468.compose.composable.TextInput
+import midget17468.compose.composable.TextPasswordField
 import midget17468.memo.decompose.component.NewPasswordDataComponent
 import midget17468.memo.editor_flow.R
 
@@ -31,8 +32,6 @@ internal fun NewPasswordData(
         val model by component.uiModelFlow.collectAsState()
 
         val hintFontSize = 12.sp
-        val fieldFontSize = 24.sp
-        val fieldWidth = 200.dp
         val keyboardOptions =
             KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -44,13 +43,10 @@ internal fun NewPasswordData(
             fontSize = hintFontSize,
         )
         TextInput(text = model.password) {
-            PasswordField(
+            TextPasswordField(
                 value,
                 onValueChange,
                 keyboardOptions = keyboardOptions,
-                fontSize = fieldFontSize,
-                modifier = Modifier
-                    .width(fieldWidth)
             )
         }
 
@@ -59,13 +55,10 @@ internal fun NewPasswordData(
             fontSize = hintFontSize,
         )
         TextInput(text = model.passwordConfirmation) {
-            PasswordField(
+            TextPasswordField(
                 value,
                 onValueChange,
                 keyboardOptions = keyboardOptions,
-                fontSize = fieldFontSize,
-                modifier = Modifier
-                    .width(fieldWidth)
             )
         }
     }
