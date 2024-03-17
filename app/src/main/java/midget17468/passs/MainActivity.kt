@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 },
-                appModule.spaceRepetitionStrategy,
+                appModule.spacedRepetitions,
             )
 
         setContent {

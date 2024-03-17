@@ -13,11 +13,8 @@ import midget17468.memo.decompose.instance.MemoRepositoryInstance
 import midget17468.memo.model.domain.NewMemoValidationErrors
 import midget17468.memo.repetitions.SpacedRepetitions
 import midget17468.memo.repetitions.notifications.RepetitionsNotifications
-import midget17468.memo.repetitions.strategy.FakeSpaceRepetitionStrategy
-import midget17468.memo.repetitions.strategy.SpaceRepetitionStrategy
+import midget17468.memo.repetitions.strategy.SpaceRepetitionsStrategy
 import midget17468.repository.updates.RepositoryUpdates
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class MainComponent(
     context: ComponentContext,
@@ -26,7 +23,7 @@ class MainComponent(
     repetitionNotifications: RepetitionsNotifications,
     hashAlgorithm: HashAlgorithm,
     repeatMemo: (id: Int) -> Unit,
-    spaceRepetitionStrategy: SpaceRepetitionStrategy,
+    spacedRepetitions: SpacedRepetitions,
 ) : ComponentContext by context {
 
     private val repositoryUpdates =
@@ -56,6 +53,6 @@ class MainComponent(
             repetitionNotifications,
             repository,
             hashAlgorithm,
-            spacedRepetitions = SpacedRepetitions(spaceRepetitionStrategy),
+            spacedRepetitions,
         )
 }

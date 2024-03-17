@@ -5,11 +5,10 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import midget17468.memo.model.domain.RepetitionStage
-import midget17468.memo.repetitions.strategy.DefaultSpaceRepetitionStrategy
-import midget17468.memo.repetitions.strategy.SpaceRepetitionStrategy
+import midget17468.memo.repetitions.strategy.SpaceRepetitionsStrategy
 
 class SpacedRepetitions(
-    private val strategy: SpaceRepetitionStrategy = DefaultSpaceRepetitionStrategy(),
+    private val strategy: SpaceRepetitionsStrategy = SpaceRepetitionsStrategy(),
     private val clock: Clock = Clock.System,
     private val timeZone: () -> TimeZone = { TimeZone.currentSystemDefault() },
 ) {

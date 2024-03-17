@@ -72,7 +72,7 @@ class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
                         .create(RepetitionsChannelConfig(this)),
                 ),
                 Errors(resources),
-                spacedRepetitions = SpacedRepetitions(appModule.spaceRepetitionStrategy),
+                appModule.spacedRepetitions,
                 close = deps.close(this),
             )
 

@@ -6,14 +6,10 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import kotlinx.serialization.json.Json
 import midget17468.memo.MemoDb
-import midget17468.memo.repetitions.strategy.DefaultSpaceRepetitionStrategy
-import midget17468.memo.repetitions.strategy.FakeSpaceRepetitionStrategy
-import midget17468.memo.repetitions.strategy.SpaceRepetitionStrategy
+import midget17468.memo.repetitions.SpacedRepetitions
 import midget17468.memo.sqldelight.db.MemoDb
 import midget17468.notification.AndroidNotifications
 import midget17468.permission.Permission
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class AppModule(
     private val context: Context,
@@ -32,6 +28,6 @@ class AppModule(
         )
     }
 
-    val spaceRepetitionStrategy: SpaceRepetitionStrategy
-        get() = DefaultSpaceRepetitionStrategy()
+    val spacedRepetitions: SpacedRepetitions
+        get() = SpacedRepetitions()
 }
