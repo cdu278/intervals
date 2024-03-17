@@ -28,9 +28,9 @@ internal fun MemoItem(
     val containerColor =
         MaterialTheme.colorScheme.surfaceColorAtElevation(
             if (item.isExpanded) {
-                8.dp
+                4.dp
             } else {
-                2.dp
+                0.dp
             }
         )
     Card(
