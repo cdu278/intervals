@@ -1,18 +1,18 @@
-package midget17468.input
+package midget17468.state
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-fun <T, Prop> Input<T>.prop(prop: T.() -> Prop, updateProp: T.(Prop) -> T): Input<Prop> {
-    return PropInput(original = this, prop, updateProp)
+fun <T, Prop> State<T>.prop(prop: T.() -> Prop, updateProp: T.(Prop) -> T): State<Prop> {
+    return PropState(original = this, prop, updateProp)
 }
 
-class PropInput<T, Prop>(
-    private val original: Input<T>,
+class PropState<T, Prop>(
+    private val original: State<T>,
     private val prop: T.() -> Prop,
     private val updateProp: T.(Prop) -> T
-) : Input<Prop> {
+) : State<Prop> {
 
     override val value: Prop
         get() = original.value.prop()

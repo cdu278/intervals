@@ -9,9 +9,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import midget17468.compose.context.coroutineScope
 import midget17468.datetime.currentTime
-import midget17468.input.Input
-import midget17468.input.prop
-import midget17468.input.subtype
+import midget17468.state.Input
+import midget17468.state.State
+import midget17468.state.prop
+import midget17468.state.subtype
 import midget17468.memo.mapping.ui.NextRepetitionDateMapping
 import midget17468.memo.model.domain.EmptyPasswordMessageOwner
 import midget17468.memo.model.domain.RepetitionStage
@@ -40,7 +41,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
     private val close: () -> Unit,
 ) : ComponentContext by componentContext {
 
-    private val input: Input<RepetitionInput> =
+    private val state: State<RepetitionInput> =
         Input(
             stateKeeper.consume("state", RepetitionInput.serializer())
                 ?: CheckingInput()
@@ -49,7 +50,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
     private val coroutineScope = coroutineScope()
 
     init {
-        stateKeeper.register("state", RepetitionInput.serializer()) { input.value }
+        stateKeeper.register("state", RepetitionInput.serializer()) { state.value }
 
         doOnStart {
             coroutineScope.launch { repetitionNotifications.remove(memoId) }
@@ -58,7 +59,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
 
     private val changeData
         get() = ChangeInput(
-            input
+            state
                 .subtype(CheckingInput::class)
                 .prop(CheckingInput::data) { copy(data = it) }
         )
@@ -71,7 +72,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
         }
 
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
-        input.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
+        state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
             repository.flowById(memoId).map { memo ->
                 Loadable.Loaded(
                     UiRepetition(
@@ -127,7 +128,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                 memoId,
                 updatedState = { it.repetitionState.withHintShown(true) }
             )
-            input
+            state
                 .subtype(RepetitionInput.Checking::class)
                 .update { it.copy(hintShown = true) }
         }
@@ -135,7 +136,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
 
     fun check() {
         coroutineScope.launch {
-            val data = (input.value as CheckingInput).data
+            val data = (state.value as CheckingInput).data
             val memo = repository.findById(memoId)
             if (memo.memoData.matches(data)) {
                 val nextStage =
@@ -175,7 +176,7 @@ class RepetitionComponent<Errors : EmptyPasswordMessageOwner>(
                 memoId,
                 updatedState = { RepetitionState.Forgotten() }
             )
-            input.update { RepetitionInput.Forgotten }
+            state.update { RepetitionInput.Forgotten }
         }
     }
 

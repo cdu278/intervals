@@ -1,10 +1,10 @@
-package midget17468.input
+package midget17468.state
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface Input<T> {
+interface State<T> {
 
     val value: T
 

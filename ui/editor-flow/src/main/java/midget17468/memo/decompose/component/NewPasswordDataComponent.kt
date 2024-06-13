@@ -4,8 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import midget17468.compose.context.coroutineScope
-import midget17468.input.Input
-import midget17468.input.prop
+import midget17468.state.Input
+import midget17468.state.prop
 import midget17468.memo.model.input.ConfirmedPasswordInput
 import midget17468.memo.model.domain.EmptyPasswordMessageOwner
 import midget17468.memo.model.domain.PasswordsDontMatchMessageOwner

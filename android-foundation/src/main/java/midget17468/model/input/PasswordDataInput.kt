@@ -1,8 +1,8 @@
 package midget17468.model.input
 
 import kotlinx.serialization.Serializable
-import midget17468.input.Input
-import midget17468.input.prop
+import midget17468.state.State
+import midget17468.state.prop
 
 @Serializable
 data class PasswordDataInput(
@@ -10,8 +10,8 @@ data class PasswordDataInput(
     val passwordConfirmation: String = ""
 )
 
-val Input<PasswordDataInput>.password: Input<String>
+val State<PasswordDataInput>.password: State<String>
     get() = prop(PasswordDataInput::password) { copy(password = it) }
 
-val Input<PasswordDataInput>.passwordConfirmation: Input<String>
+val State<PasswordDataInput>.passwordConfirmation: State<String>
     get() = prop(PasswordDataInput::passwordConfirmation) { copy(passwordConfirmation = it) }

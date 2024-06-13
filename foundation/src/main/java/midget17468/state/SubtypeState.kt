@@ -1,4 +1,4 @@
-package midget17468.input
+package midget17468.state
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KClass
 import kotlin.reflect.cast
 
-fun <T : Any, SubT : T> Input<T>.subtype(subtype: KClass<SubT>): Input<SubT> {
-    return SubtypeInput(subtype, original = this)
+fun <T : Any, SubT : T> State<T>.subtype(subtype: KClass<SubT>): State<SubT> {
+    return SubtypeState(subtype, original = this)
 }
 
-class SubtypeInput<T : Any, SubT : T>(
+class SubtypeState<T : Any, SubT : T>(
     private val subtype: KClass<SubT>,
-    private val original: Input<T>
-) : Input<SubT> {
+    private val original: State<T>
+) : State<SubT> {
 
     override val value: SubT
         get() = subtype.cast(original.value)

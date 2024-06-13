@@ -10,8 +10,8 @@ import kotlinx.coroutines.withContext
 import midget17468.compose.context.coroutineScope
 import midget17468.decompose.instance.retainedCoroutineScope
 import midget17468.hash.algorithm.HashAlgorithm
-import midget17468.input.Input
-import midget17468.input.prop
+import midget17468.state.Input
+import midget17468.state.prop
 import midget17468.memo.Memo
 import midget17468.memo.data.MemoData
 import midget17468.memo.model.input.AddMemoInput

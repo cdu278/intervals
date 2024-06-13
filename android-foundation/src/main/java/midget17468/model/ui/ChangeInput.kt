@@ -1,13 +1,13 @@
 package midget17468.model.ui
 
-import midget17468.input.Input
+import midget17468.state.State
 
 class ChangeInput<in T>(
-    private val input: Input<T>,
+    private val state: State<T>,
 ) {
 
     operator fun invoke(value: T) {
-        input.update { value }
+        state.update { value }
     }
 
     override fun equals(other: Any?): Boolean {

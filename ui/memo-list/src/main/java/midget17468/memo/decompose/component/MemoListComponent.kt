@@ -8,7 +8,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import midget17468.compose.context.coroutineScope
 import midget17468.datetime.currentTime
-import midget17468.input.Input
+import midget17468.state.Input
+import midget17468.state.State
 import midget17468.memo.mapping.ui.NextRepetitionDateMapping
 import midget17468.memo.model.domain.RepetitionState.Forgotten
 import midget17468.memo.model.domain.RepetitionState.Repetition
@@ -42,20 +43,20 @@ class MemoListComponent internal constructor(
         currentTime = { Clock.System.currentTime() },
     )
 
-    private val input: Input<MemoListInput> =
+    private val state: State<MemoListInput> =
         Input(
             stateKeeper.consume("input", MemoListInput.serializer())
                 ?: MemoListInput()
         )
 
     init {
-        stateKeeper.register("input", MemoListInput.serializer()) { input.value }
+        stateKeeper.register("input", MemoListInput.serializer()) { state.value }
     }
 
     private val coroutineScope = coroutineScope()
 
     internal val uiModelFlow: StateFlow<Loadable<List<UiMemoItem>>> =
-        input.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
+        state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
             repository
                 .itemsFlow
                 .map { items ->
@@ -91,7 +92,7 @@ class MemoListComponent internal constructor(
         }
 
     private fun toggleExpanded(id: Int) {
-        input.update {
+        state.update {
             it.copy(
                 idOfExpanded = if (id == it.idOfExpanded) {
                     null

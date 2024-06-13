@@ -1,4 +1,4 @@
-package midget17468.input
+package midget17468.state
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-class StateFlowInput<T>(initialValue: T) : Input<T> {
+class StateFlowState<T>(initialValue: T) : State<T> {
 
     private val stateFlow = MutableStateFlow(initialValue)
 
@@ -45,4 +45,4 @@ class StateFlowInput<T>(initialValue: T) : Input<T> {
     }
 }
 
-fun <T> Input(initialValue: T): Input<T> = StateFlowInput(initialValue)
+fun <T> Input(initialValue: T): State<T> = StateFlowState(initialValue)
