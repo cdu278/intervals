@@ -79,12 +79,12 @@ class MemoListComponent internal constructor(
 
                                     is Forgotten -> UiMemoItem.State.Forgotten
                                 },
-                                repeat = UiAction { repeat(item.id) },
+                                repeat = UiAction(key = item.id) { repeat(item.id) },
                                 UiMemoItem.Expanded(
                                     input.idOfExpanded == item.id,
-                                    toggle = UiAction { toggleExpanded(item.id) }
+                                    toggle = UiAction(key = item.id) { toggleExpanded(item.id) }
                                 ),
-                                delete = UiAction { delete(item.id) },
+                                delete = UiAction(key = item.id) { delete(item.id) },
                             )
                         }
                     )
