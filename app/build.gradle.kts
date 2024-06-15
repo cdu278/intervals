@@ -52,10 +52,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":main"))
-    implementation(project(":memo"))
+    implementation(project(":core"))
     implementation(project(":foundation"))
     implementation(project(":android-foundation"))
+    implementation(project(":ui:main"))
     implementation(project(":ui:repetition"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")

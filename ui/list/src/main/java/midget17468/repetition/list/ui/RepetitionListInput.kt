@@ -1,0 +1,8 @@
+package midget17468.repetition.list.ui
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class RepetitionListInput(
+    val idOfExpanded: Int? = null,
+)

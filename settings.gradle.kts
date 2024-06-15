@@ -15,10 +15,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Passs"
 include(":app")
-include(":main")
-include(":memo")
+include(":core")
 include(":foundation")
 include(":android-foundation")
-include(":ui:editor-flow")
-include(":ui:memo-list")
+include(":ui:main")
+include(":ui:add-repetition")
+include(":ui:list")
 include(":ui:repetition")

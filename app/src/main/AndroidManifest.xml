@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-            android:name="midget17468.memo.application.MemoApplication"
+            android:name="midget17468.MemoApplication"
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:fullBackupContent="@xml/backup_rules"
@@ -16,7 +16,7 @@
             android:theme="@style/Theme.Passs"
             tools:targetApi="31">
         <activity
-                android:name=".MainActivity"
+                android:name="midget17468.repetition.main.ui.activity.MainActivity"
                 android:exported="true"
                 android:theme="@style/Theme.Passs">
             <intent-filter>
@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-                android:name="midget17468.memo.activity.RepetitionActivity"
+                android:name="midget17468.repetition.ui.activity.RepetitionActivity"
                 android:windowSoftInputMode="adjustResize" />
     </application>
 

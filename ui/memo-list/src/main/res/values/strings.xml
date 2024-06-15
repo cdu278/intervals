@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="noItemsYet">No memos yet</string>
-    <string name="memoItem_nextRepetition">Next repetition</string>
-    <string name="memoItem_repeat">Repeat</string>
-    <string name="memoItem_iRemember">I remember</string>
-    <string name="memoItem_icon_text_password">**a</string>
-</resources>

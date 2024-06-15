@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.repetition"
+    namespace = "midget17468.memo.editor_flow"
     compileSdk = 34
 
     defaultConfig {

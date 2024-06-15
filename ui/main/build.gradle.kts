@@ -1,12 +1,12 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
-    namespace = "midget17468.repetition"
+    namespace = "midget17468.passs.main"
     compileSdk = 34
 
     defaultConfig {
@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":foundation"))
     implementation(project(":android-foundation"))
     implementation(project(":core"))
+    implementation(project(":ui:list"))
+    implementation(project(":ui:add-repetition"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 

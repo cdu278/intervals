@@ -2,11 +2,10 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "midget17468.repetition"
+    namespace = "midget17468.memo.memo_list"
     compileSdk = 34
 
     defaultConfig {
@@ -47,8 +46,6 @@ dependencies {
     implementation(project(":core"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
-
-    implementation("androidx.appcompat:appcompat:${rootProject.extra["appcompatVersion"]}")
 
     implementation(platform("androidx.compose:compose-bom:${rootProject.extra["composeVersion"]}"))
     implementation("androidx.compose.ui:ui")
