@@ -23,7 +23,7 @@ import midget17468.repetition.R
 import midget17468.repetition.RepetitionDb
 import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
 import midget17468.repetition.notification.s.AndroidRepetitionNotifications
-import midget17468.repetition.repository.RepetitionRepositoryInstance
+import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
 import midget17468.string.computable.ResString
 
 class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
@@ -54,7 +54,7 @@ class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
 
         val repository =
             componentContext.instanceKeeper.getOrCreate {
-                RepetitionRepositoryInstance(deps.db.repetitionQueries)
+                RepetitionsRepositoryInstance(deps.db.repetitionQueries)
             }
 
         val appModule = MemoApplication.module

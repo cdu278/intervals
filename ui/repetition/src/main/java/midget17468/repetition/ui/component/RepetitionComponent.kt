@@ -19,7 +19,7 @@ import midget17468.repetition.spaced.SpacedRepetitions
 import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
 import midget17468.repetition.next.mapping.NextRepetitionDateMapping
 import midget17468.repetition.notification.s.RepetitionsNotifications
-import midget17468.repetition.repository.RepetitionRepository
+import midget17468.repetition.s.repository.RepetitionsRepository
 import midget17468.repetition.stage.RepetitionStage
 import midget17468.repetition.ui.UiRepetition
 import midget17468.repetition.ui.UiRepetition.State.Checking.HintState
@@ -31,7 +31,7 @@ import midget17468.repetition.ui.UiRepetition.State as UiState
 class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     componentContext: ComponentContext,
     private val repetitionId: Int,
-    private val repository: RepetitionRepository,
+    private val repetitionsRepository: RepetitionsRepository,
     private val repetitionNotifications: RepetitionsNotifications,
     private val errors: Errors,
     private val spacedRepetitions: SpacedRepetitions = SpacedRepetitions(),
@@ -39,6 +39,9 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
     private val close: () -> Unit,
 ) : ComponentContext by componentContext {
+
+    private val repository
+        get() = repetitionsRepository.repetitionRepository(repetitionId)
 
     private val state: State<RepetitionInput> =
         State(
@@ -72,7 +75,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
-            repository.flowById(repetitionId).map { memo ->
+            repetitionsRepository.flowById(repetitionId).map { memo ->
                 Loadable.Loaded(
                     UiRepetition(
                         memo.type,
@@ -123,10 +126,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     fun showHint() {
         coroutineScope.launch {
-            repository.update(
-                repetitionId,
-                updatedState = { it.repetitionState.withHintShown(true) }
-            )
+            repository.updateState { it.repetitionState.withHintShown(true) }
             state
                 .subtype(RepetitionInput.Checking::class)
                 .update { it.copy(hintShown = true) }
@@ -136,10 +136,10 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     fun check() {
         coroutineScope.launch {
             val data = (state.value as CheckingInput).data
-            val memo = repository.findById(repetitionId)
-            if (memo.repetitionData.matches(data)) {
+            val repetition = repetitionsRepository.findById(repetitionId)
+            if (repetition.repetitionData.matches(data)) {
                 val nextStage =
-                    when (val state = memo.repetitionState) {
+                    when (val state = repetition.repetitionState) {
                         is RepetitionState.Repetition ->
                             if (state.hintShown) {
                                 state.stage
@@ -151,16 +151,13 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
                 val nextRepetition = spacedRepetitions.next(nextStage)
 
-                repository.update(
-                    repetitionId,
-                    updatedState = {
-                        RepetitionState.Repetition(
-                            date = nextRepetition,
-                            nextStage,
-                            hintShown = false
-                        )
-                    }
-                )
+                repository.updateState {
+                    RepetitionState.Repetition(
+                        date = nextRepetition,
+                        nextStage,
+                        hintShown = false
+                    )
+                }
 
                 repetitionNotifications.schedule(repetitionId, nextRepetition)
             } else {
@@ -171,10 +168,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     fun forget() {
         coroutineScope.launch {
-            repository.update(
-                repetitionId,
-                updatedState = { RepetitionState.Forgotten() }
-            )
+            repository.updateState { RepetitionState.Forgotten() }
             state.update { RepetitionInput.Forgotten }
         }
     }

@@ -1,4 +1,4 @@
-package midget17468.repetition.repository
+package midget17468.repetition.s.repository
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,23 +12,23 @@ import kotlinx.coroutines.withContext
 import midget17468.repetition.Repetition
 import midget17468.repetition.RepetitionQueries
 import midget17468.repetition.item.RepetitionItem
-import midget17468.repetition.RepetitionState
+import midget17468.repetition.repository.RepetitionRepository
 import midget17468.updates.Updates
 import java.util.concurrent.ConcurrentHashMap
 
-fun RepetitionRepository(
+fun RepetitionsRepository(
     queries: RepetitionQueries,
     updates: Updates = Updates(),
     coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob())
-): RepetitionRepository {
-    return RepetitionRepositoryImpl(queries, coroutineScope, updates)
+): RepetitionsRepository {
+    return RepetitionsRepositoryImpl(queries, coroutineScope, updates)
 }
 
-private class RepetitionRepositoryImpl(
+private class RepetitionsRepositoryImpl(
     private val queries: RepetitionQueries,
     private val coroutineScope: CoroutineScope,
     private val updates: Updates,
-) : RepetitionRepository {
+) : RepetitionsRepository {
 
     override val itemsFlow: Flow<List<RepetitionItem>>
             by lazy {
@@ -67,25 +67,11 @@ private class RepetitionRepositoryImpl(
         }
     }
 
-    override suspend fun update(id: Int, updatedState: (Repetition) -> RepetitionState) {
-        withContext(Dispatchers.IO) {
-            queries.transaction {
-                val repetition = queries.selectById(id).executeAsOne()
-                queries.update(id = id, repetitionState = updatedState(repetition))
-            }
-        }
-        updates.post()
-    }
-
-    override suspend fun delete(id: Int, onCommit: () -> Unit) {
-        withContext(Dispatchers.IO) {
-            queries.transaction {
-                afterCommit {
-                    updates.post()
-                    onCommit()
-                }
-                queries.delete(id)
-            }
-        }
+    override fun repetitionRepository(id: Int): RepetitionRepository {
+        return RepetitionRepository(
+            id,
+            queries,
+            updates,
+        )
     }
 }

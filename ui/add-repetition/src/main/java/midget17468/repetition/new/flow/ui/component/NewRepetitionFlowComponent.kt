@@ -17,16 +17,16 @@ import midget17468.repetition.new.error.NewRepetitionValidationErrors
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig.AddButton
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig.Editor
-import midget17468.repetition.repository.RepetitionRepository
 import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.new.flow.ui.UiNewRepetitionFlowState
 import midget17468.repetition.notification.s.RepetitionsNotifications
+import midget17468.repetition.s.repository.RepetitionsRepository
 
 class NewRepetitionFlowComponent(
     context: ComponentContext,
     private val errors: NewRepetitionValidationErrors,
     private val repetitionNotifications: RepetitionsNotifications,
-    private val repository: RepetitionRepository,
+    private val repository: RepetitionsRepository,
     private val hashAlgorithm: HashAlgorithm,
     private val spacedRepetitions: SpacedRepetitions = SpacedRepetitions(),
 ) : ComponentContext by context {

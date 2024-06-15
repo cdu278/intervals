@@ -12,7 +12,7 @@ import midget17468.repetition.list.ui.component.RepetitionListComponent
 import midget17468.repetition.new.error.NewRepetitionValidationErrors
 import midget17468.repetition.new.flow.ui.component.NewRepetitionFlowComponent
 import midget17468.repetition.notification.s.RepetitionsNotifications
-import midget17468.repetition.repository.RepetitionRepositoryInstance
+import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
 import midget17468.updates.Updates
 
 class MainComponent(
@@ -30,7 +30,7 @@ class MainComponent(
 
     private val repository =
         instanceKeeper.getOrCreate {
-            RepetitionRepositoryInstance(db.repetitionQueries, updates)
+            RepetitionsRepositoryInstance(db.repetitionQueries, updates)
         }
 
     init {

@@ -1,4 +1,4 @@
-package midget17468.repetition.repository
+package midget17468.repetition.s.repository
 
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import kotlinx.coroutines.CoroutineScope
@@ -7,11 +7,11 @@ import kotlinx.coroutines.cancel
 import midget17468.repetition.RepetitionQueries
 import midget17468.updates.Updates
 
-class RepetitionRepositoryInstance internal constructor(
+class RepetitionsRepositoryInstance internal constructor(
     queries: RepetitionQueries,
     updates: Updates,
     private val coroutineScope: CoroutineScope
-) : RepetitionRepository by RepetitionRepository(queries, updates, coroutineScope),
+) : RepetitionsRepository by RepetitionsRepository(queries, updates, coroutineScope),
     InstanceKeeper.Instance {
 
     constructor(

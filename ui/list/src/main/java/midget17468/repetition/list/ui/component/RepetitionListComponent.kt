@@ -16,12 +16,12 @@ import midget17468.repetition.item.ui.UiRepetitionItem
 import midget17468.repetition.list.ui.RepetitionListInput
 import midget17468.repetition.next.mapping.NextRepetitionDateMapping
 import midget17468.repetition.notification.s.RepetitionsNotifications
-import midget17468.repetition.repository.RepetitionRepository
+import midget17468.repetition.s.repository.RepetitionsRepository
 import midget17468.ui.action.UiAction
 
 class RepetitionListComponent internal constructor(
     context: ComponentContext,
-    private val repository: RepetitionRepository,
+    private val repository: RepetitionsRepository,
     private val repetitionNotifications: RepetitionsNotifications,
     private val repeat: (repetitionId: Int) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping,
@@ -30,7 +30,7 @@ class RepetitionListComponent internal constructor(
 
     constructor(
         context: ComponentContext,
-        repository: RepetitionRepository,
+        repository: RepetitionsRepository,
         repetitionNotifications: RepetitionsNotifications,
         repeat: (repetitionId: Int) -> Unit,
     ) : this(
@@ -104,9 +104,10 @@ class RepetitionListComponent internal constructor(
 
     private fun delete(id: Int) {
         coroutineScope.launch {
-            repository.delete(id, onCommit = {
-                launch { repetitionNotifications.remove(id) }
-            })
+            repository
+                .repetitionRepository(id)
+                .delete()
+            repetitionNotifications.remove(id)
         }
     }
 }

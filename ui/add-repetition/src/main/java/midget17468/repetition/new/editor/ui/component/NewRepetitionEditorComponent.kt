@@ -22,12 +22,12 @@ import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
 import midget17468.repetition.new.error.owner.PasswordsDontMatchErrorOwner
 import midget17468.repetition.new.ui.NewRepetitionInput
 import midget17468.repetition.new.ui.UiNewRepetition
-import midget17468.repetition.repository.RepetitionRepository
 import midget17468.repetition.stage.RepetitionStage
 import midget17468.repetition.RepetitionState
 import midget17468.repetition.RepetitionType
 import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.notification.s.RepetitionsNotifications
+import midget17468.repetition.s.repository.RepetitionsRepository
 import midget17468.ui.input.UiInput
 import midget17468.ui.input.change.ChangeInput
 import midget17468.ui.input.validated.Validated.Invalid
@@ -39,7 +39,7 @@ class NewRepetitionEditorComponent<Errors>(
     private val errors: Errors,
     private val spacedRepetitions: SpacedRepetitions,
     private val repetitionNotifications: RepetitionsNotifications,
-    private val repository: RepetitionRepository,
+    private val repository: RepetitionsRepository,
     private val hashAlgorithm: HashAlgorithm,
     private val close: () -> Unit,
 ) : ComponentContext by context
