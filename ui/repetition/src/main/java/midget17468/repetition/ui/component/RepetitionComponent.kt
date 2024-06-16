@@ -11,6 +11,7 @@ import midget17468.datetime.currentTime
 import midget17468.decompose.context.coroutineScope
 import midget17468.loadable.ui.Loadable
 import midget17468.repetition.RepetitionState
+import midget17468.repetition.matching.RepetitionDataMatching
 import midget17468.state.State
 import midget17468.state.prop
 import midget17468.state.subtype
@@ -38,6 +39,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     private val currentTime: () -> LocalDateTime = { Clock.System.currentTime() },
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
     private val close: () -> Unit,
+    private val dataMatching: RepetitionDataMatching,
 ) : ComponentContext by componentContext {
 
     private val repository
@@ -137,7 +139,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
         coroutineScope.launch {
             val data = (state.value as CheckingInput).data
             val repetition = repetitionsRepository.findById(repetitionId)
-            if (repetition.repetitionData.matches(data)) {
+            if (with(dataMatching) { repetition.repetitionData matches data }) {
                 val nextStage =
                     when (val state = repetition.repetitionState) {
                         is RepetitionState.Repetition ->

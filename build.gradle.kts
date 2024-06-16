@@ -23,5 +23,6 @@ buildscript {
         set("serializationVersion", "1.6.3")
         set("workmanagerVersion", "2.9.0")
         set("sqldelightVersion", "2.0.1")
+        set("dataStoreVersion", "1.1.1")
     }
 }

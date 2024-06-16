@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import midget17468.decompose.context.coroutineScope
 import midget17468.decompose.instance.retainedCoroutineScope
-import midget17468.hash.algorithm.HashAlgorithm
+import midget17468.hash.s.Hashes
 import midget17468.state.State
 import midget17468.state.prop
 import midget17468.repetition.spaced.SpacedRepetitions
@@ -40,7 +40,7 @@ class NewRepetitionEditorComponent<Errors>(
     private val spacedRepetitions: SpacedRepetitions,
     private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
-    private val hashAlgorithm: HashAlgorithm,
+    private val hashes: Hashes,
     private val close: () -> Unit,
 ) : ComponentContext by context
         where Errors : EmptyPasswordErrorOwner,
@@ -118,8 +118,7 @@ class NewRepetitionEditorComponent<Errors>(
                         repetitionData = when (type) {
                             Password ->
                                 RepetitionData.Hashed(
-                                    hash = with(hashAlgorithm) { data.hash() },
-                                    hashAlgorithm,
+                                    hash = hashes.of(data),
                                 )
                         },
                         repetitionState = RepetitionState.Repetition(

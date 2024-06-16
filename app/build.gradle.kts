@@ -84,4 +84,6 @@ dependencies {
     implementation("app.cash.sqldelight:android-driver:${rootProject.extra["sqldelightVersion"]}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:${rootProject.extra["serializationVersion"]}")
+
+    implementation("androidx.datastore:datastore:${rootProject.extra["dataStoreVersion"]}")
 }

@@ -63,4 +63,6 @@ dependencies {
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
 
     implementation("androidx.activity:activity-ktx:${rootProject.extra["activityVersion"]}")
+
+    implementation("androidx.datastore:datastore:${rootProject.extra["dataStoreVersion"]}")
 }

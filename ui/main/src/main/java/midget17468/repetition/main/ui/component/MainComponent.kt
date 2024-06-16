@@ -5,7 +5,7 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.doOnResume
-import midget17468.hash.algorithm.HashAlgorithm
+import midget17468.hash.s.Hashes
 import midget17468.repetition.spaced.SpacedRepetitions
 import midget17468.repetition.RepetitionDb
 import midget17468.repetition.list.ui.component.RepetitionListComponent
@@ -20,7 +20,7 @@ class MainComponent(
     db: RepetitionDb,
     errors: NewRepetitionValidationErrors,
     repetitionNotifications: RepetitionsNotifications,
-    hashAlgorithm: HashAlgorithm,
+    hashes: Hashes,
     repeat: (repetitionId: Int) -> Unit,
     spacedRepetitions: SpacedRepetitions,
 ) : ComponentContext by context {
@@ -51,7 +51,7 @@ class MainComponent(
             errors,
             repetitionNotifications,
             repository,
-            hashAlgorithm,
+            hashes,
             spacedRepetitions,
         )
 }

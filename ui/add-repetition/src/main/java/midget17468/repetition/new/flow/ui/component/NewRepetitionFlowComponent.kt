@@ -10,24 +10,27 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import kotlinx.coroutines.flow.StateFlow
 import midget17468.decompose.util.asStateFlow
-import midget17468.hash.algorithm.HashAlgorithm
-import midget17468.repetition.spaced.SpacedRepetitions
+import midget17468.hash.s.Hashes
+import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import midget17468.repetition.new.error.NewRepetitionValidationErrors
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig.AddButton
 import midget17468.repetition.new.flow.ui.NewRepetitionFlowStateConfig.Editor
-import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.new.flow.ui.UiNewRepetitionFlowState
 import midget17468.repetition.notification.s.RepetitionsNotifications
 import midget17468.repetition.s.repository.RepetitionsRepository
+import midget17468.repetition.spaced.SpacedRepetitions
+import midget17468.repetition.spaced.strategy.FakeSpaceRepetitionsStrategy
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class NewRepetitionFlowComponent(
     context: ComponentContext,
     private val errors: NewRepetitionValidationErrors,
     private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
-    private val hashAlgorithm: HashAlgorithm,
+    private val hashes: Hashes,
     private val spacedRepetitions: SpacedRepetitions = SpacedRepetitions(),
 ) : ComponentContext by context {
 
@@ -49,10 +52,14 @@ class NewRepetitionFlowComponent(
                         componentContext,
                         config.type,
                         errors,
-                        spacedRepetitions,
+                        SpacedRepetitions(
+                            FakeSpaceRepetitionsStrategy(
+                                duration = 10.toDuration(DurationUnit.SECONDS),
+                            ),
+                        ),
                         repetitionNotifications,
                         repository,
-                        hashAlgorithm,
+                        hashes,
                         close = {
                             stateNavigation.popWhile { it !is AddButton }
                         },

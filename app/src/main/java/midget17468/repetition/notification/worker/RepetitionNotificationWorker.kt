@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import midget17468.MemoApplication
 import midget17468.activity.dependent.DependentActivity
+import midget17468.hash.s.Hashes
 import midget17468.notification.s.AndroidNotifications
 import midget17468.notification.channel.config.RepetitionsChannelConfig
 import midget17468.notification.identity.RepetitionNotificationIdentity
@@ -105,11 +106,11 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
         return Result.success()
     }
 
-    private fun repetitionIntent(memoId: Int): Intent {
+    private fun repetitionIntent(repetitionId: Int): Intent {
         return DependentActivity.intent(
             applicationContext,
             RepetitionActivity::class,
-            RepetitionDeps(memoId)
+            RepetitionDeps(repetitionId)
         )
     }
 
@@ -120,6 +121,9 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
 
         override val db: RepetitionDb
             get() = MemoApplication.module.db
+
+        override val hashes: Hashes
+            get() = MemoApplication.module.hashes
 
         override val close: (Activity) -> () -> Unit
             get() = { activity ->

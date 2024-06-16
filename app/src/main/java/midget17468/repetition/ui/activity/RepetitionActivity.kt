@@ -14,16 +14,18 @@ import com.arkivanov.essenty.instancekeeper.getOrCreate
 import midget17468.MemoApplication
 import midget17468.activity.dependent.DependentActivity
 import midget17468.computable.Computable
-import midget17468.repetition.ui.composable.RepetitionScreen
-import midget17468.repetition.ui.component.RepetitionComponent
+import midget17468.hash.s.Hashes
 import midget17468.notification.channel.config.RepetitionsChannelConfig
-import midget17468.repetition.ui.composable.theme.PasssTheme
 import midget17468.permission.notification.notificationPermission
 import midget17468.repetition.R
 import midget17468.repetition.RepetitionDb
+import midget17468.repetition.matching.RepetitionDataMatching
 import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
 import midget17468.repetition.notification.s.AndroidRepetitionNotifications
 import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
+import midget17468.repetition.ui.component.RepetitionComponent
+import midget17468.repetition.ui.composable.RepetitionScreen
+import midget17468.repetition.ui.composable.theme.PasssTheme
 import midget17468.string.computable.ResString
 
 class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
@@ -33,6 +35,8 @@ class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
         val repetitionId: Int
 
         val db: RepetitionDb
+
+        val hashes: Hashes
 
         val close: (Activity) -> (() -> Unit)
     }
@@ -73,6 +77,7 @@ class RepetitionActivity : DependentActivity<RepetitionActivity.Deps>() {
                 Errors(resources),
                 appModule.spacedRepetitions,
                 close = deps.close(this),
+                dataMatching = RepetitionDataMatching(deps.hashes),
             )
 
         setContent {

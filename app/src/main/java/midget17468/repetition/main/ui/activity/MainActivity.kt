@@ -12,9 +12,10 @@ import com.arkivanov.decompose.defaultComponentContext
 import kotlinx.parcelize.Parcelize
 import midget17468.MemoApplication
 import midget17468.activity.dependent.DependentActivity
-import midget17468.hash.algorithm.HashAlgorithm
+import midget17468.hash.s.Hashes
+import midget17468.hash.s.repository.AndroidHashesRepository
+import midget17468.hash.salt.hashSaltDataStore
 import midget17468.notification.channel.config.RepetitionsChannelConfig
-import midget17468.repetition.ui.composable.theme.PasssTheme
 import midget17468.permission.notification.notificationPermission
 import midget17468.repetition.RepetitionDb
 import midget17468.repetition.main.ui.component.MainComponent
@@ -22,6 +23,7 @@ import midget17468.repetition.main.ui.composable.MainScreen
 import midget17468.repetition.new.error.AndroidNewRepetitionValidationErrors
 import midget17468.repetition.notification.s.AndroidRepetitionNotifications
 import midget17468.repetition.ui.activity.RepetitionActivity
+import midget17468.repetition.ui.composable.theme.PasssTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -51,7 +53,9 @@ class MainActivity : ComponentActivity() {
                         .notificationsFactory(notificationPermission)
                         .create(RepetitionsChannelConfig(this)),
                 ),
-                HashAlgorithm.Simple,
+                Hashes(
+                    AndroidHashesRepository(hashSaltDataStore),
+                ),
                 repeat = { memoId ->
                     startActivity(
                         DependentActivity.intent(
@@ -88,6 +92,9 @@ class MainActivity : ComponentActivity() {
 
         override val db: RepetitionDb
             get() = MemoApplication.module.db
+
+        override val hashes: Hashes
+            get() = MemoApplication.module.hashes
 
         override val close: (Activity) -> (() -> Unit)
             get() = { activity ->
