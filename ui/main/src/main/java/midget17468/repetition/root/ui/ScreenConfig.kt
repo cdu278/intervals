@@ -11,6 +11,6 @@ sealed interface ScreenConfig : Parcelable {
 
     @Parcelize
     data class Repetition(
-        val id: Int
+        val id: Long
     ) : ScreenConfig
 }

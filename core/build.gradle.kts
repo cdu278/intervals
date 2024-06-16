@@ -2,7 +2,6 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("app.cash.sqldelight")
 }
 
 java {
@@ -14,14 +13,6 @@ kotlin {
     jvmToolchain(17)
 }
 
-sqldelight {
-    databases {
-        create("RepetitionDb") {
-            packageName.set("midget17468.repetition")
-        }
-    }
-}
-
 dependencies {
     implementation(project(":foundation"))
 
@@ -30,10 +21,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:${rootProject.extra["serializationVersion"]}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
-
-    val sqldelightVersion = rootProject.extra["sqldelightVersion"]
-    implementation("app.cash.sqldelight:coroutines-extensions:$sqldelightVersion")
-    implementation("app.cash.sqldelight:primitive-adapters:$sqldelightVersion")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
 }

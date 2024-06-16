@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":foundation"))
     implementation(project(":android-foundation"))
     implementation(project(":core"))
+    implementation(project(":data:core"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
@@ -63,4 +64,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
+
+    implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
 }

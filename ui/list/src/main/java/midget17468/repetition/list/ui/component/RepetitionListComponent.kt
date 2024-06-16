@@ -23,7 +23,7 @@ class RepetitionListComponent internal constructor(
     context: ComponentContext,
     private val repository: RepetitionsRepository,
     private val repetitionNotifications: RepetitionsNotifications,
-    private val repeat: (repetitionId: Int) -> Unit,
+    private val repeat: (repetitionId: Long) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping,
     private val currentTime: () -> LocalDateTime,
 ) : ComponentContext by context {
@@ -32,7 +32,7 @@ class RepetitionListComponent internal constructor(
         context: ComponentContext,
         repository: RepetitionsRepository,
         repetitionNotifications: RepetitionsNotifications,
-        repeat: (repetitionId: Int) -> Unit,
+        repeat: (repetitionId: Long) -> Unit,
     ) : this(
         context,
         repository,
@@ -90,7 +90,7 @@ class RepetitionListComponent internal constructor(
                 }
         }
 
-    private fun toggleExpanded(id: Int) {
+    private fun toggleExpanded(id: Long) {
         state.update {
             it.copy(
                 idOfExpanded = if (id == it.idOfExpanded) {
@@ -102,7 +102,7 @@ class RepetitionListComponent internal constructor(
         }
     }
 
-    private fun delete(id: Int) {
+    private fun delete(id: Long) {
         coroutineScope.launch {
             repository
                 .repetitionRepository(id)

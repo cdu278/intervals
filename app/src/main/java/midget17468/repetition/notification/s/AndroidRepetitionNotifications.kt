@@ -32,9 +32,9 @@ class AndroidRepetitionNotifications(
         timeZone = { TimeZone.currentSystemDefault() },
     )
 
-    private fun workName(id: Int): String = "repetitionNotification(repetitionId=$id)"
+    private fun workName(id: Long): String = "repetitionNotification(repetitionId=$id)"
 
-    override suspend fun schedule(repetitionId: Int, date: LocalDateTime) {
+    override suspend fun schedule(repetitionId: Long, date: LocalDateTime) {
         if (notifications.permission.isGranted()) {
             val delay = date.toInstant(timeZone()) - clock.now()
             workManager.enqueueUniqueWork(
@@ -43,7 +43,7 @@ class AndroidRepetitionNotifications(
                 OneTimeWorkRequest.Builder(RepetitionNotificationWorker::class.java)
                     .setInputData(
                         Data.Builder()
-                            .putInt(KEY_REPETITION_ID, repetitionId)
+                            .putLong(KEY_REPETITION_ID, repetitionId)
                             .build()
                     )
                     .setInitialDelay(delay.toJavaDuration())
@@ -52,7 +52,7 @@ class AndroidRepetitionNotifications(
         }
     }
 
-    override suspend fun remove(repetitionId: Int) {
+    override suspend fun remove(repetitionId: Long) {
         workManager.cancelUniqueWork(workName(repetitionId))
         notifications.cancel(RepetitionNotificationIdentity(repetitionId))
     }

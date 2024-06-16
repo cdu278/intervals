@@ -39,24 +39,13 @@ class AndroidNotifications(
             val notification =
                 config(NotificationCompat.Builder(context, channelConfig.id))
                     .build()
-            with(identity) { notificationManager.notify(tag, id, notification) }
+            with(identity) { notificationManager.notify(tag, id.toInt(), notification) }
         }
     }
 
     suspend fun cancel(identity: NotificationIdentity) {
         if (permission.isGranted()) {
-            with(identity) { notificationManager.cancel(tag, id) }
-        }
-    }
-
-    class Factory(
-        private val context: Context,
-        private val notificationManager: NotificationManagerCompat,
-        private val permission: Permission,
-    ) {
-
-        fun create(config: NotificationChannelConfig): AndroidNotifications {
-            return AndroidNotifications(context, notificationManager, permission, config)
+            with(identity) { notificationManager.cancel(tag, id.toInt()) }
         }
     }
 }

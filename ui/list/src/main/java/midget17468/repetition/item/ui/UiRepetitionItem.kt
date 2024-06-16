@@ -6,7 +6,7 @@ import midget17468.repetition.next.NextRepetitionDate
 import midget17468.ui.action.UiAction
 
 internal data class UiRepetitionItem(
-    val id: Int,
+    val id: Long,
     val info: Info,
     val state: State,
     val repeat: UiAction,

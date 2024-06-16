@@ -10,6 +10,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import cdu278.intervals.repetition.notification.repository.RoomRepetitionNotificationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,7 +27,6 @@ import midget17468.permission.InstallTimePermission
 import midget17468.repetition.Repetition
 import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.main.ui.activity.MainActivity
-import midget17468.repetition.notification.repository.RepetitionNotificationRepository
 import midget17468.repetition.root.ui.ScreenConfig
 import midget17468.memo.android_foundation.R as FoundationR
 
@@ -61,7 +61,7 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
 
     @SuppressLint("MissingPermission")
     override fun doWork(): Result {
-        val repetitionId = inputData.getInt(KEY_REPETITION_ID, -1)
+        val repetitionId = inputData.getLong(KEY_REPETITION_ID, -1)
 
         val notifications =
             AndroidNotifications(
@@ -77,7 +77,7 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
                 channelConfig = RepetitionsChannelConfig(applicationContext),
             )
 
-        val repository = RepetitionNotificationRepository(module.db.repetitionQueries)
+        val repository = RoomRepetitionNotificationRepository(module.db.repetitionNotificationDao)
 
         val coroutineScope = CoroutineScope(Job() + Dispatchers.Main.immediate)
 
@@ -103,7 +103,7 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
         return Result.success()
     }
 
-    private fun repetitionIntent(repetitionId: Int): Intent {
+    private fun repetitionIntent(repetitionId: Long): Intent {
         return DependentActivity.intent(
             applicationContext,
             MainActivity::class,

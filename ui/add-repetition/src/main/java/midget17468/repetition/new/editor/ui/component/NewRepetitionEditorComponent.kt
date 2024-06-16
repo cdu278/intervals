@@ -113,15 +113,15 @@ class NewRepetitionEditorComponent<Errors>(
                 repository.create(
                     Repetition(
                         id = 0,
-                        type,
                         input.label,
-                        repetitionData = when (type) {
+                        type,
+                        data = when (type) {
                             Password ->
                                 RepetitionData.Hashed(
                                     hash = hashes.of(data),
                                 )
                         },
-                        repetitionState = RepetitionState.Repetition(
+                        state = RepetitionState.Repetition(
                             date = nextRepetition,
                             stage,
                             hintShown = false,

@@ -9,11 +9,11 @@ interface RepetitionsRepository {
 
     val itemsFlow: Flow<List<RepetitionItem>>
 
-    suspend fun create(repetition: Repetition): Int
+    suspend fun create(repetition: Repetition): Long
 
-    suspend fun findById(id: Int): Repetition
+    suspend fun findById(id: Long): Repetition
 
-    fun flowById(id: Int): Flow<Repetition>
+    fun flowById(id: Long): Flow<Repetition>
 
-    fun repetitionRepository(id: Int): RepetitionRepository
+    fun repetitionRepository(id: Long): RepetitionRepository
 }

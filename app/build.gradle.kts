@@ -53,6 +53,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":ui:core"))
+    implementation(project(":data:core"))
     implementation(project(":foundation"))
     implementation(project(":android-foundation"))
     implementation(project(":ui:main"))
@@ -82,9 +84,9 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:${rootProject.extra["workmanagerVersion"]}")
 
-    implementation("app.cash.sqldelight:android-driver:${rootProject.extra["sqldelightVersion"]}")
-
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:${rootProject.extra["serializationVersion"]}")
 
     implementation("androidx.datastore:datastore:${rootProject.extra["dataStoreVersion"]}")
+
+    implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
 }

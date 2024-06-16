@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDateTime
 
 interface RepetitionsNotifications {
 
-    suspend fun schedule(repetitionId: Int, date: LocalDateTime)
+    suspend fun schedule(repetitionId: Long, date: LocalDateTime)
 
-    suspend fun remove(repetitionId: Int)
+    suspend fun remove(repetitionId: Long)
 }

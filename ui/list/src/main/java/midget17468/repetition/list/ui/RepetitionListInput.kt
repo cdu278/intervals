@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RepetitionListInput(
-    val idOfExpanded: Int? = null,
+    val idOfExpanded: Long? = null,
 )

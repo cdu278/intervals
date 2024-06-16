@@ -33,11 +33,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
+    implementation(project(":foundation"))
+    implementation(project(":data:core"))
+
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
     implementation("androidx.appcompat:appcompat:${rootProject.extra["appcompatVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
-    implementation(project(":core"))
-    implementation(project(":foundation"))
 }

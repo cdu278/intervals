@@ -1,5 +1,6 @@
 package midget17468.repetition.ui.component
 
+import cdu278.intervals.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnStart
@@ -31,7 +32,7 @@ import midget17468.repetition.ui.UiRepetition.State as UiState
 
 class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     componentContext: IntervalsComponentContext,
-    private val repetitionId: Int,
+    private val repetitionId: Long,
     private val errors: Errors,
     private val dataMatching: RepetitionDataMatching,
     private val close: () -> Unit,
@@ -42,7 +43,12 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     private val repetitionsRepository: RepetitionsRepository =
         instanceKeeper.getOrCreate {
             RepetitionsRepositoryInstance(
-                db.repetitionQueries,
+                repository = {
+                    RoomRepetitionsRepository(
+                        db.repetitionsDao,
+                        db.repetitionDao,
+                    )
+                },
             )
         }
 
@@ -81,24 +87,24 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
-            repetitionsRepository.flowById(repetitionId).map { memo ->
+            repetitionsRepository.flowById(repetitionId).map { repetition ->
                 Loadable.Loaded(
                     UiRepetition(
-                        memo.type,
-                        memo.label,
+                        repetition.type,
+                        repetition.label,
                         state = when (input) {
                             is RepetitionInput.Forgotten ->
                                 UiState.Forgotten
                             is CheckingInput -> {
                                 val hintState =
-                                    memo.hint?.let { hint ->
+                                    repetition.hint?.let { hint ->
                                         if (input.hintShown) {
                                             HintState.Shown(hint)
                                         } else {
                                             HintState.Hidden
                                         }
                                     }
-                                when (val state = memo.repetitionState) {
+                                when (val state = repetition.state) {
                                     is RepetitionState.Repetition ->
                                         if (currentTime() >= state.date) {
                                             UiState.Checking(
@@ -132,7 +138,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     fun showHint() {
         coroutineScope.launch {
-            repository.updateState { it.repetitionState.withHintShown(true) }
+            repository.updateState { it.state.withHintShown(true) }
             state
                 .subtype(RepetitionInput.Checking::class)
                 .update { it.copy(hintShown = true) }
@@ -143,9 +149,9 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
         coroutineScope.launch {
             val data = (state.value as CheckingInput).data
             val repetition = repetitionsRepository.findById(repetitionId)
-            if (with(dataMatching) { repetition.repetitionData matches data }) {
+            if (with(dataMatching) { repetition.data matches data }) {
                 val nextStage =
-                    when (val state = repetition.repetitionState) {
+                    when (val state = repetition.state) {
                         is RepetitionState.Repetition ->
                             if (state.hintShown) {
                                 state.stage
