@@ -21,9 +21,6 @@ import midget17468.repetition.new.flow.ui.UiNewRepetitionFlowState
 import midget17468.repetition.notification.s.RepetitionsNotifications
 import midget17468.repetition.s.repository.RepetitionsRepository
 import midget17468.repetition.spaced.SpacedRepetitions
-import midget17468.repetition.spaced.strategy.FakeSpaceRepetitionsStrategy
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class NewRepetitionFlowComponent(
     context: ComponentContext,
@@ -31,7 +28,7 @@ class NewRepetitionFlowComponent(
     private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
     private val hashes: Hashes,
-    private val spacedRepetitions: SpacedRepetitions = SpacedRepetitions(),
+    private val spacedRepetitions: SpacedRepetitions,
 ) : ComponentContext by context {
 
     private val stateNavigation = StackNavigation<NewRepetitionFlowStateConfig>()
@@ -52,11 +49,7 @@ class NewRepetitionFlowComponent(
                         componentContext,
                         config.type,
                         errors,
-                        SpacedRepetitions(
-                            FakeSpaceRepetitionsStrategy(
-                                duration = 10.toDuration(DurationUnit.SECONDS),
-                            ),
-                        ),
+                        spacedRepetitions,
                         repetitionNotifications,
                         repository,
                         hashes,

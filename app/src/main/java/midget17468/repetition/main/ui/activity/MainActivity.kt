@@ -24,10 +24,7 @@ import midget17468.repetition.root.ui.ScreenConfig
 import midget17468.repetition.root.ui.component.RootComponent
 import midget17468.repetition.root.ui.composable.Root
 import midget17468.repetition.spaced.SpacedRepetitions
-import midget17468.repetition.spaced.strategy.FakeSpaceRepetitionsStrategy
 import midget17468.repetition.ui.composable.theme.PasssTheme
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
 
@@ -65,11 +62,7 @@ class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
                             hashSaltDataStore,
                         ),
                     ),
-                    SpacedRepetitions(
-                        FakeSpaceRepetitionsStrategy(
-                            duration = 10.toDuration(DurationUnit.SECONDS)
-                        )
-                    ),
+                    SpacedRepetitions(),
                     AndroidRepetitionNotifications(
                         context = this,
                         AndroidNotifications(
