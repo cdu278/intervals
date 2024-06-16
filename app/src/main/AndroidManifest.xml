@@ -26,9 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-                android:name="midget17468.repetition.ui.activity.RepetitionActivity"
-                android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

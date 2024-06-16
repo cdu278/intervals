@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":ui:list"))
     implementation(project(":ui:add-repetition"))
+    implementation(project(":ui:repetition"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
@@ -57,6 +58,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation(project(":ui:core"))
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

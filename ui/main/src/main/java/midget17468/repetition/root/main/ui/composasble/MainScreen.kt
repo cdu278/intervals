@@ -1,4 +1,4 @@
-package midget17468.repetition.main.ui.composable
+package midget17468.repetition.root.main.ui.composasble
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import midget17468.ui.composable.defaultMargin
 import midget17468.repetition.list.ui.composable.RepetitionList
-import midget17468.repetition.main.ui.component.MainComponent
+import midget17468.repetition.root.main.ui.component.MainComponent
 import midget17468.repetition.new.flow.ui.composable.NewRepetitionFlow
 
 @Composable

@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.extra["lifecycleVersion"]}")
+    implementation(project(":ui:core"))
 
     val activityVersion = rootProject.extra["activityVersion"]
     implementation("androidx.activity:activity-compose:$activityVersion")

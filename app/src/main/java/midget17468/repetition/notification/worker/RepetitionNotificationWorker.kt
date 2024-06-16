@@ -2,7 +2,6 @@ package midget17468.repetition.notification.worker
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -18,19 +17,17 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import midget17468.MemoApplication
 import midget17468.activity.dependent.DependentActivity
-import midget17468.hash.s.Hashes
-import midget17468.notification.s.AndroidNotifications
 import midget17468.notification.channel.config.RepetitionsChannelConfig
 import midget17468.notification.identity.RepetitionNotificationIdentity
+import midget17468.notification.s.AndroidNotifications
 import midget17468.passs.R
 import midget17468.permission.ContextRuntimePermission
 import midget17468.permission.InstallTimePermission
 import midget17468.repetition.Repetition
-import midget17468.repetition.RepetitionDb
-import midget17468.repetition.notification.repository.RepetitionNotificationRepository
 import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.main.ui.activity.MainActivity
-import midget17468.repetition.ui.activity.RepetitionActivity
+import midget17468.repetition.notification.repository.RepetitionNotificationRepository
+import midget17468.repetition.root.ui.ScreenConfig
 import midget17468.memo.android_foundation.R as FoundationR
 
 class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
@@ -109,30 +106,18 @@ class RepetitionNotificationWorker(context: Context, params: WorkerParameters) :
     private fun repetitionIntent(repetitionId: Int): Intent {
         return DependentActivity.intent(
             applicationContext,
-            RepetitionActivity::class,
-            RepetitionDeps(repetitionId)
+            MainActivity::class,
+            MainDeps(
+                initialStack = listOf(
+                    ScreenConfig.Main,
+                    ScreenConfig.Repetition(repetitionId)
+                )
+            )
         )
     }
 
     @Parcelize
-    private class RepetitionDeps(
-        override val repetitionId: Int
-    ) : RepetitionActivity.Deps {
-
-        override val db: RepetitionDb
-            get() = MemoApplication.module.db
-
-        override val hashes: Hashes
-            get() = MemoApplication.module.hashes
-
-        override val close: (Activity) -> () -> Unit
-            get() = { activity ->
-                {
-                    if (MainActivity.instance == null) {
-                        activity.startActivity(Intent(activity, MainActivity::class.java))
-                    }
-                    activity.finish()
-                }
-            }
-    }
+    private class MainDeps(
+        override val initialStack: List<ScreenConfig>
+    ) : MainActivity.Deps
 }

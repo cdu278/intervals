@@ -1,13 +1,13 @@
 package midget17468.repetition.main.ui.activity
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.os.Parcelable
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import kotlinx.parcelize.Parcelize
 import midget17468.MemoApplication
@@ -16,16 +16,29 @@ import midget17468.hash.s.Hashes
 import midget17468.hash.s.repository.AndroidHashesRepository
 import midget17468.hash.salt.hashSaltDataStore
 import midget17468.notification.channel.config.RepetitionsChannelConfig
+import midget17468.notification.s.AndroidNotifications
 import midget17468.permission.notification.notificationPermission
-import midget17468.repetition.RepetitionDb
-import midget17468.repetition.main.ui.component.MainComponent
-import midget17468.repetition.main.ui.composable.MainScreen
 import midget17468.repetition.new.error.AndroidNewRepetitionValidationErrors
 import midget17468.repetition.notification.s.AndroidRepetitionNotifications
-import midget17468.repetition.ui.activity.RepetitionActivity
+import midget17468.repetition.root.ui.ScreenConfig
+import midget17468.repetition.root.ui.component.RootComponent
+import midget17468.repetition.root.ui.composable.Root
+import midget17468.repetition.spaced.SpacedRepetitions
+import midget17468.repetition.spaced.strategy.FakeSpaceRepetitionsStrategy
 import midget17468.repetition.ui.composable.theme.PasssTheme
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
-class MainActivity : ComponentActivity() {
+class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
+
+    interface Deps : Parcelable {
+
+        val initialStack: List<ScreenConfig>
+            get() = listOf(ScreenConfig.Main)
+
+        @Parcelize
+        class Default : Deps
+    }
 
     companion object {
 
@@ -43,29 +56,31 @@ class MainActivity : ComponentActivity() {
         val appModule = MemoApplication.module
 
         val component =
-            MainComponent(
-                defaultComponentContext(),
-                appModule.db,
-                AndroidNewRepetitionValidationErrors(resources),
-                AndroidRepetitionNotifications(
-                    context = this,
-                    appModule
-                        .notificationsFactory(notificationPermission)
-                        .create(RepetitionsChannelConfig(this)),
-                ),
-                Hashes(
-                    AndroidHashesRepository(hashSaltDataStore),
-                ),
-                repeat = { memoId ->
-                    startActivity(
-                        DependentActivity.intent(
-                            this,
-                            RepetitionActivity::class,
-                            RepetitionDeps(memoId)
+            RootComponent(
+                IntervalsComponentContext(
+                    defaultComponentContext(),
+                    appModule.db,
+                    Hashes(
+                        AndroidHashesRepository(
+                            hashSaltDataStore,
+                        ),
+                    ),
+                    SpacedRepetitions(
+                        FakeSpaceRepetitionsStrategy(
+                            duration = 10.toDuration(DurationUnit.SECONDS)
                         )
-                    )
-                },
-                appModule.spacedRepetitions,
+                    ),
+                    AndroidRepetitionNotifications(
+                        context = this,
+                        AndroidNotifications(
+                            context = this,
+                            notificationPermission,
+                            channelConfig = RepetitionsChannelConfig(context = this),
+                        ),
+                    ),
+                ),
+                errors = AndroidNewRepetitionValidationErrors(resources),
+                initialStack = { deps.initialStack },
             )
 
         setContent {
@@ -74,7 +89,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    MainScreen(component)
+                    Root(component)
                 }
             }
         }
@@ -83,22 +98,5 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         instance = null
-    }
-
-    @Parcelize
-    private class RepetitionDeps(
-        override val repetitionId: Int,
-    ) : RepetitionActivity.Deps {
-
-        override val db: RepetitionDb
-            get() = MemoApplication.module.db
-
-        override val hashes: Hashes
-            get() = MemoApplication.module.hashes
-
-        override val close: (Activity) -> (() -> Unit)
-            get() = { activity ->
-                { activity.finish() }
-            }
     }
 }

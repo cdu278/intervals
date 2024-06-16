@@ -7,7 +7,9 @@ import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import kotlin.reflect.KClass
 
-abstract class DependentActivity<Deps : Parcelable> : ComponentActivity() {
+abstract class DependentActivity<Deps : Parcelable>(
+    private val defaultDeps: (() -> Deps)? = null,
+) : ComponentActivity() {
 
     companion object {
 
@@ -32,6 +34,8 @@ abstract class DependentActivity<Deps : Parcelable> : ComponentActivity() {
         deps =
             intent
                 .getParcelableExtra(DEPS_KEY)
-                ?: error("No deps passed")
+                ?: defaultDeps
+                    ?.invoke()
+                        ?: error("No deps passed")
     }
 }

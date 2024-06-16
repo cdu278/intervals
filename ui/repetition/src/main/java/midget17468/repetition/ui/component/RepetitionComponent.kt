@@ -1,6 +1,7 @@
 package midget17468.repetition.ui.component
 
-import com.arkivanov.decompose.ComponentContext
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnStart
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -12,35 +13,38 @@ import midget17468.decompose.context.coroutineScope
 import midget17468.loadable.ui.Loadable
 import midget17468.repetition.RepetitionState
 import midget17468.repetition.matching.RepetitionDataMatching
+import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
+import midget17468.repetition.next.mapping.NextRepetitionDateMapping
+import midget17468.repetition.s.repository.RepetitionsRepository
+import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
+import midget17468.repetition.stage.RepetitionStage
+import midget17468.repetition.ui.RepetitionInput
+import midget17468.repetition.ui.UiRepetition
+import midget17468.repetition.ui.UiRepetition.State.Checking.HintState
 import midget17468.state.State
 import midget17468.state.prop
 import midget17468.state.subtype
-import midget17468.repetition.ui.RepetitionInput
-import midget17468.repetition.spaced.SpacedRepetitions
-import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
-import midget17468.repetition.next.mapping.NextRepetitionDateMapping
-import midget17468.repetition.notification.s.RepetitionsNotifications
-import midget17468.repetition.s.repository.RepetitionsRepository
-import midget17468.repetition.stage.RepetitionStage
-import midget17468.repetition.ui.UiRepetition
-import midget17468.repetition.ui.UiRepetition.State.Checking.HintState
 import midget17468.ui.input.UiInput
 import midget17468.ui.input.change.ChangeInput
 import midget17468.repetition.ui.RepetitionInput.Checking as CheckingInput
 import midget17468.repetition.ui.UiRepetition.State as UiState
 
 class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
-    componentContext: ComponentContext,
+    componentContext: IntervalsComponentContext,
     private val repetitionId: Int,
-    private val repetitionsRepository: RepetitionsRepository,
-    private val repetitionNotifications: RepetitionsNotifications,
     private val errors: Errors,
-    private val spacedRepetitions: SpacedRepetitions = SpacedRepetitions(),
+    private val dataMatching: RepetitionDataMatching,
+    private val close: () -> Unit,
     private val currentTime: () -> LocalDateTime = { Clock.System.currentTime() },
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
-    private val close: () -> Unit,
-    private val dataMatching: RepetitionDataMatching,
-) : ComponentContext by componentContext {
+) : IntervalsComponentContext by componentContext {
+
+    private val repetitionsRepository: RepetitionsRepository =
+        instanceKeeper.getOrCreate {
+            RepetitionsRepositoryInstance(
+                db.repetitionQueries,
+            )
+        }
 
     private val repository
         get() = repetitionsRepository.repetitionRepository(repetitionId)

@@ -1,29 +1,21 @@
-package midget17468.repetition.main.ui.component
+package midget17468.repetition.root.main.ui.component
 
-import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.getOrCreateSimple
 import com.arkivanov.essenty.lifecycle.doOnResume
-import midget17468.hash.s.Hashes
-import midget17468.repetition.spaced.SpacedRepetitions
-import midget17468.repetition.RepetitionDb
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import midget17468.repetition.list.ui.component.RepetitionListComponent
 import midget17468.repetition.new.error.NewRepetitionValidationErrors
 import midget17468.repetition.new.flow.ui.component.NewRepetitionFlowComponent
-import midget17468.repetition.notification.s.RepetitionsNotifications
 import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
 import midget17468.updates.Updates
 
 class MainComponent(
-    context: ComponentContext,
-    db: RepetitionDb,
+    context: IntervalsComponentContext,
     errors: NewRepetitionValidationErrors,
-    repetitionNotifications: RepetitionsNotifications,
-    hashes: Hashes,
     repeat: (repetitionId: Int) -> Unit,
-    spacedRepetitions: SpacedRepetitions,
-) : ComponentContext by context {
+) : IntervalsComponentContext by context {
 
     private val updates =
         instanceKeeper.getOrCreateSimple("repositoryUpdates") { Updates() }
