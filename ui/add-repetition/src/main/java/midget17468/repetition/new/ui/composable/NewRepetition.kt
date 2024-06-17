@@ -94,11 +94,19 @@ fun NewRepetition(
 
             Button(
                 onClick = { component.save() },
-                enabled = model.error == null,
+                enabled = model.error == null && !model.saving,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(stringResource(FoundationR.string.save))
+                Text(
+                    text = stringResource(
+                        id = if (model.saving) {
+                            FoundationR.string.saving
+                        } else {
+                            FoundationR.string.save
+                        }
+                    )
+                )
             }
         }
     }

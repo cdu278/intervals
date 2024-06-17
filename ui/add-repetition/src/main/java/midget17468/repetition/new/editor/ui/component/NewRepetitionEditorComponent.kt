@@ -3,18 +3,19 @@ package midget17468.repetition.new.editor.ui.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import midget17468.decompose.context.coroutineScope
 import midget17468.decompose.instance.retainedCoroutineScope
 import midget17468.hash.s.Hashes
-import midget17468.state.State
-import midget17468.state.prop
-import midget17468.repetition.spaced.SpacedRepetitions
 import midget17468.repetition.Repetition
 import midget17468.repetition.RepetitionData
+import midget17468.repetition.RepetitionState
+import midget17468.repetition.RepetitionType
+import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.new.data.ui.UiNewRepetitionData
 import midget17468.repetition.new.data.ui.component.NewPasswordDataComponent
 import midget17468.repetition.new.error.owner.EmptyLabelErrorOwner
@@ -22,12 +23,12 @@ import midget17468.repetition.new.error.owner.EmptyPasswordErrorOwner
 import midget17468.repetition.new.error.owner.PasswordsDontMatchErrorOwner
 import midget17468.repetition.new.ui.NewRepetitionInput
 import midget17468.repetition.new.ui.UiNewRepetition
-import midget17468.repetition.stage.RepetitionStage
-import midget17468.repetition.RepetitionState
-import midget17468.repetition.RepetitionType
-import midget17468.repetition.RepetitionType.Password
 import midget17468.repetition.notification.s.RepetitionsNotifications
 import midget17468.repetition.s.repository.RepetitionsRepository
+import midget17468.repetition.spaced.SpacedRepetitions
+import midget17468.repetition.stage.RepetitionStage
+import midget17468.state.State
+import midget17468.state.prop
 import midget17468.ui.input.UiInput
 import midget17468.ui.input.change.ChangeInput
 import midget17468.ui.input.validated.Validated.Invalid
@@ -73,6 +74,10 @@ class NewRepetitionEditorComponent<Errors>(
         }
     }
 
+    private val _savingFlow = MutableStateFlow(false)
+    private val savingFlow
+        get() = _savingFlow
+
     val uiModelFlow: StateFlow<UiNewRepetition> =
         input.handle(
             coroutineScope(),
@@ -82,11 +87,15 @@ class NewRepetitionEditorComponent<Errors>(
                 data = dataUiModel,
             ),
         ) { input ->
-            dataUiModel.component.dataFlow.map { data ->
+            combine(
+                dataUiModel.component.dataFlow,
+                savingFlow
+            ) { data, saving ->
                 UiNewRepetition(
                     label = UiInput(value = input.label, changeLabel),
                     hint = UiInput(value = input.hint, changeHint),
                     data = dataUiModel,
+                    saving = saving,
                     error = if (input.label.isBlank()) {
                         errors.emptyLabel()
                     } else {
@@ -105,6 +114,8 @@ class NewRepetitionEditorComponent<Errors>(
 
     fun save() {
         retainedCoroutineScope.launch {
+            _savingFlow.value = true
+
             val input = input.value
             val data = (dataUiModel.component.dataFlow.value as Valid<String>).value
             val stage = RepetitionStage.Initial
@@ -129,6 +140,7 @@ class NewRepetitionEditorComponent<Errors>(
 
             repetitionNotifications.schedule(id, date = nextRepetition)
 
+            _savingFlow.value = false
             withContext(Dispatchers.Main.immediate) { close() }
         }
     }

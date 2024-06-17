@@ -7,5 +7,6 @@ data class UiNewRepetition(
     val label: UiInput<String>,
     val data: UiNewRepetitionData,
     val hint: UiInput<String>,
+    val saving: Boolean = false,
     val error: String? = null,
 )
