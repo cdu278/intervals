@@ -4,6 +4,6 @@
     <string name="repetitionScheduledAtFmt">The next repetition is scheduled for %s</string>
     <string name="repetition_emptyPassword">Please enter password</string>
     <string name="repetition_iForgot">I forgot</string>
-    <string name="repetition_markedAsForgottent">This information\'s marked as forgottent. You may still return to it from the main menu</string>
+    <string name="repetition_markedAsForgotten">This information\'s marked as forgottent. You may still return to it from the main menu</string>
     <string name="repetition_showHint">Show hint</string>
 </resources>
