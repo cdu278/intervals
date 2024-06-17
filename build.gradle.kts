@@ -23,6 +23,5 @@ buildscript {
         set("serializationVersion", "1.6.3")
         set("workmanagerVersion", "2.9.0")
         set("roomVersion", "2.6.1")
-        set("dataStoreVersion", "1.1.1")
     }
 }

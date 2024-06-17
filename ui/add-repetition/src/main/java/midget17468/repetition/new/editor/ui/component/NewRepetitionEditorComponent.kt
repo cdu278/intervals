@@ -116,10 +116,7 @@ class NewRepetitionEditorComponent<Errors>(
                         input.label,
                         type,
                         data = when (type) {
-                            Password ->
-                                RepetitionData.Hashed(
-                                    hash = hashes.of(data),
-                                )
+                            Password -> RepetitionData.Hashed(hashes.of(data))
                         },
                         state = RepetitionState.Repetition(
                             date = nextRepetition,

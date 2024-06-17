@@ -86,7 +86,5 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:${rootProject.extra["serializationVersion"]}")
 
-    implementation("androidx.datastore:datastore:${rootProject.extra["dataStoreVersion"]}")
-
     implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
 }

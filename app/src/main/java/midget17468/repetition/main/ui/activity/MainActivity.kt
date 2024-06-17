@@ -13,8 +13,6 @@ import kotlinx.parcelize.Parcelize
 import midget17468.MemoApplication
 import midget17468.activity.dependent.DependentActivity
 import midget17468.hash.s.Hashes
-import midget17468.hash.s.repository.AndroidHashesRepository
-import midget17468.hash.salt.hashSaltDataStore
 import midget17468.notification.channel.config.RepetitionsChannelConfig
 import midget17468.notification.s.AndroidNotifications
 import midget17468.permission.notification.notificationPermission
@@ -24,10 +22,7 @@ import midget17468.repetition.root.ui.ScreenConfig
 import midget17468.repetition.root.ui.component.RootComponent
 import midget17468.repetition.root.ui.composable.Root
 import midget17468.repetition.spaced.SpacedRepetitions
-import midget17468.repetition.spaced.strategy.FakeSpaceRepetitionsStrategy
 import midget17468.repetition.ui.composable.theme.PasssTheme
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
 
@@ -60,14 +55,8 @@ class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
                 IntervalsComponentContext(
                     defaultComponentContext(),
                     appModule.db,
-                    Hashes(
-                        AndroidHashesRepository(
-                            hashSaltDataStore,
-                        ),
-                    ),
-                    SpacedRepetitions(
-                        FakeSpaceRepetitionsStrategy(duration = 5.toDuration(DurationUnit.SECONDS))
-                    ),
+                    Hashes(),
+                    SpacedRepetitions(),
                     AndroidRepetitionNotifications(
                         context = this,
                         AndroidNotifications(
