@@ -2,5 +2,5 @@
 <resources>
     <string name="newRepetition_enterPassword">Enter password</string>
     <string name="newRepetition_enterPasswordConfirmation">Enter the password again</string>
-    <string name="newRepetition_title">New memo</string>
+    <string name="newRepetition_title">New repetition</string>
 </resources>
