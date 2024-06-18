@@ -6,12 +6,11 @@ import midget17468.hash.Hash
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-class Hashes {
+class Hashes(
+    private val base64: ByteArray.() -> String
+) {
 
-    @OptIn(ExperimentalEncodingApi::class)
     suspend fun of(data: String, salt: ByteArray): Hash {
         return withContext(Dispatchers.Default) {
             val password = data.toCharArray()
@@ -23,8 +22,8 @@ class Hashes {
                 .encoded
                 .let {
                     Hash(
-                        value = Base64.encode(it),
-                        salt = Base64.encode(salt),
+                        value = it.base64(),
+                        salt = salt.base64(),
                     )
                 }
         }

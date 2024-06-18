@@ -2,6 +2,7 @@ package midget17468.repetition.main.ui.activity
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Base64
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,9 @@ class MainActivity : DependentActivity<MainActivity.Deps>(Deps::Default) {
                 IntervalsComponentContext(
                     defaultComponentContext(),
                     appModule.db,
-                    Hashes(),
+                    Hashes(
+                        base64 = { String(Base64.encode(this, Base64.NO_WRAP)) },
+                    ),
                     SpacedRepetitions(),
                     AndroidRepetitionNotifications(
                         context = this,
