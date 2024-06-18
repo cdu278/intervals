@@ -18,6 +18,7 @@
         <activity
                 android:name="cdu278.repetition.main.ui.activity.MainActivity"
                 android:exported="true"
+                android:launchMode="singleTask"
                 android:theme="@style/Theme.Intervals">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -6,5 +6,5 @@ interface RepetitionsNotifications {
 
     suspend fun schedule(repetitionId: Long, date: LocalDateTime)
 
-    suspend fun remove(repetitionId: Long)
+    suspend fun remove()
 }

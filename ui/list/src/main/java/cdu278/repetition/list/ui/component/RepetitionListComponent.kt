@@ -1,42 +1,38 @@
 package cdu278.repetition.list.ui.component
 
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import cdu278.datetime.currentTime
 import cdu278.decompose.context.coroutineScope
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.loadable.ui.Loadable
-import cdu278.state.State
 import cdu278.repetition.RepetitionState.Forgotten
 import cdu278.repetition.RepetitionState.Repetition
 import cdu278.repetition.item.ui.UiRepetitionItem
 import cdu278.repetition.list.ui.RepetitionListInput
 import cdu278.repetition.next.mapping.NextRepetitionDateMapping
-import cdu278.repetition.notification.s.RepetitionsNotifications
 import cdu278.repetition.s.repository.RepetitionsRepository
+import cdu278.state.State
 import cdu278.ui.action.UiAction
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 
 class RepetitionListComponent internal constructor(
-    context: ComponentContext,
+    context: IntervalsComponentContext,
     private val repository: RepetitionsRepository,
-    private val repetitionNotifications: RepetitionsNotifications,
     private val repeat: (repetitionId: Long) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping,
     private val currentTime: () -> LocalDateTime,
-) : ComponentContext by context {
+) : IntervalsComponentContext by context {
 
     constructor(
-        context: ComponentContext,
+        context: IntervalsComponentContext,
         repository: RepetitionsRepository,
-        repetitionNotifications: RepetitionsNotifications,
         repeat: (repetitionId: Long) -> Unit,
     ) : this(
         context,
         repository,
-        repetitionNotifications,
         repeat,
         nextRepetitionDateMapping = NextRepetitionDateMapping(),
         currentTime = { Clock.System.currentTime() },
@@ -107,7 +103,6 @@ class RepetitionListComponent internal constructor(
             repository
                 .repetitionRepository(id)
                 .delete()
-            repetitionNotifications.remove(id)
         }
     }
 }

@@ -1,18 +1,16 @@
 package cdu278.repetition.notification.s
 
 import android.content.Context
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import cdu278.notification.identity.RepetitionsToPassNotificationIdentity
+import cdu278.notification.s.AndroidNotifications
+import cdu278.repetition.notification.worker.RepetitionNotificationWorker
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import cdu278.notification.s.AndroidNotifications
-import cdu278.notification.identity.RepetitionNotificationIdentity
-import cdu278.repetition.notification.worker.RepetitionNotificationWorker
-import cdu278.repetition.notification.worker.RepetitionNotificationWorker.Companion.KEY_REPETITION_ID
 import kotlin.time.toJavaDuration
 
 class AndroidRepetitionNotifications(
@@ -32,7 +30,7 @@ class AndroidRepetitionNotifications(
         timeZone = { TimeZone.currentSystemDefault() },
     )
 
-    private fun workName(id: Long): String = "repetitionNotification(repetitionId=$id)"
+    private fun workName(repetitionId: Long) = "repetitionNotification(id=$repetitionId)"
 
     override suspend fun schedule(repetitionId: Long, date: LocalDateTime) {
         if (notifications.permission.isGranted()) {
@@ -41,19 +39,13 @@ class AndroidRepetitionNotifications(
                 workName(repetitionId),
                 ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.Builder(RepetitionNotificationWorker::class.java)
-                    .setInputData(
-                        Data.Builder()
-                            .putLong(KEY_REPETITION_ID, repetitionId)
-                            .build()
-                    )
                     .setInitialDelay(delay.toJavaDuration())
                     .build()
             )
         }
     }
 
-    override suspend fun remove(repetitionId: Long) {
-        workManager.cancelUniqueWork(workName(repetitionId))
-        notifications.cancel(RepetitionNotificationIdentity(repetitionId))
+    override suspend fun remove() {
+        notifications.cancel(RepetitionsToPassNotificationIdentity)
     }
 }

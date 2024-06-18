@@ -1,17 +1,8 @@
 package cdu278.repetition.ui.component
 
-import cdu278.repetition.s.repository.RoomRepetitionsRepository
-import cdu278.intervals.ui.component.context.IntervalsComponentContext
-import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.doOnStart
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import cdu278.datetime.currentTime
 import cdu278.decompose.context.coroutineScope
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.loadable.ui.Loadable
 import cdu278.repetition.RepetitionState
 import cdu278.repetition.matching.RepetitionDataMatching
@@ -19,6 +10,7 @@ import cdu278.repetition.new.error.owner.EmptyPasswordErrorOwner
 import cdu278.repetition.next.mapping.NextRepetitionDateMapping
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.repetition.s.repository.RepetitionsRepositoryInstance
+import cdu278.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.repetition.stage.RepetitionStage
 import cdu278.repetition.ui.RepetitionInput
 import cdu278.repetition.ui.RepetitionInput.Forgotten
@@ -29,6 +21,13 @@ import cdu278.state.prop
 import cdu278.state.subtype
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import cdu278.repetition.ui.RepetitionInput.Checking as CheckingInput
 import cdu278.repetition.ui.UiRepetition.State as UiState
 
@@ -67,10 +66,6 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     init {
         stateKeeper.register("state", RepetitionInput.serializer()) { state.value }
-
-        doOnStart {
-            coroutineScope.launch { repetitionNotifications.remove(repetitionId) }
-        }
     }
 
     private val changeData

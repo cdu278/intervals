@@ -2,7 +2,7 @@ package cdu278.repetition.root.main.ui.component
 
 import cdu278.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
-import com.arkivanov.decompose.childContext
+import cdu278.intervals.ui.component.context.childContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import cdu278.repetition.list.ui.component.RepetitionListComponent
 import cdu278.repetition.new.error.owner.NewRepetitionValidationErrors
@@ -31,7 +31,6 @@ class MainComponent(
         RepetitionListComponent(
             childContext("passwordList"),
             repository,
-            repetitionNotifications,
             repeat,
         )
 

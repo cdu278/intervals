@@ -1,8 +1,8 @@
 package cdu278.repetition.notification.repository
 
-import cdu278.repetition.Repetition
+import cdu278.repetition.notification.NotificationRepetition
 
 interface RepetitionNotificationRepository {
 
-    suspend fun findById(id: Long): Repetition
+    suspend fun findAll(): List<NotificationRepetition>
 }
