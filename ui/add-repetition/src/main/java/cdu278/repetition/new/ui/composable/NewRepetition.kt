@@ -11,10 +11,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -51,6 +55,10 @@ fun NewRepetition(
                 style = MaterialTheme.typography.titleMedium,
             )
 
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(null) {
+                focusRequester.requestFocus()
+            }
             TextInput(model.label) {
                 OutlinedTextField(
                     value,
@@ -61,6 +69,7 @@ fun NewRepetition(
                     modifier = Modifier
                         .padding(top = doubleMargin)
                         .fillMaxWidth()
+                        .focusRequester(focusRequester)
                 )
             }
 
