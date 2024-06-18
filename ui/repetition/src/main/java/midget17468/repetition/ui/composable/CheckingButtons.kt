@@ -34,12 +34,20 @@ internal fun CheckingButtons(
         )
         Button(
             onClick = check,
-            enabled = state.error == null,
+            enabled = state.error == null && !state.inProgress,
             modifier = Modifier
                 .padding(top = halfMargin)
                 .width(buttonWidth)
         ) {
-            Text(stringResource(R.string.repetition_check))
+            Text(
+                text = stringResource(
+                    id = if (state.inProgress) {
+                        R.string.repetition_checking
+                    } else {
+                        R.string.repetition_check
+                    }
+                )
+            )
         }
         when (state.mode) {
             Repetition ->

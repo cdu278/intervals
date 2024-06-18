@@ -21,6 +21,7 @@ internal data class UiRepetition(
             val data: UiInput<String>,
             val error: String?,
             val hintState: HintState?,
+            val inProgress: Boolean,
         ) : State {
 
             enum class Mode { Repetition, Remembering }

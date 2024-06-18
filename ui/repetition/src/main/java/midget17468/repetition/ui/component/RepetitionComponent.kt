@@ -4,8 +4,9 @@ import cdu278.intervals.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnStart
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -20,6 +21,7 @@ import midget17468.repetition.s.repository.RepetitionsRepository
 import midget17468.repetition.s.repository.RepetitionsRepositoryInstance
 import midget17468.repetition.stage.RepetitionStage
 import midget17468.repetition.ui.RepetitionInput
+import midget17468.repetition.ui.RepetitionInput.Forgotten
 import midget17468.repetition.ui.UiRepetition
 import midget17468.repetition.ui.UiRepetition.State.Checking.HintState
 import midget17468.state.State
@@ -85,16 +87,20 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
             null
         }
 
+    private val checkingFlow = MutableStateFlow(false)
+
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
-            repetitionsRepository.flowById(repetitionId).map { repetition ->
+            combine(
+                repetitionsRepository.flowById(repetitionId),
+                checkingFlow
+            ) { repetition, checking ->
                 Loadable.Loaded(
                     UiRepetition(
                         repetition.type,
                         repetition.label,
                         state = when (input) {
-                            is RepetitionInput.Forgotten ->
-                                UiState.Forgotten
+                            is Forgotten -> UiState.Forgotten
                             is CheckingInput -> {
                                 val hintState =
                                     repetition.hint?.let { hint ->
@@ -112,6 +118,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                                                 data = UiInput(input.data, changeData),
                                                 error = input.error,
                                                 hintState,
+                                                inProgress = checking,
                                             )
                                         } else {
                                             UiState.RepetitionAt(
@@ -127,6 +134,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                                             data = UiInput(input.data, changeData),
                                             error = input.error,
                                             hintState,
+                                            inProgress = checking,
                                         )
                                 }
                             }
@@ -147,6 +155,8 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     fun check() {
         coroutineScope.launch {
+            checkingFlow.value = true
+
             val data = (state.value as CheckingInput).data
             val repetition = repetitionsRepository.findById(repetitionId)
             if (with(dataMatching) { repetition.data matches data }) {
@@ -175,13 +185,15 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
             } else {
                 changeData("")
             }
+
+            checkingFlow.value = false
         }
     }
 
     fun forget() {
         coroutineScope.launch {
             repository.updateState { RepetitionState.Forgotten() }
-            state.update { RepetitionInput.Forgotten }
+            state.update { Forgotten }
         }
     }
 
