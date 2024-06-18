@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.passs"
+    namespace = "cdu278.intervals"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "midget17468.passs"
+        applicationId = "cdu278.intervals"
         minSdk = 21
         targetSdk = 34
         versionCode = 1

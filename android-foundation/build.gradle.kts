@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.memo.android_foundation"
+    namespace = "cdu278.foundation.android"
     compileSdk = 34
 
     defaultConfig {

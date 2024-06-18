@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.passs.main"
+    namespace = "cdu278.intervals.main.ui"
     compileSdk = 34
 
     defaultConfig {

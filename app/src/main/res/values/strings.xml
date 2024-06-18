@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Memo</string>
+    <string name="app_name">Intervals</string>
     <string name="repetitionNotification_channel_name">Repetition notifications</string>
     <string name="emptyLabel">Please enter label</string>
     <string name="emptyPassword">Please enter password</string>

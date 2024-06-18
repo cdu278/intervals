@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.memo.editor_flow"
+    namespace = "cdu278.intervals.repetition.add.ui"
     compileSdk = 34
 
     defaultConfig {

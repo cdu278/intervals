@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.repetition"
+    namespace = "cdu278.intervals.repetition.ui"
     compileSdk = 34
 
     defaultConfig {

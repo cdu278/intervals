@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "midget17468.memo.memo_list"
+    namespace = "cdu278.intervals.repetition.list.ui"
     compileSdk = 34
 
     defaultConfig {

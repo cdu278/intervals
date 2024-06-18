@@ -1,10 +1,10 @@
 package cdu278.intervals.ui.component.context
 
-import cdu278.intervals.db.IntervalsDb
+import cdu278.db.IntervalsDb
 import com.arkivanov.decompose.ComponentContext
-import midget17468.hash.s.Hashes
-import midget17468.repetition.notification.s.RepetitionsNotifications
-import midget17468.repetition.spaced.SpacedRepetitions
+import cdu278.hash.s.Hashes
+import cdu278.repetition.notification.s.RepetitionsNotifications
+import cdu278.repetition.spaced.SpacedRepetitions
 
 interface IntervalsComponentContext : ComponentContext {
 
