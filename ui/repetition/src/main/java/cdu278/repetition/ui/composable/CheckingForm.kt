@@ -4,7 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.ui.UiRepetition
@@ -24,13 +28,19 @@ internal fun CheckingForm(
     ) {
         TextInput(text = state.data) {
             when (type) {
-                Password ->
+                Password -> {
+                    val focusRequester = remember { FocusRequester() }
+                    LaunchedEffect(null) {
+                        focusRequester.requestFocus()
+                    }
                     TextPasswordField(
                         value,
                         onValueChange,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .focusRequester(focusRequester)
                     )
+                }
             }
         }
 
