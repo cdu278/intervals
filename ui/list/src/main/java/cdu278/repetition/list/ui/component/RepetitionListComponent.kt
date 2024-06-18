@@ -12,8 +12,10 @@ import cdu278.repetition.next.mapping.NextRepetitionDateMapping
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.state.State
 import cdu278.ui.action.UiAction
+import cdu278.updates.Updates
+import com.arkivanov.essenty.lifecycle.doOnResume
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -44,46 +46,53 @@ class RepetitionListComponent internal constructor(
                 ?: RepetitionListInput()
         )
 
+    private val updates = Updates()
+
     init {
         stateKeeper.register("input", RepetitionListInput.serializer()) { state.value }
+
+        lifecycle.doOnResume {
+            updates.post()
+        }
     }
 
     private val coroutineScope = coroutineScope()
 
     internal val uiModelFlow: StateFlow<Loadable<List<UiRepetitionItem>>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
-            repository
-                .itemsFlow
-                .map { items ->
-                    Loadable.Loaded(
-                        items.map { item ->
-                            UiRepetitionItem(
-                                item.id,
-                                UiRepetitionItem.Info(item.label, item.type),
-                                state = when (val state = item.repetitionState) {
-                                    is Repetition ->
-                                        if (currentTime() > state.date) {
-                                            UiRepetitionItem.State.Repetition
-                                        } else {
-                                            UiRepetitionItem.State.RepetitionAt(
-                                                date = with(nextRepetitionDateMapping) {
-                                                    state.date.toUiModel()
-                                                }
-                                            )
-                                        }
+            combine(
+                repository.itemsFlow,
+                updates.flow
+            ) { items, _ ->
+                Loadable.Loaded(
+                    items.map { item ->
+                        UiRepetitionItem(
+                            item.id,
+                            UiRepetitionItem.Info(item.label, item.type),
+                            state = when (val state = item.repetitionState) {
+                                is Repetition ->
+                                    if (currentTime() > state.date) {
+                                        UiRepetitionItem.State.Repetition
+                                    } else {
+                                        UiRepetitionItem.State.RepetitionAt(
+                                            date = with(nextRepetitionDateMapping) {
+                                                state.date.toUiModel()
+                                            }
+                                        )
+                                    }
 
-                                    is Forgotten -> UiRepetitionItem.State.Forgotten
-                                },
-                                repeat = UiAction(key = item.id) { repeat(item.id) },
-                                UiRepetitionItem.Expanded(
-                                    input.idOfExpanded == item.id,
-                                    toggle = UiAction(key = item.id) { toggleExpanded(item.id) }
-                                ),
-                                delete = UiAction(key = item.id) { delete(item.id) },
-                            )
-                        }
-                    )
-                }
+                                is Forgotten -> UiRepetitionItem.State.Forgotten
+                            },
+                            repeat = UiAction(key = item.id) { repeat(item.id) },
+                            UiRepetitionItem.Expanded(
+                                input.idOfExpanded == item.id,
+                                toggle = UiAction(key = item.id) { toggleExpanded(item.id) }
+                            ),
+                            delete = UiAction(key = item.id) { delete(item.id) },
+                        )
+                    }
+                )
+            }
         }
 
     private fun toggleExpanded(id: Long) {
