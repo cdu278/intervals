@@ -1,12 +1,39 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.gradle.api.internal.provider.DefaultProviderFactory
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
 }
 
+fun getLocalProperty(key: String, file: String = "local.properties"): String {
+    val properties = Properties()
+    val localProperties = File(file)
+    if (localProperties.isFile) {
+        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+            properties.load(reader)
+        }
+    } else error("File from not found")
+
+    return properties.getProperty(key)
+}
+
 android {
     namespace = "cdu278.intervals"
     compileSdk = 34
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(getLocalProperty("storeFile"))
+            storePassword = getLocalProperty("storePassword")
+            keyAlias = getLocalProperty("keyAlias")
+            keyPassword = getLocalProperty("keyPassword")
+        }
+    }
 
     defaultConfig {
         applicationId = "cdu278.intervals"
@@ -28,6 +55,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
