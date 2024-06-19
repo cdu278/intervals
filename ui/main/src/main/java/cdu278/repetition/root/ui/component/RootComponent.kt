@@ -20,10 +20,12 @@ import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.ScreenConfig.Main
 import cdu278.repetition.root.ui.ScreenConfig.Repetition
 import cdu278.repetition.root.ui.UiRootScreen
+import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.repetition.ui.component.RepetitionComponent
 
 class RootComponent(
     context: IntervalsComponentContext,
+    private val repetitionsRepository: RepetitionsRepository,
     private val errors: NewRepetitionValidationErrors,
     initialStack: () -> List<ScreenConfig> = { listOf(Main) },
 ) : IntervalsComponentContext by context {
@@ -40,13 +42,14 @@ class RootComponent(
                 is Main ->
                     MainComponent(
                         newContext(componentContext),
+                        repetitionsRepository,
                         errors,
                         repeat = { navigation.push(Repetition(id = it)) },
                     )
                 is Repetition ->
                     RepetitionComponent(
                         newContext(componentContext),
-                        repetitionId = config.id,
+                        repetitionsRepository.repetitionRepository(config.id),
                         dataMatching = RepetitionDataMatching(hashes),
                         close = { navigation.pop() },
                     )

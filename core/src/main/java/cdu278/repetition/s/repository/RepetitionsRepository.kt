@@ -11,9 +11,5 @@ interface RepetitionsRepository {
 
     suspend fun create(repetition: Repetition): Long
 
-    suspend fun findById(id: Long): Repetition
-
-    fun flowById(id: Long): Flow<Repetition>
-
     fun repetitionRepository(id: Long): RepetitionRepository
 }

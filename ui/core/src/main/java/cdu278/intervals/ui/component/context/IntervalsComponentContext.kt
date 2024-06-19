@@ -1,14 +1,11 @@
 package cdu278.intervals.ui.component.context
 
-import cdu278.db.IntervalsDb
 import cdu278.hash.s.Hashes
 import cdu278.repetition.notification.s.RepetitionsNotifications
 import cdu278.repetition.spaced.SpacedRepetitions
 import com.arkivanov.decompose.ComponentContext
 
 interface IntervalsComponentContext : ComponentContext {
-
-    val db: IntervalsDb
 
     val hashes: Hashes
 
@@ -20,9 +17,6 @@ interface IntervalsComponentContext : ComponentContext {
 fun IntervalsComponentContext.newContext(context: ComponentContext): IntervalsComponentContext {
     return object : IntervalsComponentContext,
         ComponentContext by context {
-
-        override val db: IntervalsDb
-            get() = this@newContext.db
 
         override val hashes: Hashes
             get() = this@newContext.hashes

@@ -5,7 +5,6 @@ import com.arkivanov.decompose.childContext
 fun IntervalsComponentContext.childContext(key: String): IntervalsComponentContext {
     return IntervalsComponentContext(
         childContext(key),
-        db,
         hashes,
         spacedRepetitions,
         repetitionNotifications,

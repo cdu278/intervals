@@ -6,11 +6,8 @@ import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.loadable.ui.Loadable
 import cdu278.repetition.RepetitionState
 import cdu278.repetition.matching.RepetitionDataMatching
-import cdu278.repetition.new.error.owner.EmptyPasswordErrorOwner
 import cdu278.repetition.next.mapping.NextRepetitionDateMapping
-import cdu278.repetition.s.repository.RepetitionsRepository
-import cdu278.repetition.s.repository.RepetitionsRepositoryInstance
-import cdu278.repetition.s.repository.RoomRepetitionsRepository
+import cdu278.repetition.repository.RepetitionRepository
 import cdu278.repetition.stage.RepetitionStage
 import cdu278.repetition.ui.RepetitionInput
 import cdu278.repetition.ui.RepetitionInput.Forgotten
@@ -21,7 +18,6 @@ import cdu278.state.prop
 import cdu278.state.subtype
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -34,27 +30,12 @@ import cdu278.repetition.ui.UiRepetition.State.Checking.Error as CheckingError
 
 class RepetitionComponent(
     componentContext: IntervalsComponentContext,
-    private val repetitionId: Long,
+    private val repository: RepetitionRepository,
     private val dataMatching: RepetitionDataMatching,
     private val close: () -> Unit,
     private val currentTime: () -> LocalDateTime = { Clock.System.currentTime() },
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
 ) : IntervalsComponentContext by componentContext {
-
-    private val repetitionsRepository: RepetitionsRepository =
-        instanceKeeper.getOrCreate {
-            RepetitionsRepositoryInstance(
-                repository = {
-                    RoomRepetitionsRepository(
-                        db.repetitionsDao,
-                        db.repetitionDao,
-                    )
-                },
-            )
-        }
-
-    private val repository
-        get() = repetitionsRepository.repetitionRepository(repetitionId)
 
     private val state: State<RepetitionInput> =
         State(
@@ -89,7 +70,7 @@ class RepetitionComponent(
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
             combine(
-                repetitionsRepository.flowById(repetitionId),
+                repository.flow,
                 checkingFlow,
                 failedFlow,
             ) { repetition, checking, failed ->
@@ -159,7 +140,7 @@ class RepetitionComponent(
             failedFlow.value = false
 
             val data = (state.value as CheckingInput).data
-            val repetition = repetitionsRepository.findById(repetitionId)
+            val repetition = repository.get()
             if (with(dataMatching) { repetition.data matches data }) {
                 val nextStage =
                     when (val state = repetition.state) {
@@ -182,7 +163,7 @@ class RepetitionComponent(
                     )
                 }
 
-                repetitionNotifications.schedule(repetitionId, nextRepetition)
+                repetitionNotifications.schedule(repetition.id, nextRepetition)
             } else {
                 changeData("")
                 failedFlow.value = true

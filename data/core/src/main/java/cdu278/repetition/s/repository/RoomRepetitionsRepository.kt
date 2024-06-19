@@ -25,14 +25,6 @@ class RoomRepetitionsRepository(
         return dao.insert(repetition.asEntity())
     }
 
-    override suspend fun findById(id: Long): Repetition {
-        return dao.selectById(id)
-    }
-
-    override fun flowById(id: Long): Flow<Repetition> {
-        return dao.selectFlowById(id)
-    }
-
     override fun repetitionRepository(id: Long): RepetitionRepository {
         return RoomRepetitionRepository(
             repetitionId = id,

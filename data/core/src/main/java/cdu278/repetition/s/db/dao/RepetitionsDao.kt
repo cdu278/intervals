@@ -14,10 +14,4 @@ interface RepetitionsDao {
 
     @Insert
     suspend fun insert(repetition: RepetitionEntity): Long
-
-    @Query("SELECT * FROM repetition WHERE id = :id")
-    suspend fun selectById(id: Long): RepetitionEntity
-
-    @Query("SELECT * FROM repetition WHERE id = :id")
-    fun selectFlowById(id: Long): Flow<RepetitionEntity>
 }

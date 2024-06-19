@@ -22,6 +22,7 @@ import cdu278.repetition.notification.s.AndroidRepetitionNotifications
 import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.component.RootComponent
 import cdu278.repetition.root.ui.composable.Root
+import cdu278.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.repetition.spaced.SpacedRepetitions
 import cdu278.repetition.ui.composable.theme.PasssTheme
 import com.arkivanov.decompose.defaultComponentContext
@@ -58,12 +59,15 @@ class MainActivity : ComponentActivity() {
             RootComponent(
                 IntervalsComponentContext(
                     defaultComponentContext(),
-                    appModule.db,
                     Hashes(
                         base64 = { String(Base64.encode(this, Base64.NO_WRAP)) },
                     ),
                     SpacedRepetitions(),
                     repetitionNotifications,
+                ),
+                RoomRepetitionsRepository(
+                    appModule.db.repetitionsDao,
+                    appModule.db.repetitionDao
                 ),
                 errors = AndroidNewRepetitionValidationErrors(resources),
                 initialStack = { listOf(ScreenConfig.Main) },
