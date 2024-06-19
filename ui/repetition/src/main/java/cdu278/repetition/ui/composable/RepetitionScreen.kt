@@ -31,7 +31,7 @@ import cdu278.foundation.android.R as FoundationR
 
 @Composable
 fun RepetitionScreen(
-    component: RepetitionComponent<*>,
+    component: RepetitionComponent,
     modifier: Modifier = Modifier,
 ) {
     Box(

@@ -19,7 +19,7 @@ internal data class UiRepetition(
         data class Checking(
             val mode: Mode,
             val data: UiInput<String>,
-            val error: String?,
+            val error: Error?,
             val hintState: HintState?,
             val inProgress: Boolean,
             val failed: Boolean,
@@ -32,6 +32,11 @@ internal data class UiRepetition(
                 data object Hidden : HintState
 
                 data class Shown(val text: String) : HintState
+            }
+
+            enum class Error {
+
+                Empty
             }
         }
 

@@ -16,6 +16,7 @@ import cdu278.repetition.ui.UiRepetition.State.Checking.Mode.Remembering
 import cdu278.repetition.ui.UiRepetition.State.Checking.Mode.Repetition
 import cdu278.ui.composable.ErrorText
 import cdu278.ui.composable.halfMargin
+import cdu278.repetition.ui.UiRepetition.State.Checking.Error as UiError
 
 @Composable
 internal fun CheckingButtons(
@@ -30,7 +31,7 @@ internal fun CheckingButtons(
         modifier = modifier
     ) {
         ErrorText(
-            text = state.error ?: "",
+            text = state.error?.text ?: "",
         )
         Button(
             onClick = check,
@@ -62,3 +63,11 @@ internal fun CheckingButtons(
         }
     }
 }
+
+private val UiError.text: String
+    @Composable
+    get() = stringResource(
+        id = when (this) {
+            UiError.Empty -> R.string.repetition_emptyPassword
+        }
+    )

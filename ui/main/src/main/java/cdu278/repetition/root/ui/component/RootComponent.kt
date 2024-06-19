@@ -14,7 +14,6 @@ import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.util.asStateFlow
 import cdu278.flow.uiModelSharingStarted
 import cdu278.repetition.matching.RepetitionDataMatching
-import cdu278.repetition.new.error.owner.EmptyPasswordErrorOwner
 import cdu278.repetition.new.error.owner.NewRepetitionValidationErrors
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.repetition.root.ui.ScreenConfig
@@ -48,7 +47,6 @@ class RootComponent(
                     RepetitionComponent(
                         newContext(componentContext),
                         repetitionId = config.id,
-                        errors = errors,
                         dataMatching = RepetitionDataMatching(hashes),
                         close = { navigation.pop() },
                     )
@@ -59,13 +57,9 @@ class RootComponent(
 
     val screenFlow: StateFlow<UiRootScreen?> =
         childStack.map { entry ->
-            @Suppress("UNCHECKED_CAST")
             when (entry.configuration) {
                 is Main -> UiRootScreen.Main(entry.instance as MainComponent)
-                is Repetition ->
-                    UiRootScreen.Repetition(
-                        entry.instance as RepetitionComponent<EmptyPasswordErrorOwner>
-                    )
+                is Repetition -> UiRootScreen.Repetition(entry.instance as RepetitionComponent)
             }
         }.stateIn(coroutineScope(), uiModelSharingStarted, initialValue = null)
 }

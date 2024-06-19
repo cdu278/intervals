@@ -30,11 +30,11 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import cdu278.repetition.ui.RepetitionInput.Checking as CheckingInput
 import cdu278.repetition.ui.UiRepetition.State as UiState
+import cdu278.repetition.ui.UiRepetition.State.Checking.Error as CheckingError
 
-class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
+class RepetitionComponent(
     componentContext: IntervalsComponentContext,
     private val repetitionId: Long,
-    private val errors: Errors,
     private val dataMatching: RepetitionDataMatching,
     private val close: () -> Unit,
     private val currentTime: () -> LocalDateTime = { Clock.System.currentTime() },
@@ -75,9 +75,9 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                 .prop(CheckingInput::data) { copy(data = it) }
         )
 
-    private val CheckingInput.error: String?
+    private val CheckingInput.error: CheckingError?
         get() = if (data.isEmpty()) {
-            errors.emptyPassword()
+            CheckingError.Empty
         } else {
             null
         }
