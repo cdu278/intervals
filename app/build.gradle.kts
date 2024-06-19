@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-import org.gradle.api.internal.provider.DefaultProviderFactory
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
@@ -10,16 +8,12 @@ plugins {
     id("kotlin-parcelize")
 }
 
-fun getLocalProperty(key: String, file: String = "local.properties"): String {
+fun readLocalProperties(): Properties {
     val properties = Properties()
-    val localProperties = File(file)
-    if (localProperties.isFile) {
-        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
-            properties.load(reader)
-        }
-    } else error("File from not found")
-
-    return properties.getProperty(key)
+    InputStreamReader(FileInputStream(File("local.properties")), Charsets.UTF_8).use {
+        properties.load(it)
+    }
+    return properties
 }
 
 android {
@@ -28,10 +22,11 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(getLocalProperty("storeFile"))
-            storePassword = getLocalProperty("storePassword")
-            keyAlias = getLocalProperty("keyAlias")
-            keyPassword = getLocalProperty("keyPassword")
+            val properties = readLocalProperties()
+            storeFile = file(properties.getProperty("storeFile"))
+            storePassword = properties.getProperty("storePassword")
+            keyAlias = properties.getProperty("keyAlias")
+            keyPassword = properties.getProperty("keyPassword")
         }
     }
 
@@ -84,8 +79,8 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":foundation"))
     implementation(project(":foundation:android"))
-    implementation(project(":ui:main"))
-    implementation(project(":ui:repetition"))
+    implementation(project(":feature:main"))
+    implementation(project(":feature:repetition"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
