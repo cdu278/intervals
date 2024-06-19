@@ -16,10 +16,10 @@ dependencyResolutionManagement {
 rootProject.name = "Passs"
 include(":app")
 include(":core")
+include(":core:data")
 include(":foundation")
 include(":foundation:android")
 include(":ui:main")
 include(":ui:add-repetition")
 include(":ui:list")
 include(":ui:repetition")
-include(":data:core")
