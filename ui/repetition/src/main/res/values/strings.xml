@@ -7,4 +7,5 @@
     <string name="repetition_markedAsForgotten">This information\'s marked as forgottent. You may still return to it from the main menu</string>
     <string name="repetition_showHint">Show hint</string>
     <string name="repetition_checking">Checking…</string>
+    <string name="repetition_failed">Try again</string>
 </resources>

@@ -84,12 +84,15 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
 
     private val checkingFlow = MutableStateFlow(false)
 
+    private val failedFlow = MutableStateFlow(false)
+
     internal val uiModelFlow: StateFlow<Loadable<UiRepetition>> =
         state.handle(coroutineScope, initialValue = Loadable.Loading) { input ->
             combine(
                 repetitionsRepository.flowById(repetitionId),
-                checkingFlow
-            ) { repetition, checking ->
+                checkingFlow,
+                failedFlow,
+            ) { repetition, checking, failed ->
                 Loadable.Loaded(
                     UiRepetition(
                         repetition.type,
@@ -114,6 +117,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                                                 error = input.error,
                                                 hintState,
                                                 inProgress = checking,
+                                                failed = failed,
                                             )
                                         } else {
                                             UiState.RepetitionAt(
@@ -130,6 +134,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                                             error = input.error,
                                             hintState,
                                             inProgress = checking,
+                                            failed = failed,
                                         )
                                 }
                             }
@@ -179,6 +184,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
                 repetitionNotifications.schedule(repetitionId, nextRepetition)
             } else {
                 changeData("")
+                failedFlow.value = true
             }
 
             checkingFlow.value = false
