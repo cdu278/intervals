@@ -46,7 +46,7 @@ dependencies {
     implementation(project(":foundation:android"))
     implementation(project(":core"))
     implementation(project(":core:data"))
-    implementation(project(":ui:list"))
+    implementation(project(":ui:repetition-list"))
     implementation(project(":ui:add-repetition"))
     implementation(project(":ui:repetition"))
 
