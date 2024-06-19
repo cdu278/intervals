@@ -1,6 +1,7 @@
 package cdu278.ui.composable
 
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -23,6 +24,7 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     fontSize: TextUnit = TextUnit.Unspecified,
 ) {
     TextField(
@@ -36,6 +38,7 @@ fun PasswordField(
             fontFamily = FontFamily.Monospace,
         ),
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         shape = MaterialTheme.shapes.medium,
         colors = TextFieldDefaults.colors()
             .copy(

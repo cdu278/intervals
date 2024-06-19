@@ -60,6 +60,7 @@ fun RepetitionScreen(
                                 state = state,
                                 type = repetition.type,
                                 showHint = component::showHint,
+                                check = component::check,
                             )
 
                             CheckingButtons(
