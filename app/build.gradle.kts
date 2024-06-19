@@ -81,7 +81,6 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":ui:core"))
     implementation(project(":data:core"))
     implementation(project(":foundation"))
     implementation(project(":android-foundation"))
@@ -91,7 +90,6 @@ dependencies {
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.extra["lifecycleVersion"]}")
-    implementation(project(":ui:core"))
 
     val activityVersion = rootProject.extra["activityVersion"]
     implementation("androidx.activity:activity-compose:$activityVersion")
