@@ -83,7 +83,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":data:core"))
     implementation(project(":foundation"))
-    implementation(project(":android-foundation"))
+    implementation(project(":foundation:android"))
     implementation(project(":ui:main"))
     implementation(project(":ui:repetition"))
 

@@ -43,7 +43,7 @@ android {
 
 dependencies {
     implementation(project(":foundation"))
-    implementation(project(":android-foundation"))
+    implementation(project(":foundation:android"))
     implementation(project(":core"))
     implementation(project(":data:core"))
     implementation(project(":ui:list"))

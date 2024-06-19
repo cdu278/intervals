@@ -17,7 +17,7 @@ rootProject.name = "Passs"
 include(":app")
 include(":core")
 include(":foundation")
-include(":android-foundation")
+include(":foundation:android")
 include(":ui:main")
 include(":ui:add-repetition")
 include(":ui:list")
