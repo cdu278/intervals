@@ -14,6 +14,7 @@ fun TextPasswordField(
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    enabled: Boolean = true,
 ) {
     PasswordField(
         value,
@@ -21,6 +22,7 @@ fun TextPasswordField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         fontSize = 20.sp,
+        enabled = enabled,
         modifier = modifier,
     )
 }

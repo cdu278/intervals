@@ -62,6 +62,7 @@ internal fun CheckingForm(
                             imeAction = if (state.inProgress || state.error != null) None else Done,
                         ),
                         keyboardActions = KeyboardActions(onDone = { check() }),
+                        enabled = !state.inProgress,
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester)

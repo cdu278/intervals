@@ -16,7 +16,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun PasswordField(
@@ -26,6 +25,7 @@ fun PasswordField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     fontSize: TextUnit = TextUnit.Unspecified,
+    enabled: Boolean = true,
 ) {
     TextField(
         value,
@@ -56,6 +56,7 @@ fun PasswordField(
                 errorTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 cursorColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ),
+        enabled = enabled,
         modifier = modifier
             .defaultMinSize(minWidth = 240.dp),
     )

@@ -156,6 +156,7 @@ class RepetitionComponent<Errors : EmptyPasswordErrorOwner>(
     fun check() {
         coroutineScope.launch {
             checkingFlow.value = true
+            failedFlow.value = false
 
             val data = (state.value as CheckingInput).data
             val repetition = repetitionsRepository.findById(repetitionId)
