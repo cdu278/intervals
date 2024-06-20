@@ -1,16 +1,8 @@
 package cdu278.repetition.new.editor.ui.component
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.childContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.instance.retainedCoroutineScope
-import cdu278.hash.s.Hashes
+import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.repetition.Repetition
 import cdu278.repetition.RepetitionData
 import cdu278.repetition.RepetitionState
@@ -20,9 +12,7 @@ import cdu278.repetition.new.data.ui.UiNewRepetitionData
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.repetition.new.ui.NewRepetitionInput
 import cdu278.repetition.new.ui.UiNewRepetition
-import cdu278.repetition.notification.s.RepetitionsNotifications
 import cdu278.repetition.s.repository.RepetitionsRepository
-import cdu278.repetition.spaced.SpacedRepetitions
 import cdu278.repetition.stage.RepetitionStage
 import cdu278.state.State
 import cdu278.state.prop
@@ -30,17 +20,21 @@ import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
 import cdu278.ui.input.validated.Validated.Invalid
 import cdu278.ui.input.validated.Validated.Valid
+import com.arkivanov.decompose.childContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import cdu278.repetition.new.ui.UiNewRepetition.Error as UiError
 
 class NewRepetitionEditorComponent(
-    context: ComponentContext,
+    context: IntervalsComponentContext,
     private val type: RepetitionType,
-    private val spacedRepetitions: SpacedRepetitions,
-    private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
-    private val hashes: Hashes,
     private val close: () -> Unit,
-) : ComponentContext by context {
+) : IntervalsComponentContext by context {
 
     private val input =
         State(

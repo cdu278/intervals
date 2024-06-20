@@ -22,9 +22,6 @@ class MainComponent(
     val newRepetitionFlowComponent =
         NewRepetitionFlowComponent(
             childContext("newRepetitionFlow"),
-            repetitionNotifications,
             repetitionsRepository,
-            hashes,
-            spacedRepetitions,
         )
 }
