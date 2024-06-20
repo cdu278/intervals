@@ -1,8 +1,8 @@
 package cdu278.ui.input.validated
 
-sealed interface Validated<out T> {
+sealed interface Validated<out T, out Error> {
 
-    class Invalid(val error: String = "") : Validated<Nothing>
+    class Invalid<Error>(val error: Error) : Validated<Nothing, Error>
 
-    class Valid<T>(val value: T) : Validated<T>
+    class Valid<T>(val value: T) : Validated<T, Nothing>
 }

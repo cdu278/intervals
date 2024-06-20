@@ -13,7 +13,6 @@ import cdu278.decompose.util.asStateFlow
 import cdu278.hash.s.Hashes
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
-import cdu278.repetition.new.error.owner.NewRepetitionValidationErrors
 import cdu278.repetition.new.flow.ui.NewRepetitionFlowStateConfig
 import cdu278.repetition.new.flow.ui.NewRepetitionFlowStateConfig.AddButton
 import cdu278.repetition.new.flow.ui.NewRepetitionFlowStateConfig.Editor
@@ -24,7 +23,6 @@ import cdu278.repetition.spaced.SpacedRepetitions
 
 class NewRepetitionFlowComponent(
     context: ComponentContext,
-    private val errors: NewRepetitionValidationErrors,
     private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
     private val hashes: Hashes,
@@ -48,7 +46,6 @@ class NewRepetitionFlowComponent(
                     NewRepetitionEditorComponent(
                         componentContext,
                         config.type,
-                        errors,
                         spacedRepetitions,
                         repetitionNotifications,
                         repository,
@@ -72,7 +69,7 @@ class NewRepetitionFlowComponent(
 
                     is Editor ->
                         UiNewRepetitionFlowState.Editor(
-                            child.instance as NewRepetitionEditorComponent<*>
+                            child.instance as NewRepetitionEditorComponent
                         )
                 }
             }

@@ -1,7 +1,4 @@
 <resources>
     <string name="repetitionNotification_channel_name">Repetition notifications</string>
-    <string name="emptyLabel">Please enter label</string>
-    <string name="emptyPassword">Please enter password</string>
-    <string name="passwordsDontMatch">Passwords don\'t match</string>
     <string name="repetitionNotification_messageFmt">You have repetitions to pass: %s</string>
 </resources>

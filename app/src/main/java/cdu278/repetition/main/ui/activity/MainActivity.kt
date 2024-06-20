@@ -17,7 +17,6 @@ import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.notification.channel.config.RepetitionsChannelConfig
 import cdu278.notification.s.AndroidNotifications
 import cdu278.permission.notification.notificationPermission
-import cdu278.repetition.new.error.AndroidNewRepetitionValidationErrors
 import cdu278.repetition.notification.s.AndroidRepetitionNotifications
 import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.component.RootComponent
@@ -69,7 +68,6 @@ class MainActivity : ComponentActivity() {
                     appModule.db.repetitionsDao,
                     appModule.db.repetitionDao
                 ),
-                errors = AndroidNewRepetitionValidationErrors(resources),
                 initialStack = { listOf(ScreenConfig.Main) },
             )
 

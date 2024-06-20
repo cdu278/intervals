@@ -30,11 +30,15 @@ import cdu278.intervals.repetition.add.ui.R
 import cdu278.repetition.new.data.ui.UiNewRepetitionData
 import cdu278.repetition.new.data.ui.composable.NewPasswordData
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
+import cdu278.repetition.new.ui.UiNewRepetition
+import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
+import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyPassword
+import cdu278.repetition.new.ui.UiNewRepetition.Error.PasswordsDontMatch
 import cdu278.foundation.android.R as FoundationR
 
 @Composable
 fun NewRepetition(
-    component: NewRepetitionEditorComponent<*>,
+    component: NewRepetitionEditorComponent,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -96,7 +100,7 @@ fun NewRepetition(
             }
 
             ErrorText(
-                text = model.error ?: "",
+                text = model.error?.text ?: "",
                 modifier = Modifier
                     .padding(top = defaultMargin)
             )
@@ -120,3 +124,13 @@ fun NewRepetition(
         }
     }
 }
+
+private val UiNewRepetition.Error.text: String
+    @Composable
+    get() = stringResource(
+        id = when (this) {
+            EmptyLabel -> R.string.newRepetition_emptyLabel
+            EmptyPassword -> R.string.newRepetition_emptyPassword
+            PasswordsDontMatch -> R.string.newRepetition_passwordsDontMatch
+        }
+    )

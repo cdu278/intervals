@@ -18,9 +18,6 @@ import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.new.data.ui.UiNewRepetitionData
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
-import cdu278.repetition.new.error.owner.EmptyLabelErrorOwner
-import cdu278.repetition.new.error.owner.EmptyPasswordErrorOwner
-import cdu278.repetition.new.error.owner.PasswordsDontMatchErrorOwner
 import cdu278.repetition.new.ui.NewRepetitionInput
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.notification.s.RepetitionsNotifications
@@ -33,20 +30,17 @@ import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
 import cdu278.ui.input.validated.Validated.Invalid
 import cdu278.ui.input.validated.Validated.Valid
+import cdu278.repetition.new.ui.UiNewRepetition.Error as UiError
 
-class NewRepetitionEditorComponent<Errors>(
+class NewRepetitionEditorComponent(
     context: ComponentContext,
     private val type: RepetitionType,
-    private val errors: Errors,
     private val spacedRepetitions: SpacedRepetitions,
     private val repetitionNotifications: RepetitionsNotifications,
     private val repository: RepetitionsRepository,
     private val hashes: Hashes,
     private val close: () -> Unit,
-) : ComponentContext by context
-        where Errors : EmptyPasswordErrorOwner,
-              Errors : PasswordsDontMatchErrorOwner,
-              Errors : EmptyLabelErrorOwner {
+) : ComponentContext by context {
 
     private val input =
         State(
@@ -64,12 +58,18 @@ class NewRepetitionEditorComponent<Errors>(
     private val changeHint =
         ChangeInput(input.prop(NewRepetitionInput::hint) { copy(hint = it) })
 
-    private val dataUiModel: UiNewRepetitionData = run {
+    private val dataUiModel: UiNewRepetitionData<UiError> = run {
         val childContext = childContext("data")
         when (type) {
             Password ->
                 UiNewRepetitionData.Password(
-                    NewPasswordDataComponent(childContext, errors)
+                    NewPasswordDataComponent(
+                        childContext,
+                        NewPasswordDataComponent.Errors(
+                            emptyPassword = { UiError.EmptyPassword },
+                            passwordsDontMatch = { UiError.PasswordsDontMatch },
+                        ),
+                    )
                 )
         }
     }
@@ -97,7 +97,7 @@ class NewRepetitionEditorComponent<Errors>(
                     data = dataUiModel,
                     saving = saving,
                     error = if (input.label.isBlank()) {
-                        errors.emptyLabel()
+                        UiError.EmptyLabel
                     } else {
                         when (data) {
                             is Valid -> null

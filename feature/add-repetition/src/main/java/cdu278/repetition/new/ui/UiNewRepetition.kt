@@ -5,8 +5,16 @@ import cdu278.ui.input.UiInput
 
 data class UiNewRepetition(
     val label: UiInput<String>,
-    val data: UiNewRepetitionData,
+    val data: UiNewRepetitionData<Error>,
     val hint: UiInput<String>,
     val saving: Boolean = false,
-    val error: String? = null,
-)
+    val error: Error? = null,
+) {
+
+    enum class Error {
+
+        EmptyLabel,
+        EmptyPassword,
+        PasswordsDontMatch,
+    }
+}

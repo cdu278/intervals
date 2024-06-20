@@ -14,7 +14,6 @@ import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.util.asStateFlow
 import cdu278.flow.uiModelSharingStarted
 import cdu278.repetition.matching.RepetitionDataMatching
-import cdu278.repetition.new.error.owner.NewRepetitionValidationErrors
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.ScreenConfig.Main
@@ -26,7 +25,6 @@ import cdu278.repetition.ui.component.RepetitionComponent
 class RootComponent(
     context: IntervalsComponentContext,
     private val repetitionsRepository: RepetitionsRepository,
-    private val errors: NewRepetitionValidationErrors,
     initialStack: () -> List<ScreenConfig> = { listOf(Main) },
 ) : IntervalsComponentContext by context {
 
@@ -43,7 +41,6 @@ class RootComponent(
                     MainComponent(
                         newContext(componentContext),
                         repetitionsRepository,
-                        errors,
                         repeat = { navigation.push(Repetition(id = it)) },
                     )
                 is Repetition ->

@@ -12,6 +12,6 @@ sealed interface UiNewRepetitionFlowState {
     ) : UiNewRepetitionFlowState
 
     data class Editor(
-        val component: NewRepetitionEditorComponent<*>,
+        val component: NewRepetitionEditorComponent,
     ) : UiNewRepetitionFlowState
 }

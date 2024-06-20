@@ -3,11 +3,11 @@ package cdu278.repetition.new.data.ui
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.repetition.new.data.ui.component.NewRepetitionDataComponent
 
-sealed interface UiNewRepetitionData {
+sealed interface UiNewRepetitionData<Error> {
 
-    val component: NewRepetitionDataComponent
+    val component: NewRepetitionDataComponent<Error>
 
-    data class Password(
-        override val component: NewPasswordDataComponent<*>
-    ) : UiNewRepetitionData
+    data class Password<Error>(
+        override val component: NewPasswordDataComponent<Error>
+    ) : UiNewRepetitionData<Error>
 }
