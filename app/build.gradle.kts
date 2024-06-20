@@ -44,6 +44,7 @@ android {
     }
 
     buildTypes {
+        val appName = "Intervals"
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -51,6 +52,11 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+            resValue("string", "app_name", appName)
+        }
+        debug {
+            resValue("string", "app_name", "$appName Debug")
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
