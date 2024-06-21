@@ -65,8 +65,7 @@ class MainActivity : ComponentActivity() {
                     repetitionNotifications,
                 ),
                 RoomRepetitionsRepository(
-                    appModule.db.repetitionsDao,
-                    appModule.db.repetitionDao
+                    appModule.db,
                 ),
                 initialStack = { listOf(ScreenConfig.Main) },
             )
