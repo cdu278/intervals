@@ -64,9 +64,11 @@ class MainActivity : ComponentActivity() {
                     SpacedRepetitions(),
                     repetitionNotifications,
                 ),
-                RoomRepetitionsRepository(
-                    appModule.db,
-                ),
+                repetitionsRepositoryFactory = {
+                    RoomRepetitionsRepository(
+                        appModule.db,
+                    )
+                },
                 initialStack = { listOf(ScreenConfig.Main) },
             )
 

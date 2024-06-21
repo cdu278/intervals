@@ -20,13 +20,22 @@ import cdu278.repetition.root.ui.ScreenConfig.Main
 import cdu278.repetition.root.ui.ScreenConfig.Repetition
 import cdu278.repetition.root.ui.UiRootScreen
 import cdu278.repetition.s.repository.RepetitionsRepository
+import cdu278.repetition.s.repository.RepetitionsRepositoryInstance
 import cdu278.repetition.ui.component.RepetitionComponent
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 
 class RootComponent(
     context: IntervalsComponentContext,
-    private val repetitionsRepository: RepetitionsRepository,
+    private val repetitionsRepositoryFactory: () -> RepetitionsRepository,
     initialStack: () -> List<ScreenConfig> = { listOf(Main) },
 ) : IntervalsComponentContext by context {
+
+    private val repetitionsRepository =
+        instanceKeeper.getOrCreate {
+            RepetitionsRepositoryInstance(
+                repository = { repetitionsRepositoryFactory.invoke() },
+            )
+        }
 
     private val navigation = StackNavigation<ScreenConfig>()
 
