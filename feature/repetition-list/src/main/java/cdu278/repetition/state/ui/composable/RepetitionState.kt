@@ -8,14 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import cdu278.intervals.repetition.list.ui.R
-import cdu278.repetition.item.ui.UiRepetitionItem
-import cdu278.repetition.item.ui.UiRepetitionItem.State.*
 import cdu278.repetition.next.ui.composable.NextRepetitionDate
+import cdu278.repetition.state.ui.UiRepetitionState
+import cdu278.repetition.state.ui.UiRepetitionState.*
 
 @Composable
 internal fun RepetitionState(
-    state: UiRepetitionItem.State,
-    repeat: () -> Unit,
+    state: UiRepetitionState,
     primaryStyle: TextStyle,
     secondaryStyle: TextStyle,
     modifier: Modifier = Modifier,
@@ -23,7 +22,7 @@ internal fun RepetitionState(
     Box(modifier = modifier) {
         when (state) {
             is Repetition ->
-                OutlinedButton(onClick = repeat) {
+                OutlinedButton(onClick = state.repeat) {
                     Text(stringResource(R.string.repetitionItem_repeat))
                 }
             is RepetitionAt ->
@@ -33,7 +32,7 @@ internal fun RepetitionState(
                     secondaryStyle,
                 )
             is Forgotten ->
-                OutlinedButton(onClick = repeat) {
+                OutlinedButton(onClick = state.remember) {
                     Text(stringResource(R.string.repetitionItem_iRemember))
                 }
         }

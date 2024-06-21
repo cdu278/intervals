@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType.Password
-import cdu278.repetition.item.ui.UiRepetitionItem
+import cdu278.repetition.info.ui.UiRepetitionInfo
 import cdu278.repetition.ui.composable.RepetitionIcon
 
 @Composable
 internal fun RepetitionInfo(
-    info: UiRepetitionItem.Info,
+    info: UiRepetitionInfo,
     primaryStyle: TextStyle,
     secondaryStyle: TextStyle,
     modifier: Modifier = Modifier,

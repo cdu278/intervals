@@ -11,4 +11,5 @@
     <string name="editor_hint">Hint</string>
     <string name="editor_confirmPassword">Enter the password again</string>
     <string name="addEditor_title">New password</string>
+    <string name="main_selection_selectedFmt">Selected: %d</string>
 </resources>
