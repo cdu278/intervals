@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import cdu278.intervals.main.ui.R
-import cdu278.ui.composable.defaultMargin
+import cdu278.repetition.deletion.dialog.ui.composable.RepetitionsDeletionDialog
 import cdu278.repetition.list.ui.composable.RepetitionList
-import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.repetition.new.flow.ui.composable.NewRepetitionFlow
 import cdu278.repetition.root.main.ui.UiMain
+import cdu278.repetition.root.main.ui.UiMainDialog.Deletion
+import cdu278.repetition.root.main.ui.component.MainComponent
+import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R as FoundationR
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,9 +33,9 @@ fun MainScreen(
     component: MainComponent,
     modifier: Modifier = Modifier,
 ) {
+    val modelState = component.uiModelFlow.collectAsState()
     Scaffold(
         topBar = topBar@ {
-            val modelState = component.uiModelFlow.collectAsState()
             val model = modelState.value as? UiMain.Selection ?: return@topBar
             TopAppBar(
                 title = {
@@ -78,6 +80,14 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
             )
+
+            val dialog =
+                (modelState.value as? UiMain.Selection)
+                    ?.dialog
+                    ?: return@Scaffold
+            when (dialog) {
+                is Deletion -> RepetitionsDeletionDialog(dialog.component)
+            }
         }
     }
 }
