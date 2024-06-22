@@ -34,6 +34,7 @@ import cdu278.repetition.root.main.ui.UiMainDialog.Deletion
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R as FoundationR
+import cdu278.repetition.root.main.ui.UiMainMode.Default as ModeDefault
 import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,11 +105,13 @@ fun MainScreen(
                     .padding(defaultMargin)
                     .align(Alignment.TopCenter)
             )
-            NewRepetitionFlow(
-                component.newRepetitionFlowComponent,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
+            if (model.mode is ModeDefault) {
+                NewRepetitionFlow(
+                    component.newRepetitionFlowComponent,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
 
             val dialog =
                 (model.mode as? ModeSelection)
