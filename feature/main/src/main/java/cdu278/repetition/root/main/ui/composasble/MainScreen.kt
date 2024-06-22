@@ -84,6 +84,7 @@ fun MainScreen(
                             )
                         },
                         label = { Text(it.config.title) },
+                        enabled = model.mode is ModeDefault,
                     )
                 }
             }
