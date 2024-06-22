@@ -1,6 +1,5 @@
 package cdu278.repetition.ui.component
 
-import cdu278.datetime.currentTime
 import cdu278.decompose.context.coroutineScope
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.loadable.ui.Loadable
@@ -22,8 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import cdu278.repetition.ui.RepetitionInput.Checking as CheckingInput
 import cdu278.repetition.ui.UiRepetition.State as UiState
 import cdu278.repetition.ui.UiRepetition.State.Checking.Error as CheckingError
@@ -33,7 +30,6 @@ class RepetitionComponent(
     private val repository: RepetitionRepository,
     private val dataMatching: RepetitionDataMatching,
     private val close: () -> Unit,
-    private val currentTime: () -> LocalDateTime = { Clock.System.currentTime() },
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
 ) : IntervalsComponentContext by componentContext {
 

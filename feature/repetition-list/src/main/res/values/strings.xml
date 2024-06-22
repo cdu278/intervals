@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="noItemsYet">No repetitions yet</string>
+    <string name="noItemsYet">Nothing here</string>
     <string name="repetitionItem_nextRepetition">Next repetition</string>
     <string name="repetitionItem_repeat">Repeat</string>
     <string name="repetitionItem_iRemember">I remember</string>

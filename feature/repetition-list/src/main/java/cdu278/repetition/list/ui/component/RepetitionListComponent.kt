@@ -1,6 +1,5 @@
 package cdu278.repetition.list.ui.component
 
-import cdu278.datetime.currentTime
 import cdu278.decompose.context.coroutineScope
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.repetition.RepetitionState.Forgotten
@@ -21,38 +20,24 @@ import cdu278.updates.Updates
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.lifecycle.doOnResume
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default as DefaultMode
 import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default.Item as DefaultItem
 import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection as SelectionMode
 import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection.Item as SelectionItem
 
-class RepetitionListComponent internal constructor(
+class RepetitionListComponent(
     context: IntervalsComponentContext,
     private val repository: RepetitionsRepository,
     private val state: State<RepetitionListState>,
-    private val repeat: (repetitionId: Long) -> Unit,
-    private val nextRepetitionDateMapping: NextRepetitionDateMapping,
-    private val currentTime: () -> LocalDateTime,
+    private val goToRepetition: (repetitionId: Long) -> Unit,
+    private val nextRepetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
 ) : IntervalsComponentContext by context {
-
-    constructor(
-        context: IntervalsComponentContext,
-        repository: RepetitionsRepository,
-        state: State<RepetitionListState>,
-        repeat: (repetitionId: Long) -> Unit,
-    ) : this(
-        context,
-        repository,
-        state,
-        repeat,
-        nextRepetitionDateMapping = NextRepetitionDateMapping(),
-        currentTime = { Clock.System.currentTime() },
-    )
 
     private val updates = Updates()
 
@@ -74,6 +59,7 @@ class RepetitionListComponent internal constructor(
                             backHandler.unregister(it)
                             backCallback = null
                         }
+
                     is Selection ->
                         if (backCallback == null) {
                             SelectionModeBackCallback(this@RepetitionListComponent.state)
@@ -87,23 +73,33 @@ class RepetitionListComponent internal constructor(
 
     internal val uiModelFlow: StateFlow<UiRepetitionList?> =
         state.handle(coroutineScope, initialValue = null) { state ->
-            combine(
-                repository.itemsFlow,
-                updates.flow
-            ) { items, _ ->
-                if (items.isEmpty()) return@combine UiRepetitionList.Empty
-                UiRepetitionList.NonEmpty(
-                    mode = when (state) {
-                        is Default ->
-                            DefaultMode(
-                                items = items.asDefaultUiItems(),
-                            )
-                        is Selection ->
-                            SelectionMode(
-                                items = items.asSelectionUiItems(state.idsOfSelected),
-                            )
-                    }
-                )
+            channelFlow {
+                var job: Job? = null
+                updates.flow.collect {
+                    job?.cancel()
+                    job =
+                        repository
+                            .itemsFlow.onEach { items ->
+                                send(
+                                    if (items.isEmpty()) UiRepetitionList.Empty
+                                    else UiRepetitionList.NonEmpty(
+                                        mode = when (state) {
+                                            is Default ->
+                                                DefaultMode(
+                                                    items = items.asDefaultUiItems(),
+                                                )
+                                            is Selection ->
+                                                SelectionMode(
+                                                    items = items.asSelectionUiItems(
+                                                        state.idsOfSelected
+                                                    ),
+                                                )
+                                        }
+                                    )
+                                )
+                            }
+                            .launchIn(this)
+                }
             }
         }
 
@@ -115,7 +111,7 @@ class RepetitionListComponent internal constructor(
                     is Repetition ->
                         if (currentTime() > state.date) {
                             UiRepetitionState.Repetition(
-                                repeat = UiAction(key = item.id) { repeat(item.id) },
+                                repeat = UiAction(key = item.id) { goToRepetition(item.id) },
                             )
                         } else {
                             UiRepetitionState.RepetitionAt(
@@ -124,9 +120,10 @@ class RepetitionListComponent internal constructor(
                                 }
                             )
                         }
+
                     is Forgotten ->
                         UiRepetitionState.Forgotten(
-                            remember = UiAction(key = item.id) { repeat(item.id) },
+                            remember = UiAction(key = item.id) { goToRepetition(item.id) },
                         )
                 },
                 select = UiAction(key = item.id) { goToSelectionMode(item.id) },

@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
 import cdu278.IntervalsApplication
+import cdu278.datetime.currentTime
 import cdu278.hash.s.Hashes
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.notification.channel.config.RepetitionsChannelConfig
@@ -26,6 +27,8 @@ import cdu278.repetition.spaced.SpacedRepetitions
 import cdu278.repetition.ui.composable.theme.PasssTheme
 import com.arkivanov.decompose.defaultComponentContext
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 
 class MainActivity : ComponentActivity() {
 
@@ -63,6 +66,7 @@ class MainActivity : ComponentActivity() {
                     ),
                     SpacedRepetitions(),
                     repetitionNotifications,
+                    currentTime = { Clock.System.currentTime(TimeZone.currentSystemDefault()) },
                 ),
                 repetitionsRepositoryFactory = {
                     RoomRepetitionsRepository(

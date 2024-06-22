@@ -1,15 +1,6 @@
 package cdu278.repetition.root.main.ui
 
-import cdu278.ui.action.UiAction
-
-internal sealed interface UiMain {
-
-    data object Default : UiMain
-
-    data class Selection(
-        val selectedCount: Int,
-        val delete: UiAction,
-        val quitSelectionModel: UiAction,
-        val dialog: UiMainDialog?,
-    ) : UiMain
-}
+internal data class UiMain(
+    val mode: UiMainMode = UiMainMode.Default,
+    val tabs: List<UiMainTab> = List(size = 3) { UiMainTab(MainTabConfig.entries[it]) },
+)

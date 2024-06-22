@@ -8,5 +8,6 @@ fun IntervalsComponentContext.childContext(key: String): IntervalsComponentConte
         hashes,
         spacedRepetitions,
         repetitionNotifications,
+        currentTime,
     )
 }

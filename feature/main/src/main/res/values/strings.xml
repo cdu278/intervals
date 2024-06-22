@@ -2,7 +2,6 @@
 <resources>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="noItemsYet">There\'s no items yet</string>
     <string name="main_item_type_sim">SIM card</string>
     <string name="appName">Passs</string>
     <string name="main_item_type_password">Password</string>
@@ -12,4 +11,7 @@
     <string name="editor_confirmPassword">Enter the password again</string>
     <string name="addEditor_title">New password</string>
     <string name="main_selection_selectedFmt">Selected: %d</string>
+    <string name="main_tab_actual">Actual</string>
+    <string name="main_tab_active">Active</string>
+    <string name="main_tab_archive">Archive</string>
 </resources>

@@ -8,24 +8,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import cdu278.intervals.main.ui.R
 import cdu278.repetition.deletion.dialog.ui.composable.RepetitionsDeletionDialog
 import cdu278.repetition.list.ui.composable.RepetitionList
 import cdu278.repetition.new.flow.ui.composable.NewRepetitionFlow
-import cdu278.repetition.root.main.ui.UiMain
+import cdu278.repetition.root.main.ui.MainTabConfig
+import cdu278.repetition.root.main.ui.MainTabConfig.Active
+import cdu278.repetition.root.main.ui.MainTabConfig.Actual
+import cdu278.repetition.root.main.ui.MainTabConfig.Archive
 import cdu278.repetition.root.main.ui.UiMainDialog.Deletion
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R as FoundationR
+import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,18 +42,18 @@ fun MainScreen(
     component: MainComponent,
     modifier: Modifier = Modifier,
 ) {
-    val modelState = component.uiModelFlow.collectAsState()
+    val model by component.uiModelFlow.collectAsState()
     Scaffold(
-        topBar = topBar@ {
-            val model = modelState.value as? UiMain.Selection ?: return@topBar
+        topBar = topBar@{
+            val selection = model.mode as? ModeSelection ?: return@topBar
             TopAppBar(
                 title = {
                     Text(
-                        stringResource(R.string.main_selection_selectedFmt, model.selectedCount)
+                        stringResource(R.string.main_selection_selectedFmt, selection.selectedCount)
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = model.quitSelectionModel) {
+                    IconButton(onClick = selection.quitSelectionModel) {
                         Icon(
                             painterResource(FoundationR.drawable.ic_back),
                             contentDescription = null
@@ -52,7 +61,7 @@ fun MainScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = model.delete) {
+                    IconButton(onClick = selection.delete) {
                         Icon(
                             painterResource(FoundationR.drawable.ic_delete),
                             contentDescription = null
@@ -61,6 +70,23 @@ fun MainScreen(
                 },
             )
         },
+        bottomBar = {
+            NavigationBar {
+                model.tabs.forEach {
+                    NavigationBarItem(
+                        selected = it.active,
+                        onClick = it.activate,
+                        icon = {
+                            Icon(
+                                painter = it.config.iconPainter,
+                                contentDescription = null,
+                            )
+                        },
+                        label = { Text(it.config.title) },
+                    )
+                }
+            }
+        },
         modifier = modifier
     ) { paddings ->
         Box(
@@ -68,8 +94,11 @@ fun MainScreen(
                 .padding(paddings)
                 .consumeWindowInsets(paddings)
         ) {
+            val activeTab = remember(model.tabs) {
+                model.tabs.find { it.active }!!
+            }
             RepetitionList(
-                component.repetitionListComponent,
+                activeTab.listComponent!!,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(defaultMargin)
@@ -82,7 +111,7 @@ fun MainScreen(
             )
 
             val dialog =
-                (modelState.value as? UiMain.Selection)
+                (model.mode as? ModeSelection)
                     ?.dialog
                     ?: return@Scaffold
             when (dialog) {
@@ -91,3 +120,23 @@ fun MainScreen(
         }
     }
 }
+
+private val MainTabConfig.iconPainter: Painter
+    @Composable
+    get() = painterResource(
+        id = when (this) {
+            Actual -> R.drawable.ic_actual
+            Active -> FoundationR.drawable.ic_intervals
+            Archive -> R.drawable.ic_archive
+        }
+    )
+
+private val MainTabConfig.title: String
+    @Composable
+    get() = stringResource(
+        id = when (this) {
+            Actual -> R.string.main_tab_actual
+            Active -> R.string.main_tab_active
+            Archive -> R.string.main_tab_archive
+        }
+    )

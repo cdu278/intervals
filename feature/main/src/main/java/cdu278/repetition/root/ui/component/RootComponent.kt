@@ -50,7 +50,7 @@ class RootComponent(
                     MainComponent(
                         newContext(componentContext),
                         repetitionsRepository,
-                        repeat = { navigation.push(Repetition(id = it)) },
+                        goToRepetition = { navigation.push(Repetition(id = it)) },
                     )
                 is Repetition ->
                     RepetitionComponent(
