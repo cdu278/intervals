@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,7 +53,7 @@ internal fun CheckingButtons(
         }
         when (state.mode) {
             Repetition ->
-                Button(
+                OutlinedButton(
                     onClick = forget,
                     modifier = Modifier
                         .width(buttonWidth)
