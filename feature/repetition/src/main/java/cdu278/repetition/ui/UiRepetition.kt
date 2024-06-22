@@ -8,6 +8,7 @@ internal data class UiRepetition(
     val type: RepetitionType,
     val label: String,
     val state: State,
+    val dialog: UiRepetitionDialog?,
 ) {
 
     sealed interface State {

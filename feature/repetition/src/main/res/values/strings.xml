@@ -8,4 +8,6 @@
     <string name="repetition_showHint">Show hint</string>
     <string name="repetition_checking">Checking…</string>
     <string name="repetition_failed">Try again</string>
+    <string name="repetition_archive_confirmation_dialog_title">Are you sure?</string>
+    <string name="repetition_archive_confirmation_dialog_text">This repetition will be archived</string>
 </resources>
