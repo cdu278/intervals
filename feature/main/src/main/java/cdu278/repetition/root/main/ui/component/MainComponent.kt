@@ -66,8 +66,11 @@ class MainComponent(
                         repetitionsRepository,
                         dismiss = { dialogNavigation.dismiss() },
                         onDeleted = {
+                            config.idsOfRepetitions.forEach {
+                                repetitionNotifications.cancel(repetitionId = it)
+                            }
                             listState.update { Default }
-                        }
+                        },
                     )
             }
         }.asStateFlow(lifecycle).map { slot ->

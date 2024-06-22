@@ -45,6 +45,10 @@ class AndroidRepetitionNotifications(
         }
     }
 
+    override fun cancel(repetitionId: Long) {
+        workManager.cancelUniqueWork(workName(repetitionId))
+    }
+
     override suspend fun remove() {
         notifications.cancel(RepetitionsToPassNotificationIdentity)
     }
