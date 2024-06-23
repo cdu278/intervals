@@ -22,7 +22,7 @@ internal fun NewRepetitionTypeSelectionCard(
     ) {
         Column {
             model.items.forEach { item ->
-                TypeItem(
+                NewRepetitionTypeItem(
                     type = item.type,
                     onClick = item.choose,
                     modifier = Modifier

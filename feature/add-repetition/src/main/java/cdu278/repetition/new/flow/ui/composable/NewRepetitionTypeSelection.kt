@@ -36,7 +36,7 @@ fun NewRepetitionTypeSelection(
         NewRepetitionTypeSelectionCard(
             model = component.model,
             modifier = Modifier
-                .width(150.dp)
+                .width(170.dp)
                 .padding(
                     bottom = 125.dp,
                 )
