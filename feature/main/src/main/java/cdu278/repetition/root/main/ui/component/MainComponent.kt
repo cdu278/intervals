@@ -36,16 +36,23 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import cdu278.repetition.root.main.ui.UiMainMode.Default as ModeDefault
 import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
 
-class MainComponent(
+@OptIn(ExperimentalDecomposeApi::class)
+internal class MainComponent(
     context: IntervalsComponentContext,
     private val repetitionsRepository: RepetitionsRepository,
     goToRepetition: (repetitionId: Long) -> Unit,
+    private val requestedTabFlow: MutableSharedFlow<MainTabConfig>
 ) : IntervalsComponentContext by context {
 
     private val listState =
@@ -59,6 +66,7 @@ class MainComponent(
         NewRepetitionFlowComponent(
             childContext("newRepetitionFlow"),
             repetitionsRepository,
+            onCreated = { requestedTabFlow.emit(Active) },
         )
 
     private val dialogNavigation = SlotNavigation<MainDialogConfig>()
@@ -89,8 +97,21 @@ class MainComponent(
             }
         }
 
+    private val coroutineScope = coroutineScope()
+
     @OptIn(ExperimentalDecomposeApi::class)
     private val tabsNavigation = PagesNavigation<MainTabConfig>()
+
+    init {
+        requestedTabFlow
+            .onEach { configOfRequested ->
+                val indexOfRequested = MainTabConfig.entries.indexOf(configOfRequested)
+                withContext(Dispatchers.Main.immediate) {
+                    tabsNavigation.select(indexOfRequested)
+                }
+            }
+            .launchIn(coroutineScope)
+    }
 
     @OptIn(ExperimentalDecomposeApi::class)
     private val tabsFlow =
@@ -131,7 +152,7 @@ class MainComponent(
         }
 
     internal val uiModelFlow: StateFlow<UiMain> =
-        listState.handle(coroutineScope(), initialValue = UiMain()) { state ->
+        listState.handle(coroutineScope, initialValue = UiMain()) { state ->
             combine(
                 tabsFlow,
                 dialogFlow,

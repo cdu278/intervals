@@ -45,7 +45,7 @@ import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
+internal fun MainScreen(
     component: MainComponent,
     modifier: Modifier = Modifier,
 ) {

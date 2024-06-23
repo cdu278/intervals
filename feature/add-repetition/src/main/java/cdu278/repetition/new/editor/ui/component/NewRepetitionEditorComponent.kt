@@ -35,6 +35,7 @@ class NewRepetitionEditorComponent(
     private val type: RepetitionType,
     private val repository: RepetitionsRepository,
     private val close: () -> Unit,
+    private val onCreated: suspend () -> Unit,
 ) : IntervalsComponentContext by context {
 
     private val input =
@@ -135,6 +136,8 @@ class NewRepetitionEditorComponent(
                 )
 
             repetitionNotifications.schedule(id, date = nextRepetition)
+
+            onCreated()
 
             _savingFlow.value = false
             withContext(Dispatchers.Main.immediate) { close() }

@@ -41,6 +41,8 @@ class RepetitionComponent(
     private val dataMatching: RepetitionDataMatching,
     private val close: () -> Unit,
     private val repetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
+    private val onChecked: suspend () -> Unit,
+    private val onArchived: suspend () -> Unit,
 ) : IntervalsComponentContext by componentContext {
 
     private val state: State<RepetitionInput> =
@@ -199,6 +201,8 @@ class RepetitionComponent(
                 }
 
                 repetitionNotifications.schedule(repetition.id, nextRepetition)
+
+                onChecked()
             } else {
                 changeData("")
                 failedFlow.value = true
@@ -216,6 +220,7 @@ class RepetitionComponent(
         coroutineScope.launch {
             repository.updateState { RepetitionState.Forgotten() }
             state.update { Forgotten }
+            onArchived()
         }
         dialogNavigation.dismiss()
     }

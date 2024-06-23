@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 class NewRepetitionFlowComponent(
     context: IntervalsComponentContext,
     private val repository: RepetitionsRepository,
+    private val onCreated: suspend () -> Unit,
 ) : IntervalsComponentContext by context {
 
     private val stateNavigation = StackNavigation<NewRepetitionFlowStateConfig>()
@@ -55,6 +56,7 @@ class NewRepetitionFlowComponent(
                         close = {
                             stateNavigation.popWhile { it !is AddButton }
                         },
+                        onCreated = onCreated,
                     )
             }
         }
