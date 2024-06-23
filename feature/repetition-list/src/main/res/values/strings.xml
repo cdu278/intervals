@@ -4,11 +4,9 @@
     <string name="repetitionItem_nextRepetition">Next repetition</string>
     <string name="repetitionItem_repeat">Repeat</string>
     <string name="repetitionItem_iRemember">I remember</string>
-    <string name="repetitionItem_icon_text_password">**a</string>
     <string name="repetition_deletion_dialog_confirm">Delete</string>
     <string name="repetition_deletion_dialog_title_singular">Delete repetition</string>
     <string name="repetition_deletion_dialog_title_plural">Delete repetitions</string>
     <string name="repetition_deletion_dialog_text_singular">Are you sure you want to delete this repetition?</string>
     <string name="repetition_deletion_dialog_text_pluralFmt">Are you sure you want to delete %d repetitions?</string>
-    <string name="repetitionItem_icon_text_pin">**1</string>
 </resources>
