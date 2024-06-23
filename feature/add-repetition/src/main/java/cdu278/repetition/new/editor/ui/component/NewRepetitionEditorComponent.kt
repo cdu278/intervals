@@ -93,13 +93,18 @@ class NewRepetitionEditorComponent(
                     hint = UiInput(value = input.hint, changeHint),
                     data = dataUiModel,
                     saving = saving,
-                    error = if (input.label.isBlank()) {
-                        UiError.EmptyLabel
-                    } else {
-                        when (data) {
-                            is Valid -> null
-                            is Invalid -> data.error
+                    error = when (data) {
+                        is Valid -> {
+                            val label = input.label.trim()
+                            if (label.isEmpty()) {
+                                UiError.EmptyLabel
+                            } else if (repository.findByLabel(label) != null) {
+                                UiError.LabelExists
+                            } else {
+                                null
+                            }
                         }
+                        is Invalid -> data.error
                     },
                 )
             }
@@ -121,7 +126,7 @@ class NewRepetitionEditorComponent(
                 repository.create(
                     Repetition(
                         id = 0,
-                        input.label,
+                        label = input.label.trim(),
                         type,
                         data = when (type) {
                             Password, Pin -> RepetitionData.Hashed(hashes.of(data))

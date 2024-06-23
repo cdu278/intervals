@@ -16,6 +16,7 @@ data class UiNewRepetition(
     enum class Error {
 
         EmptyLabel,
+        LabelExists,
         EmptyPassword,
         PasswordsDontMatch,
     }

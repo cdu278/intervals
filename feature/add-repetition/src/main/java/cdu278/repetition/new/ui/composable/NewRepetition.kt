@@ -37,6 +37,7 @@ import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyPassword
+import cdu278.repetition.new.ui.UiNewRepetition.Error.LabelExists
 import cdu278.repetition.new.ui.UiNewRepetition.Error.PasswordsDontMatch
 import cdu278.foundation.android.R as FoundationR
 import cdu278.repetition.RepetitionType.Password as TypePassword
@@ -135,6 +136,7 @@ private val UiNewRepetition.Error.text: String
     get() = stringResource(
         id = when (this) {
             EmptyLabel -> R.string.newRepetition_emptyLabel
+            LabelExists -> R.string.newRepetition_labelExists
             EmptyPassword -> R.string.newRepetition_emptyPassword
             PasswordsDontMatch -> R.string.newRepetition_passwordsDontMatch
         }

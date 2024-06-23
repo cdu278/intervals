@@ -12,4 +12,6 @@ interface RepetitionsRepository {
     suspend fun create(repetition: Repetition): Long
 
     fun repetitionRepository(id: Long): RepetitionRepository
+
+    suspend fun findByLabel(label: String): Long?
 }

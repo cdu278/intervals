@@ -39,4 +39,8 @@ class RoomRepetitionsRepository(
     override fun repetitionRepository(id: Long): RepetitionRepository {
         return repetitionRepositoryFactory.invoke(id)
     }
+
+    override suspend fun findByLabel(label: String): Long? {
+        return dao.selectByLabel(label)
+    }
 }

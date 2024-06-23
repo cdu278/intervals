@@ -6,4 +6,5 @@
     <string name="newRepetition_emptyLabel">Please enter label</string>
     <string name="newRepetition_emptyPassword">Please enter password</string>
     <string name="newRepetition_passwordsDontMatch">Passwords don\'t match</string>
+    <string name="newRepetition_labelExists">This label is already in use</string>
 </resources>

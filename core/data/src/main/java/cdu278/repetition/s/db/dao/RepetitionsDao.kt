@@ -14,4 +14,7 @@ interface RepetitionsDao {
 
     @Insert
     suspend fun insert(repetition: RepetitionEntity): Long
+
+    @Query("SELECT id FROM repetition WHERE label = :label")
+    suspend fun selectByLabel(label: String): Long?
 }
