@@ -20,10 +20,10 @@ internal data class UiRepetition(
         data class Checking(
             val mode: Mode,
             val data: UiInput<String>,
-            val error: Error?,
+            val message: Message?,
+            val valid: Boolean,
             val hintState: HintState?,
             val inProgress: Boolean,
-            val failed: Boolean,
         ) : State {
 
             enum class Mode { Repetition, Remembering }
@@ -35,9 +35,10 @@ internal data class UiRepetition(
                 data class Shown(val text: String) : HintState
             }
 
-            enum class Error {
+            enum class Message {
 
-                Empty
+                DataEmpty,
+                Failed
             }
         }
 

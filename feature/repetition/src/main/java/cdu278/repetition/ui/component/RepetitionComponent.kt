@@ -32,7 +32,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import cdu278.repetition.ui.RepetitionInput.Checking as CheckingInput
 import cdu278.repetition.ui.UiRepetition.State as UiState
-import cdu278.repetition.ui.UiRepetition.State.Checking.Error as CheckingError
+import cdu278.repetition.ui.UiRepetition.State.Checking.Message as CheckingMessage
+import cdu278.repetition.ui.UiRepetition.State.Checking.Message.Failed as MessageFailed
 
 class RepetitionComponent(
     componentContext: IntervalsComponentContext,
@@ -61,9 +62,9 @@ class RepetitionComponent(
                 .prop(CheckingInput::data) { copy(data = it) }
         )
 
-    private val CheckingInput.error: CheckingError?
+    private val CheckingInput.error: CheckingMessage?
         get() = if (data.isEmpty()) {
-            CheckingError.Empty
+            CheckingMessage.DataEmpty
         } else {
             null
         }
@@ -123,13 +124,14 @@ class RepetitionComponent(
                             when (val state = repetition.state) {
                                 is RepetitionState.Repetition ->
                                     if (currentTime() >= state.date) {
+                                        val inputError = input.error
                                         UiState.Checking(
                                             mode = UiState.Checking.Mode.Repetition,
                                             data = UiInput(input.data, changeData),
-                                            error = input.error,
+                                            message = if (failed) MessageFailed else inputError,
+                                            valid = inputError == null,
                                             hintState,
                                             inProgress = checking,
-                                            failed = failed,
                                         )
                                     } else {
                                         UiState.RepetitionAt(
@@ -139,15 +141,17 @@ class RepetitionComponent(
                                         )
                                     }
 
-                                is RepetitionState.Forgotten ->
+                                is RepetitionState.Forgotten -> {
+                                    val inputError = input.error
                                     UiState.Checking(
                                         mode = UiState.Checking.Mode.Remembering,
                                         data = UiInput(input.data, changeData),
-                                        error = input.error,
+                                        message = if (failed) MessageFailed else inputError,
+                                        valid = inputError == null,
                                         hintState,
                                         inProgress = checking,
-                                        failed = failed,
                                     )
+                                }
                             }
                         }
                     },

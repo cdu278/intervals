@@ -23,10 +23,13 @@ import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.ui.UiRepetition
+import cdu278.repetition.ui.UiRepetition.State.Checking.Message.DataEmpty
+import cdu278.repetition.ui.UiRepetition.State.Checking.Message.Failed
 import cdu278.ui.composable.ErrorText
 import cdu278.ui.composable.TextInput
 import cdu278.ui.composable.TextPasswordField
 import cdu278.ui.composable.defaultMargin
+import cdu278.repetition.ui.UiRepetition.State.Checking.Message as CheckingMessage
 
 @Composable
 internal fun CheckingForm(
@@ -41,11 +44,7 @@ internal fun CheckingForm(
         modifier = modifier
     ) {
         ErrorText(
-            text = if (state.failed) {
-                stringResource(R.string.repetition_failed)
-            } else {
-                ""
-            },
+            text = state.message?.text ?: "",
         )
         Spacer(modifier = Modifier.height(defaultMargin))
         TextInput(text = state.data) {
@@ -61,7 +60,7 @@ internal fun CheckingForm(
                         Password -> KeyboardType.Password
                         Pin -> KeyboardType.NumberPassword
                     },
-                    imeAction = if (state.inProgress || state.error != null) None else Done,
+                    imeAction = if (state.inProgress || !state.valid) None else Done,
                 ),
                 keyboardActions = KeyboardActions(onDone = { check() }),
                 enabled = !state.inProgress,
@@ -82,3 +81,12 @@ internal fun CheckingForm(
         }
     }
 }
+
+private val CheckingMessage.text: String
+    @Composable
+    get() = stringResource(
+        id = when (this) {
+            DataEmpty -> R.string.repetition_emptyPassword
+            Failed -> R.string.repetition_failed
+        }
+    )
