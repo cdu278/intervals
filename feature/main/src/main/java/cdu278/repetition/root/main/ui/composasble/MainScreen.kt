@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -25,7 +26,12 @@ import androidx.compose.ui.res.stringResource
 import cdu278.intervals.main.ui.R
 import cdu278.repetition.deletion.dialog.ui.composable.RepetitionsDeletionDialog
 import cdu278.repetition.list.ui.composable.RepetitionList
-import cdu278.repetition.new.flow.ui.composable.NewRepetitionFlow
+import cdu278.repetition.new.flow.ui.UiNewRepetitionFlowState.AddButton
+import cdu278.repetition.new.flow.ui.UiNewRepetitionFlowState.Editor
+import cdu278.repetition.new.flow.ui.UiNewRepetitionFlowState.TypeSelection
+import cdu278.repetition.new.flow.ui.composable.NewRepetitionEditor
+import cdu278.repetition.new.flow.ui.composable.NewRepetitionFab
+import cdu278.repetition.new.flow.ui.composable.NewRepetitionTypeSelection
 import cdu278.repetition.root.main.ui.MainTabConfig
 import cdu278.repetition.root.main.ui.MainTabConfig.Active
 import cdu278.repetition.root.main.ui.MainTabConfig.Actual
@@ -44,82 +50,110 @@ fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
     val model by component.uiModelFlow.collectAsState()
-    Scaffold(
-        topBar = topBar@{
-            val selection = model.mode as? ModeSelection ?: return@topBar
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.main_selection_selectedFmt, selection.selectedCount)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = selection.quitSelectionModel) {
-                        Icon(
-                            painterResource(FoundationR.drawable.ic_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = selection.delete) {
-                        Icon(
-                            painterResource(FoundationR.drawable.ic_delete),
-                            contentDescription = null
-                        )
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            NavigationBar {
-                model.tabs.forEach {
-                    NavigationBarItem(
-                        selected = it.active,
-                        onClick = it.activate,
-                        icon = {
-                            Icon(
-                                painter = it.config.iconPainter,
-                                contentDescription = null,
+    Box(modifier = modifier) {
+        Scaffold(
+            topBar = topBar@{
+                val selection = model.mode as? ModeSelection ?: return@topBar
+                TopAppBar(
+                    title = {
+                        Text(
+                            stringResource(
+                                R.string.main_selection_selectedFmt,
+                                selection.selectedCount
                             )
-                        },
-                        label = { Text(it.config.title) },
-                        enabled = model.mode is ModeDefault,
-                    )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = selection.quitSelectionModel) {
+                            Icon(
+                                painterResource(FoundationR.drawable.ic_back),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = selection.delete) {
+                            Icon(
+                                painterResource(FoundationR.drawable.ic_delete),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                )
+            },
+            bottomBar = {
+                NavigationBar {
+                    model.tabs.forEach {
+                        NavigationBarItem(
+                            selected = it.active,
+                            onClick = it.activate,
+                            icon = {
+                                Icon(
+                                    painter = it.config.iconPainter,
+                                    contentDescription = null,
+                                )
+                            },
+                            label = { Text(it.config.title) },
+                            enabled = model.mode is ModeDefault,
+                        )
+                    }
+                }
+            },
+            floatingActionButton = {
+                if (model.mode is ModeDefault) {
+                    val newRepetitionModel
+                            by component.newRepetitionFlowComponent.stateFlow.collectAsState()
+                    when (val m = newRepetitionModel) {
+                        is AddButton -> NewRepetitionFab(m.component)
+                        else -> {}
+                    }
+                }
+            },
+            floatingActionButtonPosition = FabPosition.Center,
+            modifier = modifier
+        ) { paddings ->
+            Box(
+                modifier = Modifier
+                    .padding(paddings)
+                    .consumeWindowInsets(paddings)
+            ) {
+                val activeTab = remember(model.tabs) {
+                    model.tabs.find { it.active }!!
+                }
+                RepetitionList(
+                    activeTab.listComponent!!,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(defaultMargin)
+                        .align(Alignment.TopCenter)
+                )
+
+                val dialog =
+                    (model.mode as? ModeSelection)
+                        ?.dialog
+                        ?: return@Scaffold
+                when (dialog) {
+                    is Deletion -> RepetitionsDeletionDialog(dialog.component)
                 }
             }
-        },
-        modifier = modifier
-    ) { paddings ->
-        Box(
-            modifier = Modifier
-                .padding(paddings)
-                .consumeWindowInsets(paddings)
-        ) {
-            val activeTab = remember(model.tabs) {
-                model.tabs.find { it.active }!!
-            }
-            RepetitionList(
-                activeTab.listComponent!!,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(defaultMargin)
-                    .align(Alignment.TopCenter)
-            )
-            if (model.mode is ModeDefault) {
-                NewRepetitionFlow(
-                    component.newRepetitionFlowComponent,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-
-            val dialog =
-                (model.mode as? ModeSelection)
-                    ?.dialog
-                    ?: return@Scaffold
-            when (dialog) {
-                is Deletion -> RepetitionsDeletionDialog(dialog.component)
+        }
+        if (model.mode is ModeDefault) {
+            val newRepetitionFlowState
+                    by component.newRepetitionFlowComponent.stateFlow.collectAsState()
+            when (val m = newRepetitionFlowState) {
+                is TypeSelection ->
+                    NewRepetitionTypeSelection(
+                        m.component,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                is Editor ->
+                    NewRepetitionEditor(
+                        m.component,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                else -> {}
             }
         }
     }

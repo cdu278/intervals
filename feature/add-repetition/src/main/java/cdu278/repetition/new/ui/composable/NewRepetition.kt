@@ -43,7 +43,7 @@ import cdu278.repetition.RepetitionType.Password as TypePassword
 import cdu278.repetition.RepetitionType.Pin as TypePin
 
 @Composable
-fun NewRepetition(
+internal fun NewRepetition(
     component: NewRepetitionEditorComponent,
     modifier: Modifier = Modifier,
 ) {
