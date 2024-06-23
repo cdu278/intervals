@@ -19,12 +19,12 @@ import cdu278.notification.channel.config.RepetitionsChannelConfig
 import cdu278.notification.s.AndroidNotifications
 import cdu278.permission.notification.notificationPermission
 import cdu278.repetition.notification.s.AndroidRepetitionNotifications
+import cdu278.repetition.root.main.ui.composasble.theme.IntervalsTheme
 import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.component.RootComponent
 import cdu278.repetition.root.ui.composable.Root
 import cdu278.repetition.s.repository.RoomRepetitionsRepository
 import cdu278.repetition.spaced.SpacedRepetitions
-import cdu278.repetition.ui.composable.theme.PasssTheme
 import com.arkivanov.decompose.defaultComponentContext
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
             )
 
         setContent {
-            PasssTheme {
+            IntervalsTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,

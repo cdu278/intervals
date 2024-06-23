@@ -3,6 +3,7 @@ package cdu278.repetition.type.converter
 import androidx.room.TypeConverter
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 
 class RepetitionTypeConverter {
 
@@ -10,6 +11,7 @@ class RepetitionTypeConverter {
     fun toModel(data: String): RepetitionType {
         return when (data) {
             "password" -> Password
+            "pin" -> Pin
             else -> error("Invalid type: '$data'")
         }
     }
@@ -18,6 +20,7 @@ class RepetitionTypeConverter {
     fun fromModel(type: RepetitionType): String {
         return when (type) {
             Password -> "password"
+            Pin -> "pin"
         }
     }
 }

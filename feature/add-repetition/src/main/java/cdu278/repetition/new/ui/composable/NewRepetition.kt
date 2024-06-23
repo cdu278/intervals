@@ -1,6 +1,7 @@
 package cdu278.repetition.new.ui.composable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,14 +28,19 @@ import cdu278.ui.composable.TextInput
 import cdu278.ui.composable.defaultMargin
 import cdu278.ui.composable.doubleMargin
 import cdu278.intervals.repetition.add.ui.R
-import cdu278.repetition.new.data.ui.UiNewRepetitionData
+import cdu278.repetition.RepetitionType
+import cdu278.repetition.new.data.ui.UiNewRepetitionData.Password
+import cdu278.repetition.new.data.ui.UiNewRepetitionData.Pin
 import cdu278.repetition.new.data.ui.composable.NewPasswordData
+import cdu278.repetition.new.data.ui.composable.NewPinData
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyPassword
 import cdu278.repetition.new.ui.UiNewRepetition.Error.PasswordsDontMatch
 import cdu278.foundation.android.R as FoundationR
+import cdu278.repetition.RepetitionType.Password as TypePassword
+import cdu278.repetition.RepetitionType.Pin as TypePin
 
 @Composable
 fun NewRepetition(
@@ -55,7 +61,10 @@ fun NewRepetition(
             val model by component.uiModelFlow.collectAsState()
 
             Text(
-                text = stringResource(R.string.newRepetition_title),
+                text = stringResource(
+                    R.string.newRepetition_titleFmt,
+                    model.type.titleName
+                ),
                 style = MaterialTheme.typography.titleMedium,
             )
 
@@ -77,14 +86,10 @@ fun NewRepetition(
                 )
             }
 
+            Spacer(modifier = Modifier.height(defaultMargin))
             when (val data = model.data) {
-                is UiNewRepetitionData.Password ->
-                    NewPasswordData(
-                        data.component,
-                        modifier = Modifier
-                            .padding(top = defaultMargin)
-                            .fillMaxWidth()
-                    )
+                is Password -> NewPasswordData(data.component)
+                is Pin -> NewPinData(data.component)
             }
 
             TextInput(model.hint) {
@@ -134,3 +139,12 @@ private val UiNewRepetition.Error.text: String
             PasswordsDontMatch -> R.string.newRepetition_passwordsDontMatch
         }
     )
+
+private val RepetitionType.titleName: String
+    @Composable
+    get() = stringResource(
+        id = when (this) {
+            TypePassword -> FoundationR.string.password
+            TypePin -> FoundationR.string.pin
+        }
+    ).lowercase()

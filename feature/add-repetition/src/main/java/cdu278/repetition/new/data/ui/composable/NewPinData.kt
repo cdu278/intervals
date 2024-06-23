@@ -8,14 +8,14 @@ import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.foundation.android.R as FoundationR
 
 @Composable
-internal fun NewPasswordData(
+internal fun NewPinData(
     component: NewPasswordDataComponent<*>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     NewSecretData(
         component,
-        keyboardType = KeyboardType.Password,
-        type = stringResource(FoundationR.string.password),
+        keyboardType = KeyboardType.NumberPassword,
+        type = stringResource(FoundationR.string.pin),
         modifier = modifier
     )
 }

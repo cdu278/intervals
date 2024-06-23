@@ -2,5 +2,6 @@ package cdu278.repetition
 
 enum class RepetitionType {
 
-    Password
+    Password,
+    Pin,
 }

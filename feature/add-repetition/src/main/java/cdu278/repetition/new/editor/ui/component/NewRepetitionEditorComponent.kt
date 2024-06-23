@@ -8,6 +8,7 @@ import cdu278.repetition.RepetitionData
 import cdu278.repetition.RepetitionState
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.new.data.ui.UiNewRepetitionData
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.repetition.new.ui.NewRepetitionInput
@@ -53,18 +54,17 @@ class NewRepetitionEditorComponent(
         ChangeInput(input.prop(NewRepetitionInput::hint) { copy(hint = it) })
 
     private val dataUiModel: UiNewRepetitionData<UiError> = run {
-        val childContext = childContext("data")
+        val component =
+            NewPasswordDataComponent(
+                childContext("data"),
+                NewPasswordDataComponent.Errors(
+                    emptyPassword = { UiError.EmptyPassword },
+                    passwordsDontMatch = { UiError.PasswordsDontMatch },
+                ),
+            )
         when (type) {
-            Password ->
-                UiNewRepetitionData.Password(
-                    NewPasswordDataComponent(
-                        childContext,
-                        NewPasswordDataComponent.Errors(
-                            emptyPassword = { UiError.EmptyPassword },
-                            passwordsDontMatch = { UiError.PasswordsDontMatch },
-                        ),
-                    )
-                )
+            Password -> UiNewRepetitionData.Password(component)
+            Pin -> UiNewRepetitionData.Pin(component)
         }
     }
 
@@ -79,6 +79,7 @@ class NewRepetitionEditorComponent(
                 label = UiInput(value = input.value.label, changeLabel),
                 hint = UiInput(value = input.value.hint, changeHint),
                 data = dataUiModel,
+                type = Password,
             ),
         ) { input ->
             combine(
@@ -87,6 +88,7 @@ class NewRepetitionEditorComponent(
             ) { data, saving ->
                 UiNewRepetition(
                     label = UiInput(value = input.label, changeLabel),
+                    type = type,
                     hint = UiInput(value = input.hint, changeHint),
                     data = dataUiModel,
                     saving = saving,
@@ -121,7 +123,7 @@ class NewRepetitionEditorComponent(
                         input.label,
                         type,
                         data = when (type) {
-                            Password -> RepetitionData.Hashed(hashes.of(data))
+                            Password, Pin -> RepetitionData.Hashed(hashes.of(data))
                         },
                         state = RepetitionState.Repetition(
                             date = nextRepetition,

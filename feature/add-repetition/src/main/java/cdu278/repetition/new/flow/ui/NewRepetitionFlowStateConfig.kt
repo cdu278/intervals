@@ -10,6 +10,9 @@ sealed interface NewRepetitionFlowStateConfig : Parcelable {
     data object AddButton : NewRepetitionFlowStateConfig
 
     @Parcelize
+    data object TypeSelection : NewRepetitionFlowStateConfig
+
+    @Parcelize
     data class Editor(
         val type: RepetitionType
     ) : NewRepetitionFlowStateConfig

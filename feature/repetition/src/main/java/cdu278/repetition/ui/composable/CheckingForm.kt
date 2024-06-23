@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import cdu278.intervals.repetition.ui.R
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.ui.UiRepetition
 import cdu278.ui.composable.ErrorText
 import cdu278.ui.composable.TextInput
@@ -48,27 +49,26 @@ internal fun CheckingForm(
         )
         Spacer(modifier = Modifier.height(defaultMargin))
         TextInput(text = state.data) {
-            when (type) {
-                Password -> {
-                    val focusRequester = remember { FocusRequester() }
-                    LaunchedEffect(null) {
-                        focusRequester.requestFocus()
-                    }
-                    TextPasswordField(
-                        value,
-                        onValueChange,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = if (state.inProgress || state.error != null) None else Done,
-                        ),
-                        keyboardActions = KeyboardActions(onDone = { check() }),
-                        enabled = !state.inProgress,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
-                    )
-                }
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(null) {
+                focusRequester.requestFocus()
             }
+            TextPasswordField(
+                value,
+                onValueChange,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = when (type) {
+                        Password -> KeyboardType.Password
+                        Pin -> KeyboardType.NumberPassword
+                    },
+                    imeAction = if (state.inProgress || state.error != null) None else Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { check() }),
+                enabled = !state.inProgress,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+            )
         }
 
         state.hintState?.let {

@@ -68,4 +68,6 @@ dependencies {
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
 
     implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
+
+    implementation("com.google.android.material:material:${rootProject.extra["materialVersion"]}")
 }

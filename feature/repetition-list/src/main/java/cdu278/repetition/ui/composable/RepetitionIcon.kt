@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import cdu278.intervals.repetition.list.ui.R
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 
 @Composable
 fun RepetitionIcon(
@@ -31,7 +33,8 @@ fun RepetitionIcon(
             Text(
                 text = stringResource(
                     id = when (type) {
-                        RepetitionType.Password -> R.string.repetitionItem_icon_text_password
+                        Password -> R.string.repetitionItem_icon_text_password
+                        Pin -> R.string.repetitionItem_icon_text_pin
                     }
                 ),
                 fontFamily = FontFamily.Monospace,

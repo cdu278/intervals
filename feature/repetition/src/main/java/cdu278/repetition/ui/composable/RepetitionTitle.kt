@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.ui.UiRepetition
 
 @Composable
@@ -27,6 +28,7 @@ internal fun RepetitionTitle(
         Text(
             text = when (repetition.type) {
                 Password -> stringResource(R.string.password)
+                Pin -> stringResource(R.string.pin)
             },
             style = MaterialTheme.typography.headlineSmall,
         )

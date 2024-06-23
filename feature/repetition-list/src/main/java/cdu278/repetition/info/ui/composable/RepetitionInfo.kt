@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.info.ui.UiRepetitionInfo
 import cdu278.repetition.ui.composable.RepetitionIcon
 
@@ -47,6 +48,7 @@ internal fun RepetitionInfo(
             Text(
                 text = stringResource(when (info.type) {
                     Password -> R.string.password
+                    Pin -> R.string.pin
                 }),
                 style = secondaryStyle
             )
