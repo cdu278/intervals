@@ -1,6 +1,7 @@
 package cdu278.repetition.new.data.ui.composable
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -12,10 +13,11 @@ internal fun NewPasswordData(
     component: NewPasswordDataComponent<*>,
     modifier: Modifier = Modifier,
 ) {
+    val rawType = stringResource(FoundationR.string.password)
     NewSecretData(
         component,
         keyboardType = KeyboardType.Password,
-        type = stringResource(FoundationR.string.password),
+        type = remember(rawType) { rawType.lowercase() },
         modifier = modifier
     )
 }
