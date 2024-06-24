@@ -144,9 +144,10 @@ private val UiNewRepetition.Error.text: String
 
 private val RepetitionType.titleName: String
     @Composable
-    get() = stringResource(
-        id = when (this) {
-            TypePassword -> FoundationR.string.password
-            TypePin -> FoundationR.string.pin
+    get() = when (this) {
+        TypePassword -> {
+            val rawType = stringResource(FoundationR.string.password)
+            remember(rawType) { rawType.lowercase() }
         }
-    ).lowercase()
+        TypePin -> stringResource(FoundationR.string.pin)
+    }
