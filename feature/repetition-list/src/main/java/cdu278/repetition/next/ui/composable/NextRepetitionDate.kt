@@ -1,30 +1,25 @@
 package cdu278.repetition.next.ui.composable
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import cdu278.intervals.repetition.list.ui.R
+import cdu278.repetition.item.ui.composable.RepetitionItemColumn
 import cdu278.repetition.next.NextRepetitionDate
 import cdu278.repetition.next.ui.UppercaseRepetitionDateString
 
 @Composable
 internal fun NextRepetitionDate(
     nextRepetitionDate: NextRepetitionDate,
-    primaryStyle: TextStyle,
-    secondaryStyle: TextStyle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    titleColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
 ) {
-    Column(modifier = modifier) {
-        Text(
-            style = primaryStyle,
-            text = stringResource(R.string.repetitionItem_nextRepetition),
-        )
-        Text(
-            style = secondaryStyle,
-            text = with(UppercaseRepetitionDateString()) { nextRepetitionDate.string() },
-        )
-    }
+    RepetitionItemColumn(
+        title = stringResource(R.string.repetitionItem_nextRepetition),
+        content = with(UppercaseRepetitionDateString()) { nextRepetitionDate.string() },
+        titleColor = titleColor,
+        modifier = modifier
+    )
 }

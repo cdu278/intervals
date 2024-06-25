@@ -6,7 +6,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cdu278.repetition.info.ui.composable.RepetitionInfo
 import cdu278.repetition.state.ui.composable.RepetitionState
@@ -16,8 +16,7 @@ import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default.Item as 
 @Composable
 internal fun DefaultRepetitionItem(
     item: DefaultRepetitionItem,
-    primaryStyle: TextStyle,
-    secondaryStyle: TextStyle,
+    accentColor: Color,
     modifier: Modifier = Modifier
 ) {
     RepetitionItemCard(
@@ -27,16 +26,14 @@ internal fun DefaultRepetitionItem(
     ) {
         RepetitionInfo(
             item.info,
-            primaryStyle,
-            secondaryStyle,
+            accentColor = accentColor,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = halfMargin)
         )
         RepetitionState(
             item.state,
-            primaryStyle,
-            secondaryStyle,
+            titleColor = accentColor,
             modifier = Modifier
                 .width(125.dp)
         )

@@ -5,15 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import cdu278.repetition.info.ui.composable.RepetitionInfo
 import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection.Item as SelectionRepetitionItem
 
 @Composable
 internal fun SelectionRepetitionItem(
     item: SelectionRepetitionItem,
-    primaryStyle: TextStyle,
-    secondaryStyle: TextStyle,
+    accentColor: Color,
     modifier: Modifier = Modifier
 ) {
     RepetitionItemCard(
@@ -29,8 +27,7 @@ internal fun SelectionRepetitionItem(
     ) {
         RepetitionInfo(
             item.info,
-            primaryStyle,
-            secondaryStyle,
+            accentColor = accentColor,
         )
     }
 }

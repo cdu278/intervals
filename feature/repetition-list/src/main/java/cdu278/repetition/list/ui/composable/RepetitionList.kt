@@ -45,12 +45,7 @@ fun RepetitionList(
                         .padding(top = doubleMargin),
                 )
             is NonEmpty -> {
-                val primaryStyle =
-                    MaterialTheme.typography
-                        .bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
-                val secondaryStyle =
-                    MaterialTheme.typography
-                        .bodySmall.copy(color = MaterialTheme.colorScheme.secondary)
+                val accentColor = MaterialTheme.colorScheme.tertiary
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(halfMargin),
                 ) {
@@ -59,19 +54,16 @@ fun RepetitionList(
                             items(mode.items, key = { it.info.id }) { item ->
                                 DefaultRepetitionItem(
                                     item,
-                                    primaryStyle,
-                                    secondaryStyle,
+                                    accentColor = accentColor,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                 )
                             }
-
                         is Selection ->
                             items(mode.items, key = { it.info.id }) { item ->
                                 SelectionRepetitionItem(
                                     item,
-                                    primaryStyle,
-                                    secondaryStyle,
+                                    accentColor = accentColor,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                 )

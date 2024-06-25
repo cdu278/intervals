@@ -40,6 +40,7 @@ import cdu278.repetition.root.main.ui.UiMainDialog.Deletion
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R as FoundationR
+import cdu278.intervals.core.ui.R as CoreR
 import cdu278.repetition.root.main.ui.UiMainMode.Default as ModeDefault
 import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
 
@@ -163,7 +164,7 @@ private val MainTabConfig.iconPainter: Painter
     @Composable
     get() = painterResource(
         id = when (this) {
-            Actual -> R.drawable.ic_actual
+            Actual -> CoreR.drawable.ic_test
             Active -> FoundationR.drawable.ic_intervals
             Archive -> R.drawable.ic_archive
         }

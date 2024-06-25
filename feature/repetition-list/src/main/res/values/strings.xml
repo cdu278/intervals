@@ -2,7 +2,7 @@
 <resources>
     <string name="noItemsYet">Nothing here</string>
     <string name="repetitionItem_nextRepetition">Next repetition</string>
-    <string name="repetitionItem_repeat">Repeat</string>
+    <string name="repetitionItem_repeat">Test</string>
     <string name="repetitionItem_iRemember">I remember</string>
     <string name="repetition_deletion_dialog_confirm">Delete</string>
     <string name="repetition_deletion_dialog_title_singular">Delete repetition</string>
