@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import cdu278.intervals.repetition.add.ui.R
 import cdu278.repetition.data.ui.composable.emptyRepetitionDataMessage
@@ -82,7 +83,10 @@ internal fun NewRepetition(
                     onValueChange,
                     label = { Text(stringResource(FoundationR.string.label)) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
                     modifier = Modifier
                         .padding(top = doubleMargin)
                         .fillMaxWidth()
@@ -102,6 +106,9 @@ internal fun NewRepetition(
                     value,
                     onValueChange,
                     label = { Text(stringResource(FoundationR.string.hint)) },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
