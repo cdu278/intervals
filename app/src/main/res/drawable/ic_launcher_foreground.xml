@@ -10,13 +10,13 @@
       android:translateY="32.4">
     <path
         android:pathData="m86.88,22.61l-35.42,0c-7.22,0 -7.22,10.78 0,10.78l35.42,0c7.22,0 7.22,-10.78 0,-10.78zM21.12,33.39l11.92,0c7.22,0 7.22,-10.78 0,-10.78L21.12,22.61c-7.22,0 -7.22,10.78 0,10.78z"
-        android:fillColor="#000"/>
+        android:fillColor="@color/md_theme_onPrimary_mediumContrast"/>
     <path
         android:pathData="M21.12,48.61L56.55,48.61c7.22,0 7.22,10.78 0,10.78L21.12,59.39c-7.22,0 -7.22,-10.78 0,-10.78zM86.88,59.39l-11.92,0c-7.22,0 -7.22,-10.78 0,-10.78l11.92,0c7.22,0 7.22,10.78 0,10.78z"
-        android:fillColor="#000"/>
+        android:fillColor="@color/md_theme_onPrimary_mediumContrast"/>
     <path
         android:pathData="m86.88,74.61l-35.42,0c-7.22,0 -7.22,10.78 0,10.78l35.42,0c7.22,0 7.22,-10.78 0,-10.78zM21.12,85.39l11.92,0c7.22,0 7.22,-10.78 0,-10.78L21.12,74.61c-7.22,0 -7.22,10.78 0,10.78z"
-        android:fillColor="#000"/>
+        android:fillColor="@color/md_theme_onPrimary_mediumContrast"/>
   </group>
 
 </vector>
