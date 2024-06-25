@@ -24,5 +24,6 @@ buildscript {
         set("workmanagerVersion", "2.9.0")
         set("roomVersion", "2.6.1")
         set("materialVersion", "1.12.0")
+        set("annotationVersion", "1.8.0")
     }
 }

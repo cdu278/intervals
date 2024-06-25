@@ -23,4 +23,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
+
+    implementation("androidx.annotation:annotation:${rootProject.extra["annotationVersion"]}")
 }
