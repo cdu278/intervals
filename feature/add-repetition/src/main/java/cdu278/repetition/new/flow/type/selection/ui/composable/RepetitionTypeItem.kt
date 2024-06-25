@@ -15,6 +15,9 @@ import androidx.compose.ui.res.stringResource
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType
 import cdu278.ui.composable.defaultMargin
+import cdu278.repetition.RepetitionType.Email as TypeEmail
+import cdu278.repetition.RepetitionType.Password as TypePassword
+import cdu278.repetition.RepetitionType.Pin as TypePin
 
 @Composable
 internal fun NewRepetitionTypeItem(
@@ -32,8 +35,9 @@ internal fun NewRepetitionTypeItem(
         Text(
             text = stringResource(
                 id = when (type) {
-                    RepetitionType.Password -> R.string.password
-                    RepetitionType.Pin -> R.string.pin
+                    TypePassword -> R.string.password
+                    TypePin -> R.string.pin
+                    TypeEmail -> R.string.email
                 }
             ),
             modifier = Modifier
@@ -50,8 +54,9 @@ private fun RepetitionIcon(
     Icon(
         painterResource(
             id = when (type) {
-                RepetitionType.Password -> R.drawable.ic_password
-                RepetitionType.Pin -> R.drawable.ic_pin
+                TypePassword -> R.drawable.ic_password
+                TypePin -> R.drawable.ic_pin
+                TypeEmail -> R.drawable.ic_email
             }
         ),
         contentDescription = null,

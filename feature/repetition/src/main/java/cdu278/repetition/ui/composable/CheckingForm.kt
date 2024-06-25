@@ -20,14 +20,16 @@ import androidx.compose.ui.text.input.ImeAction.Companion.None
 import androidx.compose.ui.text.input.KeyboardType
 import cdu278.intervals.repetition.ui.R
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.ui.UiRepetition
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message.DataEmpty
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message.Failed
+import cdu278.ui.composable.EmailTextField
 import cdu278.ui.composable.ErrorText
 import cdu278.ui.composable.TextInput
-import cdu278.ui.composable.TextPasswordField
+import cdu278.ui.composable.SecretPasswordField
 import cdu278.ui.composable.defaultMargin
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message as CheckingMessage
 
@@ -52,22 +54,40 @@ internal fun CheckingForm(
             LaunchedEffect(null) {
                 focusRequester.requestFocus()
             }
-            TextPasswordField(
-                value,
-                onValueChange,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = when (type) {
-                        Password -> KeyboardType.Password
-                        Pin -> KeyboardType.NumberPassword
-                    },
-                    imeAction = if (state.inProgress || !state.valid) None else Done,
-                ),
-                keyboardActions = KeyboardActions(onDone = { check() }),
-                enabled = !state.inProgress,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-            )
+            when (type) {
+                Password, Pin ->
+                    SecretPasswordField(
+                        value,
+                        onValueChange,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = when (type) {
+                                Password -> KeyboardType.Password
+                                Pin -> KeyboardType.NumberPassword
+                                else -> throw RuntimeException("Unreachable")
+                            },
+                            imeAction = if (state.inProgress || !state.valid) None else Done,
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { check() }),
+                        enabled = !state.inProgress,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                    )
+                Email ->
+                    EmailTextField(
+                        value,
+                        onValueChange,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = if (state.inProgress || !state.valid) None else Done,
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { check() }),
+                        enabled = !state.inProgress,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                    )
+            }
         }
 
         state.hintState?.let {

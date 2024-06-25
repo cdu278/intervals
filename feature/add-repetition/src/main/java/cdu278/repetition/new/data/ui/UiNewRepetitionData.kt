@@ -1,8 +1,8 @@
 package cdu278.repetition.new.data.ui
 
+import cdu278.repetition.new.data.ui.component.NewEmailDataComponent
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.repetition.new.data.ui.component.NewRepetitionDataComponent
-
 
 sealed interface UiNewRepetitionData<Error> {
 
@@ -14,5 +14,9 @@ sealed interface UiNewRepetitionData<Error> {
 
     data class Pin<Error>(
         override val component: NewPasswordDataComponent<Error>,
+    ) : UiNewRepetitionData<Error>
+
+    data class Email<Error>(
+        override val component: NewEmailDataComponent<Error>,
     ) : UiNewRepetitionData<Error>
 }

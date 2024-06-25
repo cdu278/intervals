@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cdu278.ui.composable.defaultMargin
 import cdu278.foundation.android.R
+import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.info.ui.UiRepetitionInfo
@@ -49,6 +50,7 @@ internal fun RepetitionInfo(
                 text = stringResource(when (info.type) {
                     Password -> R.string.password
                     Pin -> R.string.pin
+                    Email -> R.string.email
                 }),
                 style = secondaryStyle
             )

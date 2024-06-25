@@ -1,17 +1,17 @@
 package cdu278.repetition.new.data.ui.component
 
 import cdu278.computable.Computable
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import cdu278.decompose.context.coroutineScope
-import cdu278.state.State
-import cdu278.state.prop
 import cdu278.password.ui.ConfirmedPasswordInput
 import cdu278.repetition.new.data.ui.UiNewPasswordData
+import cdu278.state.State
+import cdu278.state.prop
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
 import cdu278.ui.input.validated.Validated
+import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 
 class NewPasswordDataComponent<Error>(
     context: ComponentContext,

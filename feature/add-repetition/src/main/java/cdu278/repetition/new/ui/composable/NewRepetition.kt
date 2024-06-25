@@ -29,17 +29,22 @@ import cdu278.ui.composable.defaultMargin
 import cdu278.ui.composable.doubleMargin
 import cdu278.intervals.repetition.add.ui.R
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.new.data.ui.UiNewRepetitionData.Email
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Password
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Pin
+import cdu278.repetition.new.data.ui.composable.NewEmailData
 import cdu278.repetition.new.data.ui.composable.NewPasswordData
 import cdu278.repetition.new.data.ui.composable.NewPinData
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
-import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyPassword
+import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyData
+import cdu278.repetition.new.ui.UiNewRepetition.Error.InvalidData
 import cdu278.repetition.new.ui.UiNewRepetition.Error.LabelExists
 import cdu278.repetition.new.ui.UiNewRepetition.Error.PasswordsDontMatch
+import cdu278.string.ui.composable.lowercaseStringResource
 import cdu278.foundation.android.R as FoundationR
+import cdu278.repetition.RepetitionType.Email as TypeEmail
 import cdu278.repetition.RepetitionType.Password as TypePassword
 import cdu278.repetition.RepetitionType.Pin as TypePin
 
@@ -64,7 +69,7 @@ internal fun NewRepetition(
             Text(
                 text = stringResource(
                     R.string.newRepetition_titleFmt,
-                    model.type.titleName
+                    model.type.lowercaseText
                 ),
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -91,6 +96,7 @@ internal fun NewRepetition(
             when (val data = model.data) {
                 is Password -> NewPasswordData(data.component)
                 is Pin -> NewPinData(data.component)
+                is Email -> NewEmailData(data.component)
             }
 
             TextInput(model.hint) {
@@ -106,7 +112,7 @@ internal fun NewRepetition(
             }
 
             ErrorText(
-                text = model.error?.text ?: "",
+                text = model.errorText,
                 modifier = Modifier
                     .padding(top = defaultMargin)
             )
@@ -131,23 +137,30 @@ internal fun NewRepetition(
     }
 }
 
-private val UiNewRepetition.Error.text: String
+private val UiNewRepetition.errorText: String
     @Composable
-    get() = stringResource(
-        id = when (this) {
-            EmptyLabel -> R.string.newRepetition_emptyLabel
-            LabelExists -> R.string.newRepetition_labelExists
-            EmptyPassword -> R.string.newRepetition_emptyPassword
-            PasswordsDontMatch -> R.string.newRepetition_passwordsDontMatch
+    get() = this.error?.let { error ->
+        when (error) {
+            EmptyLabel -> stringResource(R.string.newRepetition_emptyLabel)
+            LabelExists -> stringResource(R.string.newRepetition_labelExists)
+            EmptyData ->
+                stringResource(
+                    R.string.newRepetition_emptyDataFmt,
+                    this.type.lowercaseText,
+                )
+            PasswordsDontMatch -> stringResource(R.string.newRepetition_passwordsDontMatch)
+            InvalidData ->
+                stringResource(
+                    R.string.newRepetition_invalidDataFmt,
+                    this.type.lowercaseText
+                )
         }
-    )
+    } ?: ""
 
-private val RepetitionType.titleName: String
+private val RepetitionType.lowercaseText: String
     @Composable
     get() = when (this) {
-        TypePassword -> {
-            val rawType = stringResource(FoundationR.string.password)
-            remember(rawType) { rawType.lowercase() }
-        }
+        TypePassword -> lowercaseStringResource(FoundationR.string.password)
         TypePin -> stringResource(FoundationR.string.pin)
+        TypeEmail -> lowercaseStringResource(FoundationR.string.email)
     }

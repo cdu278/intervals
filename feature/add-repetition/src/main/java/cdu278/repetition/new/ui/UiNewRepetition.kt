@@ -17,7 +17,8 @@ data class UiNewRepetition(
 
         EmptyLabel,
         LabelExists,
-        EmptyPassword,
+        EmptyData,
         PasswordsDontMatch,
+        InvalidData
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="newRepetition_enterSecretFmt">Enter %s</string>
-    <string name="newRepetition_enterSecretConfirmationFmt">Enter the %s again</string>
+    <string name="newRepetition_enterDataFmt">Enter %s</string>
+    <string name="newRepetition_enterDataConfirmationFmt">Enter the %s again</string>
     <string name="newRepetition_titleFmt">New %s repetition</string>
     <string name="newRepetition_emptyLabel">Please enter label</string>
-    <string name="newRepetition_emptyPassword">Please enter password</string>
+    <string name="newRepetition_emptyDataFmt">Please enter %s</string>
     <string name="newRepetition_passwordsDontMatch">Passwords don\'t match</string>
     <string name="newRepetition_labelExists">This label is already in use</string>
+    <string name="newRepetition_invalidDataFmt">Please enter a correct %s</string>
 </resources>

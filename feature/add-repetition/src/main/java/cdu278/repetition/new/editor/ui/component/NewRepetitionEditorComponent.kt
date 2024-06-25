@@ -7,9 +7,11 @@ import cdu278.repetition.Repetition
 import cdu278.repetition.RepetitionData
 import cdu278.repetition.RepetitionState
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.new.data.ui.UiNewRepetitionData
+import cdu278.repetition.new.data.ui.component.NewEmailDataComponent
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
 import cdu278.repetition.new.ui.NewRepetitionInput
 import cdu278.repetition.new.ui.UiNewRepetition
@@ -55,17 +57,28 @@ class NewRepetitionEditorComponent(
         ChangeInput(input.prop(NewRepetitionInput::hint) { copy(hint = it) })
 
     private val dataUiModel: UiNewRepetitionData<UiError> = run {
-        val component =
+        val newSecretComponent by lazy {
             NewPasswordDataComponent(
                 childContext("data"),
                 NewPasswordDataComponent.Errors(
-                    emptyPassword = { UiError.EmptyPassword },
+                    emptyPassword = { UiError.EmptyData },
                     passwordsDontMatch = { UiError.PasswordsDontMatch },
                 ),
             )
+        }
+        val newEmailComponent by lazy {
+            NewEmailDataComponent(
+                childContext("data"),
+                NewEmailDataComponent.Errors(
+                    empty = { UiError.EmptyData },
+                    notValid = { UiError.InvalidData },
+                ),
+            )
+        }
         when (type) {
-            Password -> UiNewRepetitionData.Password(component)
-            Pin -> UiNewRepetitionData.Pin(component)
+            Password -> UiNewRepetitionData.Password(newSecretComponent)
+            Pin -> UiNewRepetitionData.Pin(newSecretComponent)
+            Email -> UiNewRepetitionData.Email(newEmailComponent)
         }
     }
 
@@ -104,6 +117,7 @@ class NewRepetitionEditorComponent(
                                 null
                             }
                         }
+
                         is Invalid -> data.error
                     },
                 )
@@ -129,7 +143,7 @@ class NewRepetitionEditorComponent(
                         label = input.label.trim(),
                         type,
                         data = when (type) {
-                            Password, Pin -> RepetitionData.Hashed(hashes.of(data))
+                            Password, Pin, Email -> RepetitionData.Hashed(hashes.of(data))
                         },
                         state = RepetitionState.Repetition(
                             date = nextRepetition,

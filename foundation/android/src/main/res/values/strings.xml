@@ -12,4 +12,5 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="pin">PIN</string>
+    <string name="email">E-mail</string>
 </resources>
