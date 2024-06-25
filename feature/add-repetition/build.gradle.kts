@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":foundation"))
     implementation(project(":foundation:android"))
     implementation(project(":core"))
+    implementation(project(":core:ui"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 

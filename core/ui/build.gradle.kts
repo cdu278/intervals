@@ -1,12 +1,10 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "cdu278.intervals.repetition.ui"
+    namespace = "cdu278.intervals.core.ui"
     compileSdk = 34
 
     defaultConfig {
@@ -42,11 +40,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":foundation"))
-    implementation(project(":foundation:android"))
     implementation(project(":core"))
-    implementation(project(":core:data"))
-    implementation(project(":core:ui"))
+    implementation(project(":foundation:android"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
@@ -60,10 +55,4 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
-
-    implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
-
-    implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
 }

@@ -4,6 +4,7 @@ import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.util.asStateFlow
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.repetition.RepetitionState
+import cdu278.repetition.RepetitionType
 import cdu278.repetition.dialog.ui.RepetitionDialogConfig
 import cdu278.repetition.dialog.ui.RepetitionDialogConfig.ArchiveConfirmation
 import cdu278.repetition.matching.RepetitionDataMatching
@@ -64,12 +65,13 @@ class RepetitionComponent(
                 .prop(CheckingInput::data) { copy(data = it) }
         )
 
-    private val CheckingInput.error: CheckingMessage?
-        get() = if (data.isEmpty()) {
-            CheckingMessage.DataEmpty
+    private fun CheckingInput.error(type: RepetitionType): CheckingMessage? {
+        return if (data.isEmpty()) {
+            CheckingMessage.DataEmpty(type)
         } else {
             null
         }
+    }
 
     private val checkingFlow = MutableStateFlow(false)
 
@@ -126,7 +128,7 @@ class RepetitionComponent(
                             when (val state = repetition.state) {
                                 is RepetitionState.Repetition ->
                                     if (currentTime() >= state.date) {
-                                        val inputError = input.error
+                                        val inputError = input.error(repetition.type)
                                         UiState.Checking(
                                             mode = UiState.Checking.Mode.Repetition,
                                             data = UiInput(input.data, changeData),
@@ -144,7 +146,7 @@ class RepetitionComponent(
                                     }
 
                                 is RepetitionState.Forgotten -> {
-                                    val inputError = input.error
+                                    val inputError = input.error(repetition.type)
                                     UiState.Checking(
                                         mode = UiState.Checking.Mode.Remembering,
                                         data = UiInput(input.data, changeData),

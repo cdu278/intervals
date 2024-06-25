@@ -23,12 +23,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import cdu278.ui.composable.ErrorText
-import cdu278.ui.composable.TextInput
-import cdu278.ui.composable.defaultMargin
-import cdu278.ui.composable.doubleMargin
 import cdu278.intervals.repetition.add.ui.R
-import cdu278.repetition.RepetitionType
+import cdu278.repetition.data.ui.composable.emptyRepetitionDataMessage
+import cdu278.repetition.data.ui.composable.invalidRepetitionDataMessage
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Email
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Password
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Pin
@@ -37,16 +34,17 @@ import cdu278.repetition.new.data.ui.composable.NewPasswordData
 import cdu278.repetition.new.data.ui.composable.NewPinData
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import cdu278.repetition.new.ui.UiNewRepetition
-import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
 import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyData
+import cdu278.repetition.new.ui.UiNewRepetition.Error.EmptyLabel
 import cdu278.repetition.new.ui.UiNewRepetition.Error.InvalidData
 import cdu278.repetition.new.ui.UiNewRepetition.Error.LabelExists
 import cdu278.repetition.new.ui.UiNewRepetition.Error.PasswordsDontMatch
-import cdu278.string.ui.composable.lowercaseStringResource
+import cdu278.repetition.type.ui.composable.lowercaseText
+import cdu278.ui.composable.ErrorText
+import cdu278.ui.composable.TextInput
+import cdu278.ui.composable.defaultMargin
+import cdu278.ui.composable.doubleMargin
 import cdu278.foundation.android.R as FoundationR
-import cdu278.repetition.RepetitionType.Email as TypeEmail
-import cdu278.repetition.RepetitionType.Password as TypePassword
-import cdu278.repetition.RepetitionType.Pin as TypePin
 
 @Composable
 internal fun NewRepetition(
@@ -143,24 +141,8 @@ private val UiNewRepetition.errorText: String
         when (error) {
             EmptyLabel -> stringResource(R.string.newRepetition_emptyLabel)
             LabelExists -> stringResource(R.string.newRepetition_labelExists)
-            EmptyData ->
-                stringResource(
-                    R.string.newRepetition_emptyDataFmt,
-                    this.type.lowercaseText,
-                )
+            EmptyData -> emptyRepetitionDataMessage(this.type)
             PasswordsDontMatch -> stringResource(R.string.newRepetition_passwordsDontMatch)
-            InvalidData ->
-                stringResource(
-                    R.string.newRepetition_invalidDataFmt,
-                    this.type.lowercaseText
-                )
+            InvalidData -> invalidRepetitionDataMessage(this.type)
         }
     } ?: ""
-
-private val RepetitionType.lowercaseText: String
-    @Composable
-    get() = when (this) {
-        TypePassword -> lowercaseStringResource(FoundationR.string.password)
-        TypePin -> stringResource(FoundationR.string.pin)
-        TypeEmail -> lowercaseStringResource(FoundationR.string.email)
-    }

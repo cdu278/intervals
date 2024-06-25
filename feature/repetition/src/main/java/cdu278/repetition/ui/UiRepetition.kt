@@ -35,10 +35,13 @@ internal data class UiRepetition(
                 data class Shown(val text: String) : HintState
             }
 
-            enum class Message {
+            sealed interface Message {
 
-                DataEmpty,
-                Failed
+                data class DataEmpty(
+                    val type: RepetitionType
+                ) : Message
+
+                data object Failed : Message
             }
         }
 

@@ -23,6 +23,7 @@ import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
 import cdu278.repetition.RepetitionType.Pin
+import cdu278.repetition.data.ui.composable.emptyRepetitionDataMessage
 import cdu278.repetition.ui.UiRepetition
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message.DataEmpty
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message.Failed
@@ -104,9 +105,7 @@ internal fun CheckingForm(
 
 private val CheckingMessage.text: String
     @Composable
-    get() = stringResource(
-        id = when (this) {
-            DataEmpty -> R.string.repetition_emptyPassword
-            Failed -> R.string.repetition_failed
+    get() = when (this) {
+            is DataEmpty -> emptyRepetitionDataMessage(this.type)
+            is Failed -> stringResource(R.string.repetition_failed)
         }
-    )

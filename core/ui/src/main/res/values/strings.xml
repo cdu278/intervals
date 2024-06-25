@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emptyRepetitionDataMessageFmt">Please enter %s</string>
+    <string name="invalidRepetitionDataMessageFmt">Please enter a correct %s</string>
+</resources>
