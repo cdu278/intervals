@@ -13,4 +13,5 @@ val RepetitionType.lowercaseText: String
         Password -> lowercaseStringResource(R.string.password)
         Pin -> stringResource(R.string.pin)
         Email -> lowercaseStringResource(R.string.email)
+        Phone -> lowercaseStringResource(R.string.phone)
     }

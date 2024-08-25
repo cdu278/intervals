@@ -4,5 +4,6 @@ enum class RepetitionType {
 
     Password,
     Pin,
-    Email
+    Email,
+    Phone,
 }

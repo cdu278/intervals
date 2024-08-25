@@ -17,6 +17,7 @@ import cdu278.repetition.RepetitionType
 import cdu278.ui.composable.defaultMargin
 import cdu278.repetition.RepetitionType.Email as TypeEmail
 import cdu278.repetition.RepetitionType.Password as TypePassword
+import cdu278.repetition.RepetitionType.Phone as TypePhone
 import cdu278.repetition.RepetitionType.Pin as TypePin
 
 @Composable
@@ -38,6 +39,7 @@ internal fun NewRepetitionTypeItem(
                     TypePassword -> R.string.password
                     TypePin -> R.string.pin
                     TypeEmail -> R.string.email
+                    TypePhone -> R.string.phone
                 }
             ),
             modifier = Modifier
@@ -57,6 +59,7 @@ private fun RepetitionIcon(
                 TypePassword -> R.drawable.ic_password
                 TypePin -> R.drawable.ic_pin
                 TypeEmail -> R.drawable.ic_email
+                TypePhone -> R.drawable.ic_phone
             }
         ),
         contentDescription = null,

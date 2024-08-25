@@ -13,4 +13,5 @@
     <string name="yes">Yes</string>
     <string name="pin">PIN</string>
     <string name="email">E-mail</string>
+    <string name="phone">Phone</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.foundation.android.R as CommonR
 
@@ -35,6 +36,7 @@ fun RepetitionIcon(
                         Password -> CommonR.drawable.ic_password
                         Pin -> CommonR.drawable.ic_pin
                         Email -> CommonR.drawable.ic_email
+                        Phone -> CommonR.drawable.ic_phone
                     }
                 ),
                 contentDescription = null

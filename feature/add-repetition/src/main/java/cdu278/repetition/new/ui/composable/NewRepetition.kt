@@ -29,9 +29,11 @@ import cdu278.repetition.data.ui.composable.emptyRepetitionDataMessage
 import cdu278.repetition.data.ui.composable.invalidRepetitionDataMessage
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Email
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Password
+import cdu278.repetition.new.data.ui.UiNewRepetitionData.Phone
 import cdu278.repetition.new.data.ui.UiNewRepetitionData.Pin
 import cdu278.repetition.new.data.ui.composable.NewEmailData
 import cdu278.repetition.new.data.ui.composable.NewPasswordData
+import cdu278.repetition.new.data.ui.composable.NewPhoneData
 import cdu278.repetition.new.data.ui.composable.NewPinData
 import cdu278.repetition.new.editor.ui.component.NewRepetitionEditorComponent
 import cdu278.repetition.new.ui.UiNewRepetition
@@ -99,6 +101,7 @@ internal fun NewRepetition(
                 is Password -> NewPasswordData(data.component)
                 is Pin -> NewPinData(data.component)
                 is Email -> NewEmailData(data.component)
+                is Phone -> NewPhoneData(data.component)
             }
 
             TextInput(model.hint) {

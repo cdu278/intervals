@@ -9,10 +9,12 @@ import cdu278.repetition.RepetitionState
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.new.data.ui.UiNewRepetitionData
 import cdu278.repetition.new.data.ui.component.NewEmailDataComponent
 import cdu278.repetition.new.data.ui.component.NewPasswordDataComponent
+import cdu278.repetition.new.data.ui.component.NewPhoneDataComponent
 import cdu278.repetition.new.ui.NewRepetitionInput
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.s.repository.RepetitionsRepository
@@ -75,10 +77,19 @@ class NewRepetitionEditorComponent(
                 ),
             )
         }
+        val newPhoneComponent by lazy {
+            NewPhoneDataComponent(
+                childContext("data"),
+                NewPhoneDataComponent.Errors(
+                    empty = { UiError.EmptyData },
+                ),
+            )
+        }
         when (type) {
             Password -> UiNewRepetitionData.Password(newSecretComponent)
             Pin -> UiNewRepetitionData.Pin(newSecretComponent)
             Email -> UiNewRepetitionData.Email(newEmailComponent)
+            Phone -> UiNewRepetitionData.Phone(newPhoneComponent)
         }
     }
 
@@ -143,7 +154,7 @@ class NewRepetitionEditorComponent(
                         label = input.label.trim(),
                         type,
                         data = when (type) {
-                            Password, Pin, Email -> RepetitionData.Hashed(hashes.of(data))
+                            Password, Pin, Email, Phone -> RepetitionData.Hashed(hashes.of(data))
                         },
                         state = RepetitionState.Repetition(
                             date = nextRepetition,

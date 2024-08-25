@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 
 class RepetitionTypeConverter {
@@ -14,6 +15,7 @@ class RepetitionTypeConverter {
             "password" -> Password
             "pin" -> Pin
             "email" -> Email
+            "phone" -> Phone
             else -> error("Invalid type: '$data'")
         }
     }
@@ -24,6 +26,7 @@ class RepetitionTypeConverter {
             Password -> "password"
             Pin -> "pin"
             Email -> "email"
+            Phone -> "phone"
         }
     }
 }

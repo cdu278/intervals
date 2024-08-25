@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.info.ui.UiRepetitionInfo
 import cdu278.repetition.item.ui.composable.RepetitionItemColumn
@@ -44,6 +45,7 @@ internal fun RepetitionInfo(
                     Password -> R.string.password
                     Pin -> R.string.pin
                     Email -> R.string.email
+                    Phone -> R.string.phone
                 },
             ),
         )

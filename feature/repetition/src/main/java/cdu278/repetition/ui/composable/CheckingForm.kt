@@ -22,6 +22,7 @@ import cdu278.intervals.repetition.ui.R
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.data.ui.composable.emptyRepetitionDataMessage
 import cdu278.repetition.ui.UiRepetition
@@ -74,12 +75,17 @@ internal fun CheckingForm(
                             .fillMaxWidth()
                             .focusRequester(focusRequester)
                     )
-                Email ->
+
+                Email, Phone ->
                     EmailTextField(
                         value,
                         onValueChange,
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
+                            keyboardType = when (type) {
+                                Email -> KeyboardType.Email
+                                Phone -> KeyboardType.Phone
+                                else -> error("Unknown type: '$type'")
+                            },
                             imeAction = if (state.inProgress || !state.valid) None else Done,
                         ),
                         keyboardActions = KeyboardActions(onDone = { check() }),
@@ -106,6 +112,6 @@ internal fun CheckingForm(
 private val CheckingMessage.text: String
     @Composable
     get() = when (this) {
-            is DataEmpty -> emptyRepetitionDataMessage(this.type)
-            is Failed -> stringResource(R.string.repetition_failed)
-        }
+        is DataEmpty -> emptyRepetitionDataMessage(this.type)
+        is Failed -> stringResource(R.string.repetition_failed)
+    }

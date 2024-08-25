@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import cdu278.foundation.android.R
 import cdu278.repetition.RepetitionType.Email
 import cdu278.repetition.RepetitionType.Password
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.RepetitionType.Pin
 import cdu278.repetition.ui.UiRepetition
 
@@ -31,6 +32,7 @@ internal fun RepetitionTitle(
                 Password -> stringResource(R.string.password)
                 Pin -> stringResource(R.string.pin)
                 Email -> stringResource(R.string.email)
+                Phone -> stringResource(R.string.phone)
             },
             style = MaterialTheme.typography.headlineSmall,
         )
