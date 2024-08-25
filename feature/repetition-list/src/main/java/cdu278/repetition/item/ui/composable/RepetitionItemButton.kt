@@ -30,13 +30,13 @@ internal fun RepetitionItemButton(
         ),
         modifier = modifier
     ) {
+        Text(stringResource(text))
         icon?.let {
+            Spacer(modifier = Modifier.width(halfMargin))
             Icon(
                 painterResource(id = it),
                 contentDescription = null,
             )
-            Spacer(modifier = Modifier.width(halfMargin))
         }
-        Text(stringResource(text))
     }
 }

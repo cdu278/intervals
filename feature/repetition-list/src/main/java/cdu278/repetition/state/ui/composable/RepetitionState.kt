@@ -12,7 +12,7 @@ import cdu278.repetition.state.ui.UiRepetitionState
 import cdu278.repetition.state.ui.UiRepetitionState.Forgotten
 import cdu278.repetition.state.ui.UiRepetitionState.Repetition
 import cdu278.repetition.state.ui.UiRepetitionState.RepetitionAt
-import cdu278.intervals.core.ui.R as CoreR
+import cdu278.foundation.android.R as FoundationR
 
 @Composable
 internal fun RepetitionState(
@@ -24,7 +24,7 @@ internal fun RepetitionState(
         when (state) {
             is Repetition ->
                 RepetitionItemButton(
-                    icon = CoreR.drawable.ic_test,
+                    icon = FoundationR.drawable.ic_arrow_forward,
                     text = R.string.repetitionItem_repeat,
                     onClick = state.repeat
                 )
