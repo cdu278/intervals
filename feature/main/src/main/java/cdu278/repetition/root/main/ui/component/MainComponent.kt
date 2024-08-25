@@ -40,9 +40,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import cdu278.repetition.root.main.ui.UiMainMode.Default as ModeDefault
 import cdu278.repetition.root.main.ui.UiMainMode.Selection as ModeSelection
@@ -102,17 +105,6 @@ internal class MainComponent(
     @OptIn(ExperimentalDecomposeApi::class)
     private val tabsNavigation = PagesNavigation<MainTabConfig>()
 
-    init {
-        requestedTabFlow
-            .onEach { configOfRequested ->
-                val indexOfRequested = MainTabConfig.entries.indexOf(configOfRequested)
-                withContext(Dispatchers.Main.immediate) {
-                    tabsNavigation.select(indexOfRequested)
-                }
-            }
-            .launchIn(coroutineScope)
-    }
-
     @OptIn(ExperimentalDecomposeApi::class)
     private val tabsFlow =
         childPages(
@@ -150,6 +142,42 @@ internal class MainComponent(
                 )
             }
         }
+
+    init {
+        requestedTabFlow
+            .onEach { configOfRequested ->
+                val indexOfRequested = MainTabConfig.entries.indexOf(configOfRequested)
+                withContext(Dispatchers.Main.immediate) {
+                    tabsNavigation.select(indexOfRequested)
+                }
+            }
+            .launchIn(coroutineScope)
+
+        switchToActiveIfNoActual()
+    }
+
+    private fun switchToActiveIfNoActual() {
+        coroutineScope.launch {
+            tabsFlow.first()
+                .find { it.config == Actual }!!
+                .let {
+                    if (!it.active) return@launch
+                }
+            repetitionsRepository
+                .itemsFlow
+                .take(1)
+                .onEach { items ->
+                    val noActualRepetitions =
+                        items.none { ActualRepetitionsFilter(currentTime).test(it) }
+                    if (noActualRepetitions) {
+                        withContext(Dispatchers.Main.immediate) {
+                            tabsNavigation.select(MainTabConfig.entries.indexOf(Active))
+                        }
+                    }
+                }
+                .launchIn(this)
+        }
+    }
 
     internal val uiModelFlow: StateFlow<UiMain> =
         listState.handle(coroutineScope, initialValue = UiMain()) { state ->
