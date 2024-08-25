@@ -30,6 +30,7 @@ import cdu278.repetition.ui.UiRepetition.State.Checking.Message.DataEmpty
 import cdu278.repetition.ui.UiRepetition.State.Checking.Message.Failed
 import cdu278.ui.composable.EmailTextField
 import cdu278.ui.composable.ErrorText
+import cdu278.ui.composable.FlatTextField
 import cdu278.ui.composable.TextInput
 import cdu278.ui.composable.SecretPasswordField
 import cdu278.ui.composable.defaultMargin
@@ -77,7 +78,7 @@ internal fun CheckingForm(
                     )
 
                 Email, Phone ->
-                    EmailTextField(
+                    FlatTextField(
                         value,
                         onValueChange,
                         keyboardOptions = KeyboardOptions(

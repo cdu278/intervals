@@ -1,8 +1,10 @@
 package cdu278.repetition.new.editor.ui.component
 
+import cdu278.computable.Computable
 import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.instance.retainedCoroutineScope
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
+import cdu278.phone.formatted.FormattedPhone
 import cdu278.repetition.Repetition
 import cdu278.repetition.RepetitionData
 import cdu278.repetition.RepetitionState
@@ -144,7 +146,12 @@ class NewRepetitionEditorComponent(
             _savingFlow.value = true
 
             val input = input.value
-            val data = (dataUiModel.component.dataFlow.value as Valid<String>).value
+            val dataString = (dataUiModel.component.dataFlow.value as Valid<String>).value
+            val data =
+                when (type) {
+                    Phone -> FormattedPhone(dataString)
+                    else -> Computable { dataString }
+                }
             val stage = RepetitionStage.Initial
             val nextRepetition = spacedRepetitions.next(stage)
             val id =

@@ -1,10 +1,13 @@
 package cdu278.repetition.ui.component
 
+import cdu278.computable.Computable
 import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.util.asStateFlow
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
+import cdu278.phone.formatted.FormattedPhone
 import cdu278.repetition.RepetitionState
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.RepetitionType.Phone
 import cdu278.repetition.dialog.ui.RepetitionDialogConfig
 import cdu278.repetition.dialog.ui.RepetitionDialogConfig.ArchiveConfirmation
 import cdu278.repetition.matching.RepetitionDataMatching
@@ -178,8 +181,13 @@ class RepetitionComponent(
             checkingFlow.value = true
             failedFlow.value = false
 
-            val data = (state.value as CheckingInput).data
+            val rawData = (state.value as CheckingInput).data
             val repetition = repository.get()
+            val data =
+                when (repetition.type) {
+                    Phone -> FormattedPhone(rawData)
+                    else -> Computable { rawData }
+                }
             if (with(dataMatching) { repetition.data matches data }) {
                 val nextStage =
                     when (val state = repetition.state) {

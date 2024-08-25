@@ -1,5 +1,6 @@
 package cdu278.hash.s
 
+import cdu278.computable.Computable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import cdu278.hash.Hash
@@ -11,9 +12,9 @@ class Hashes(
     private val base64: ByteArray.() -> String
 ) {
 
-    suspend fun of(data: String, salt: ByteArray): Hash {
+    suspend fun of(data: Computable<String>, salt: ByteArray): Hash {
         return withContext(Dispatchers.Default) {
-            val password = data.toCharArray()
+            val password = data().toCharArray()
             val iterationCount = 65536
             val keyLength = 128
             SecretKeyFactory
@@ -29,7 +30,7 @@ class Hashes(
         }
     }
 
-    suspend fun of(data: String): Hash = of(data, generatedSalt())
+    suspend fun of(data: Computable<String>): Hash = of(data, generatedSalt())
 
     private suspend fun generatedSalt(): ByteArray {
         return withContext(Dispatchers.Default) {
