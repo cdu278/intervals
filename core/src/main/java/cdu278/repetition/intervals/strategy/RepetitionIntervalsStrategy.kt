@@ -1,9 +1,9 @@
-package cdu278.repetition.spaced.strategy
+package cdu278.repetition.intervals.strategy
 
 import cdu278.repetition.stage.RepetitionStage
 import kotlin.time.Duration
 
-interface SpaceRepetitionsStrategy {
+interface RepetitionIntervalsStrategy {
 
     fun RepetitionStage.space(): Duration
 }

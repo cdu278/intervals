@@ -1,11 +1,11 @@
-package cdu278.repetition.spaced.strategy
+package cdu278.repetition.intervals.strategy
 
 import cdu278.repetition.stage.RepetitionStage
 import kotlin.time.Duration
 
-class FakeSpaceRepetitionsStrategy(
+class FakeRepetitionIntervalsStrategy(
     private val duration: Duration
-) : SpaceRepetitionsStrategy {
+) : RepetitionIntervalsStrategy {
 
     override fun RepetitionStage.space(): Duration = duration
 }

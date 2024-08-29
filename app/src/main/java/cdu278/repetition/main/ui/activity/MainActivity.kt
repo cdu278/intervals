@@ -24,7 +24,7 @@ import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.component.RootComponent
 import cdu278.repetition.root.ui.composable.Root
 import cdu278.repetition.s.repository.RoomRepetitionsRepository
-import cdu278.repetition.spaced.SpacedRepetitions
+import cdu278.repetition.intervals.RepetitionIntervals
 import com.arkivanov.decompose.defaultComponentContext
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     Hashes(
                         base64 = { String(Base64.encode(this, Base64.NO_WRAP)) },
                     ),
-                    SpacedRepetitions(),
+                    RepetitionIntervals(),
                     repetitionNotifications,
                     currentTime = { Clock.System.currentTime(TimeZone.currentSystemDefault()) },
                 ),

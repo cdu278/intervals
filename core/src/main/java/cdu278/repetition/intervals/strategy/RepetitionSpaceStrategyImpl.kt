@@ -1,4 +1,4 @@
-package cdu278.repetition.spaced.strategy
+package cdu278.repetition.intervals.strategy
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalTime
@@ -11,17 +11,17 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-fun SpaceRepetitionsStrategy(
+fun RepetitionIntervalsStrategy(
     clock: Clock = Clock.System,
     timeZone: () -> TimeZone = { TimeZone.currentSystemDefault() },
-): SpaceRepetitionsStrategy {
-    return SpaceRepetitionsStrategyImpl(clock, timeZone)
+): RepetitionIntervalsStrategy {
+    return RepetitionIntervalsStrategyImpl(clock, timeZone)
 }
 
-private class SpaceRepetitionsStrategyImpl(
+private class RepetitionIntervalsStrategyImpl(
     private val clock: Clock,
     private val timeZone: () -> TimeZone,
-) : SpaceRepetitionsStrategy {
+) : RepetitionIntervalsStrategy {
 
     override fun RepetitionStage.space(): Duration {
         val now = clock.now()

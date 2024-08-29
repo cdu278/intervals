@@ -200,7 +200,7 @@ class RepetitionComponent(
                         is RepetitionState.Forgotten -> RepetitionStage.Initial
                     }
 
-                val nextRepetition = spacedRepetitions.next(nextStage)
+                val nextRepetition = repetitionIntervals.next(nextStage)
 
                 repository.updateState {
                     RepetitionState.Repetition(

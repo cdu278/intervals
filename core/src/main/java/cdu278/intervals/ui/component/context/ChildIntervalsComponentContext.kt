@@ -6,7 +6,7 @@ fun IntervalsComponentContext.childContext(key: String): IntervalsComponentConte
     return IntervalsComponentContext(
         childContext(key),
         hashes,
-        spacedRepetitions,
+        repetitionIntervals,
         repetitionNotifications,
         currentTime,
     )

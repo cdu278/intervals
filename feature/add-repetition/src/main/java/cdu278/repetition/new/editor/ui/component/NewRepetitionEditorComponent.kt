@@ -153,7 +153,7 @@ class NewRepetitionEditorComponent(
                     else -> Computable { dataString }
                 }
             val stage = RepetitionStage.Initial
-            val nextRepetition = spacedRepetitions.next(stage)
+            val nextRepetition = repetitionIntervals.next(stage)
             val id =
                 repository.create(
                     Repetition(

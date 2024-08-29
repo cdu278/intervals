@@ -4,20 +4,20 @@ import cdu278.computable.Computable
 import com.arkivanov.decompose.ComponentContext
 import cdu278.hash.s.Hashes
 import cdu278.repetition.notification.s.RepetitionsNotifications
-import cdu278.repetition.spaced.SpacedRepetitions
+import cdu278.repetition.intervals.RepetitionIntervals
 import kotlinx.datetime.LocalDateTime
 
 fun IntervalsComponentContext(
     context: ComponentContext,
     hashes: Hashes,
-    spacedRepetitions: SpacedRepetitions,
+    repetitionIntervals: RepetitionIntervals,
     repetitionNotifications: RepetitionsNotifications,
     currentTime: Computable<LocalDateTime>,
 ): IntervalsComponentContext {
     return IntervalsComponentContextImpl(
         context,
         hashes,
-        spacedRepetitions,
+        repetitionIntervals,
         repetitionNotifications,
         currentTime,
     )
@@ -26,7 +26,7 @@ fun IntervalsComponentContext(
 private class IntervalsComponentContextImpl(
     context: ComponentContext,
     override val hashes: Hashes,
-    override val spacedRepetitions: SpacedRepetitions,
+    override val repetitionIntervals: RepetitionIntervals,
     override val repetitionNotifications: RepetitionsNotifications,
     override val currentTime: Computable<LocalDateTime>,
 ) : IntervalsComponentContext,
