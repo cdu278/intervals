@@ -17,5 +17,6 @@ class RepetitionListTabsRepository(
                 .map { it.type }
                 .toSet()
                 .toList()
+                .sortedBy { RepetitionType.entries.indexOf(it) }
         }.flowOn(Dispatchers.Default)
 }

@@ -27,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Default as DefaultMode
@@ -95,7 +96,7 @@ class RepetitionListComponent(
                             repository.itemsFlow,
                             tabsComponent.selectedTabTypeFlow,
                         ) { allItems, selectedType ->
-                            val items =
+                            val notSortedItems =
                                 selectedType
                                     ?.let { selected ->
                                         allItems.filter { it.type == selected }
@@ -104,9 +105,10 @@ class RepetitionListComponent(
                             send(
                                 RepetitionListUi(
                                     tabsComponent,
-                                    state = if (items.isEmpty()) {
+                                    state = if (notSortedItems.isEmpty()) {
                                         RepetitionListUi.State.Empty
                                     } else {
+                                        val items = notSortedItems.sorted()
                                         RepetitionListUi.State.NonEmpty(
                                             mode = when (state) {
                                                 is Default ->
@@ -125,10 +127,21 @@ class RepetitionListComponent(
                                     }
                                 )
                             )
-                        }.launchIn(this)
+                        }.flowOn(Dispatchers.Default).launchIn(this)
                 }
             }
         }
+
+    private fun List<RepetitionItem>.sorted(): List<RepetitionItem> {
+        val sortByDate = (this.first().repetitionState as? Repetition)
+            ?.let { it.date > currentTime() }
+            ?: false
+        return if (sortByDate) {
+            this.sortedBy { (it.repetitionState as Repetition).date }
+        } else {
+            this.sortedBy(RepetitionItem::label)
+        }
+    }
 
     private fun List<RepetitionItem>.asDefaultUiItems(): List<DefaultItem> {
         return map { item ->
