@@ -9,6 +9,8 @@ import cdu278.state.State
 import cdu278.ui.action.UiAction
 import cdu278.ui.input.UiToggleable
 import cdu278.updates.Updates
+import com.arkivanov.essenty.lifecycle.doOnPause
+import com.arkivanov.essenty.lifecycle.doOnResume
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
@@ -19,33 +21,39 @@ import kotlinx.coroutines.flow.onEach
 
 class RepetitionListTabsComponent(
     context: IntervalsComponentContext,
+    private val selectedTypeState: State<RepetitionType?>,
     private val updates: Updates,
     private val repository: RepetitionListTabsRepository,
 ) : IntervalsComponentContext by context {
 
-    private val selectedTabTypeState: State<RepetitionType?> =
-        State(stateKeeper.consume("selectedTab", RepetitionType.serializer()))
-
     private val coroutineScope = coroutineScope()
 
-    val selectedTabTypeFlow: StateFlow<RepetitionType?> =
-        selectedTabTypeState.handle(coroutineScope, RepetitionType.Password) { selectedType ->
+    val selectedTabTypeFlow =
+        selectedTypeState.handle(coroutineScope, RepetitionType.Password) { selectedType ->
             flowOf(selectedType)
         }
 
     init {
-        combine(
-            repository.presentRepetitionTypesFlow,
-            selectedTabTypeFlow,
-        ) { presentTypes, selectedType ->
-            if (selectedType !in presentTypes) {
-                selectedTabTypeState.update { null }
-            }
-        }.launchIn(coroutineScope)
+        var checkingIfPresent: Job? = null
+        lifecycle.doOnResume {
+            checkingIfPresent =
+                combine(
+                    repository.presentRepetitionTypesFlow,
+                    selectedTabTypeFlow,
+                ) { presentTypes, selectedType ->
+                    if (selectedType !in presentTypes) {
+                        selectedTypeState.update { null }
+                    }
+                }.launchIn(coroutineScope)
+        }
+        lifecycle.doOnPause {
+            checkingIfPresent?.cancel()
+            checkingIfPresent = null
+        }
     }
 
     internal val tabsFlow: StateFlow<List<RepetitionTabUi>?> =
-        selectedTabTypeState.handle(coroutineScope, initialValue = emptyList()) { selectedType ->
+        selectedTypeState.handle(coroutineScope, initialValue = emptyList()) { selectedType ->
             channelFlow {
                 var updating: Job? = null
                 updates.flow.collect {
@@ -60,8 +68,8 @@ class RepetitionListTabsComponent(
                                     type,
                                     selected = UiToggleable(
                                         selected,
-                                        toggle = UiAction(key = type) {
-                                            selectedTabTypeState.update { type }
+                                        toggle = UiAction(type.asKey()) {
+                                            selectedTypeState.update { type }
                                         }
                                     )
                                 )
@@ -71,4 +79,10 @@ class RepetitionListTabsComponent(
                 }
             }
         }
+
+    private fun RepetitionType?.asKey() =
+        if (this != null)
+            "$this@${this@RepetitionListTabsComponent}"
+        else
+            "null"
 }

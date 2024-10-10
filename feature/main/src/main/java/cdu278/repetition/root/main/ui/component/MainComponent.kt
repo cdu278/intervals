@@ -7,8 +7,8 @@ import cdu278.intervals.ui.component.context.childContext
 import cdu278.intervals.ui.component.context.newContext
 import cdu278.repetition.deletion.dialog.ui.component.RepetitionsDeletionDialogComponent
 import cdu278.repetition.list.ui.RepetitionListState
-import cdu278.repetition.list.ui.RepetitionListState.Default
-import cdu278.repetition.list.ui.RepetitionListState.Selection
+import cdu278.repetition.list.ui.RepetitionListState.Mode.Default
+import cdu278.repetition.list.ui.RepetitionListState.Mode.Selection
 import cdu278.repetition.list.ui.component.RepetitionListComponent
 import cdu278.repetition.new.flow.ui.component.NewRepetitionFlowComponent
 import cdu278.repetition.root.main.tab.filter.ActiveRepetitionsFilter
@@ -25,7 +25,7 @@ import cdu278.repetition.root.main.ui.UiMainDialog
 import cdu278.repetition.root.main.ui.UiMainTab
 import cdu278.repetition.s.repository.FilteringRepetitionsItemsRepository
 import cdu278.repetition.s.repository.RepetitionsRepository
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.ui.action.UiAction
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.Pages
@@ -58,11 +58,10 @@ internal class MainComponent(
     private val requestedTabFlow: MutableSharedFlow<MainTabConfig>
 ) : IntervalsComponentContext by context {
 
-    private val listState =
-        State(
-            stateKeeper
-                .consume("list", RepetitionListState.serializer())
-                ?: Default
+    private val state =
+        createState(
+            RepetitionListState.serializer(),
+            initialValue = ::RepetitionListState
         )
 
     val newRepetitionFlowComponent =
@@ -90,7 +89,7 @@ internal class MainComponent(
                             config.idsOfRepetitions.forEach {
                                 repetitionNotifications.cancel(repetitionId = it)
                             }
-                            listState.update { Default }
+                            state.update { it.copy(mode = Default) }
                         },
                     )
             }
@@ -119,6 +118,7 @@ internal class MainComponent(
         ) { config, componentContext ->
             RepetitionListComponent(
                 newContext(componentContext),
+                state,
                 FilteringRepetitionsItemsRepository(
                     original = repetitionsRepository,
                     predicate = when (config) {
@@ -127,7 +127,6 @@ internal class MainComponent(
                         Archive -> ArchivedRepetitionsFilter()
                     },
                 ),
-                state = listState,
                 goToRepetition = goToRepetition,
             )
         }.asStateFlow(lifecycle).map { pages ->
@@ -180,19 +179,19 @@ internal class MainComponent(
     }
 
     internal val uiModelFlow: StateFlow<UiMain> =
-        listState.handle(coroutineScope, initialValue = UiMain()) { state ->
+        state.handle(coroutineScope, initialValue = UiMain()) { state ->
             combine(
                 tabsFlow,
                 dialogFlow,
             ) { tabs, dialog ->
                 UiMain(
-                    mode = when (state) {
+                    mode = when (val mode = state.mode) {
                         is Default -> ModeDefault
                         is Selection ->
                             ModeSelection(
-                                selectedCount = state.idsOfSelected.size,
-                                delete = UiAction(key = state.idsOfSelected) {
-                                    delete(state.idsOfSelected)
+                                selectedCount = mode.idsOfSelected.size,
+                                delete = UiAction(key = mode.idsOfSelected) {
+                                    delete(mode.idsOfSelected)
                                 },
                                 quitSelectionModel = UiAction(
                                     key = null,
@@ -207,7 +206,7 @@ internal class MainComponent(
         }
 
     private fun quitSelectionMode() {
-        listState.update { Default }
+        state.update { it.copy(mode = Default) }
     }
 
     private fun delete(idsOfRepetitions: List<Long>) {

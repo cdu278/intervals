@@ -1,15 +1,22 @@
 package cdu278.repetition.list.ui
 
+import cdu278.repetition.RepetitionType
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface RepetitionListState {
+data class RepetitionListState(
+    val selectedType: RepetitionType? = null,
+    val mode: Mode = Mode.Default,
+) {
 
-    @Serializable
-    data object Default : RepetitionListState
+    sealed interface Mode {
 
-    @Serializable
-    data class Selection(
-        val idsOfSelected: List<Long>,
-    ) : RepetitionListState
+        @Serializable
+        data object Default : Mode
+
+        @Serializable
+        data class Selection(
+            val idsOfSelected: List<Long>,
+        ) : Mode
+    }
 }

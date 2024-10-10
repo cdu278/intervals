@@ -10,14 +10,15 @@ import cdu278.repetition.RepetitionState.Repetition
 import cdu278.repetition.info.ui.UiRepetitionInfo
 import cdu278.repetition.item.RepetitionItem
 import cdu278.repetition.list.ui.RepetitionListState
-import cdu278.repetition.list.ui.RepetitionListState.Default
-import cdu278.repetition.list.ui.RepetitionListState.Selection
+import cdu278.repetition.list.ui.RepetitionListState.Mode.Default
+import cdu278.repetition.list.ui.RepetitionListState.Mode.Selection
 import cdu278.repetition.list.ui.RepetitionListUi
 import cdu278.repetition.next.mapping.NextRepetitionDateMapping
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.repetition.state.ui.UiRepetitionState
 import cdu278.state.State
 import cdu278.state.collectValues
+import cdu278.state.prop
 import cdu278.ui.action.UiAction
 import cdu278.updates.Updates
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -37,8 +38,8 @@ import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Selection.
 
 class RepetitionListComponent(
     context: IntervalsComponentContext,
-    private val repository: RepetitionsRepository,
     private val state: State<RepetitionListState>,
+    private val repository: RepetitionsRepository,
     private val goToRepetition: (repetitionId: Long) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
 ) : IntervalsComponentContext by context {
@@ -48,8 +49,6 @@ class RepetitionListComponent(
     private val coroutineScope = coroutineScope()
 
     init {
-        stateKeeper.register("state", RepetitionListState.serializer()) { state.value }
-
         lifecycle.doOnResume {
             updates.post()
         }
@@ -57,13 +56,12 @@ class RepetitionListComponent(
         coroutineScope.launch(Dispatchers.Main) {
             var backCallback: BackCallback? = null
             state.collectValues { state ->
-                when (state) {
+                when (state.mode) {
                     is Default ->
                         backCallback?.let {
                             backHandler.unregister(it)
                             backCallback = null
                         }
-
                     is Selection ->
                         if (backCallback == null) {
                             SelectionModeBackCallback(this@RepetitionListComponent.state)
@@ -78,6 +76,9 @@ class RepetitionListComponent(
     private val tabsComponent =
         RepetitionListTabsComponent(
             childContext("tabs"),
+            selectedTypeState = state.prop(RepetitionListState::selectedType) {
+                copy(selectedType = it)
+            },
             updates,
             RepetitionListTabsRepository(repository),
         )
@@ -110,17 +111,15 @@ class RepetitionListComponent(
                                     } else {
                                         val items = notSortedItems.sorted()
                                         RepetitionListUi.State.NonEmpty(
-                                            mode = when (state) {
+                                            mode = when (val mode = state.mode) {
                                                 is Default ->
                                                     DefaultMode(
                                                         items = items.asDefaultUiItems(),
                                                     )
-
                                                 is Selection ->
                                                     SelectionMode(
-                                                        items = items.asSelectionUiItems(
-                                                            state.idsOfSelected
-                                                        ),
+                                                        items = items
+                                                            .asSelectionUiItems(mode.idsOfSelected),
                                                     )
                                             },
                                         )
@@ -160,7 +159,6 @@ class RepetitionListComponent(
                                 }
                             )
                         }
-
                     is Forgotten ->
                         UiRepetitionState.Forgotten(
                             remember = UiAction(key = item.id) { goToRepetition(item.id) },
@@ -184,20 +182,26 @@ class RepetitionListComponent(
     }
 
     private fun goToSelectionMode(repetitionId: Long) {
-        state.update { Selection(idsOfSelected = listOf(repetitionId)) }
+        state.update { it.copy(mode = Selection(idsOfSelected = listOf(repetitionId))) }
     }
 
     private fun toggleSelected(repetitionId: Long) {
         state.update { current ->
-            (current as Selection).copy(
-                idsOfSelected = if (repetitionId in current.idsOfSelected) {
-                    current
-                        .idsOfSelected.filter { it != repetitionId }
-                        .takeIf { it.isNotEmpty() }
-                        ?: return@update Default
-                } else {
-                    current.idsOfSelected + repetitionId
-                }
+            current.copy(
+                mode = current.mode
+                    .let { it as Selection }
+                    .let { selection ->
+                        selection.copy(
+                            idsOfSelected = if (repetitionId in selection.idsOfSelected) {
+                                selection
+                                    .idsOfSelected.filter { it != repetitionId }
+                                    .takeIf { it.isNotEmpty() }
+                                    ?: return@let Default
+                            } else {
+                                selection.idsOfSelected + repetitionId
+                            }
+                        )
+                    }
             )
         }
     }
