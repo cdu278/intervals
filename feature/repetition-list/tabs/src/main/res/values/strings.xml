@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="repetition_tab_all">All</string>
+    <string name="repetition_tab_passwords">Passwords</string>
+    <string name="repetition_tab_pins">PINs</string>
+    <string name="repetition_tab_emails">E-mails</string>
+    <string name="repetition_tab_phones">Phones</string>
+</resources>

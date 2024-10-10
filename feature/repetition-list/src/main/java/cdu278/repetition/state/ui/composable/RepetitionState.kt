@@ -5,7 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import cdu278.intervals.repetition.list.ui.R
+import cdu278.intervals.repetition.list.R
 import cdu278.repetition.item.ui.composable.RepetitionItemButton
 import cdu278.repetition.next.ui.composable.NextRepetitionDate
 import cdu278.repetition.state.ui.UiRepetitionState

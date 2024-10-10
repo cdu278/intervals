@@ -6,7 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import cdu278.intervals.repetition.list.ui.R
+import cdu278.intervals.repetition.list.R
 import cdu278.repetition.deletion.dialog.ui.DeletedRepetitionsCount.Multiple
 import cdu278.repetition.deletion.dialog.ui.DeletedRepetitionsCount.Single
 import cdu278.repetition.deletion.dialog.ui.component.RepetitionsDeletionDialogComponent

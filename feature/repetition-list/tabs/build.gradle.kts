@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "cdu278.intervals.repetition.list"
+    namespace = "cdu278.intervals.repetition.list.tabs"
     compileSdk = 34
 
     defaultConfig {
@@ -44,8 +44,13 @@ dependencies {
     implementation(project(":foundation"))
     implementation(project(":foundation:android"))
     implementation(project(":core"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature:repetition-list:tabs"))
+
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 
@@ -57,8 +62,6 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:${rootProject.extra["datetimeVersion"]}")
 
     implementation("com.arkivanov.decompose:decompose:${rootProject.extra["decomposeVersion"]}")
 }

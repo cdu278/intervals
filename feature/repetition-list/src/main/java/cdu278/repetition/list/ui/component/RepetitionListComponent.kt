@@ -1,7 +1,10 @@
 package cdu278.repetition.list.ui.component
 
 import cdu278.decompose.context.coroutineScope
+import cdu278.intervals.repetition.list.tabs.repository.RepetitionListTabsRepository
+import cdu278.intervals.repetition.list.tabs.ui.component.RepetitionListTabsComponent
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
+import cdu278.intervals.ui.component.context.childContext
 import cdu278.repetition.RepetitionState.Forgotten
 import cdu278.repetition.RepetitionState.Repetition
 import cdu278.repetition.info.ui.UiRepetitionInfo
@@ -9,7 +12,7 @@ import cdu278.repetition.item.RepetitionItem
 import cdu278.repetition.list.ui.RepetitionListState
 import cdu278.repetition.list.ui.RepetitionListState.Default
 import cdu278.repetition.list.ui.RepetitionListState.Selection
-import cdu278.repetition.list.ui.UiRepetitionList
+import cdu278.repetition.list.ui.RepetitionListUi
 import cdu278.repetition.next.mapping.NextRepetitionDateMapping
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.repetition.state.ui.UiRepetitionState
@@ -23,13 +26,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default as DefaultMode
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default.Item as DefaultItem
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection as SelectionMode
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection.Item as SelectionItem
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Default as DefaultMode
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Default.Item as DefaultItem
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Selection as SelectionMode
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Selection.Item as SelectionItem
 
 class RepetitionListComponent(
     context: IntervalsComponentContext,
@@ -71,34 +74,58 @@ class RepetitionListComponent(
         }
     }
 
-    internal val uiModelFlow: StateFlow<UiRepetitionList?> =
-        state.handle(coroutineScope, initialValue = null) { state ->
+    private val tabsComponent =
+        RepetitionListTabsComponent(
+            childContext("tabs"),
+            updates,
+            RepetitionListTabsRepository(repository),
+        )
+
+    internal val uiModelFlow: StateFlow<RepetitionListUi> =
+        state.handle(
+            coroutineScope,
+            initialValue = RepetitionListUi(tabsComponent, null)
+        ) { state ->
             channelFlow {
                 var job: Job? = null
                 updates.flow.collect {
                     job?.cancel()
                     job =
-                        repository
-                            .itemsFlow.onEach { items ->
-                                send(
-                                    if (items.isEmpty()) UiRepetitionList.Empty
-                                    else UiRepetitionList.NonEmpty(
-                                        mode = when (state) {
-                                            is Default ->
-                                                DefaultMode(
-                                                    items = items.asDefaultUiItems(),
-                                                )
-                                            is Selection ->
-                                                SelectionMode(
-                                                    items = items.asSelectionUiItems(
-                                                        state.idsOfSelected
-                                                    ),
-                                                )
-                                        }
-                                    )
+                        combine(
+                            repository.itemsFlow,
+                            tabsComponent.selectedTabTypeFlow,
+                        ) { allItems, selectedType ->
+                            val items =
+                                selectedType
+                                    ?.let { selected ->
+                                        allItems.filter { it.type == selected }
+                                    }
+                                    ?: allItems
+                            send(
+                                RepetitionListUi(
+                                    tabsComponent,
+                                    state = if (items.isEmpty()) {
+                                        RepetitionListUi.State.Empty
+                                    } else {
+                                        RepetitionListUi.State.NonEmpty(
+                                            mode = when (state) {
+                                                is Default ->
+                                                    DefaultMode(
+                                                        items = items.asDefaultUiItems(),
+                                                    )
+
+                                                is Selection ->
+                                                    SelectionMode(
+                                                        items = items.asSelectionUiItems(
+                                                            state.idsOfSelected
+                                                        ),
+                                                    )
+                                            },
+                                        )
+                                    }
                                 )
-                            }
-                            .launchIn(this)
+                            )
+                        }.launchIn(this)
                 }
             }
         }

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import cdu278.repetition.info.ui.composable.RepetitionInfo
 import cdu278.repetition.state.ui.composable.RepetitionState
 import cdu278.ui.composable.halfMargin
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Default.Item as DefaultRepetitionItem
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Default.Item as DefaultRepetitionItem
 
 @Composable
 internal fun DefaultRepetitionItem(

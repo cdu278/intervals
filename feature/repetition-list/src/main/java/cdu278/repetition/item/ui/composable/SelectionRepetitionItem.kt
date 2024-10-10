@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import cdu278.repetition.info.ui.composable.RepetitionInfo
-import cdu278.repetition.list.ui.UiRepetitionList.NonEmpty.Mode.Selection.Item as SelectionRepetitionItem
+import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Selection.Item as SelectionRepetitionItem
 
 @Composable
 internal fun SelectionRepetitionItem(

@@ -125,7 +125,6 @@ internal fun MainScreen(
                     activeTab.listComponent!!,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(defaultMargin)
                         .align(Alignment.TopCenter)
                 )
 
