@@ -19,7 +19,7 @@ import cdu278.repetition.ui.RepetitionInput.Forgotten
 import cdu278.repetition.ui.UiRepetition
 import cdu278.repetition.ui.UiRepetition.State.Checking.HintState
 import cdu278.repetition.ui.UiRepetitionDialog
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.state.prop
 import cdu278.state.subtype
 import cdu278.ui.action.UiAction
@@ -49,17 +49,13 @@ class RepetitionComponent(
     private val onArchived: suspend () -> Unit,
 ) : IntervalsComponentContext by componentContext {
 
-    private val state: State<RepetitionInput> =
-        State(
-            stateKeeper.consume("state", RepetitionInput.serializer())
-                ?: CheckingInput()
+    private val state =
+        createState(
+            RepetitionInput.serializer(),
+            initialValue = ::CheckingInput
         )
 
     private val coroutineScope = coroutineScope()
-
-    init {
-        stateKeeper.register("state", RepetitionInput.serializer()) { state.value }
-    }
 
     private val changeData
         get() = ChangeInput(

@@ -3,7 +3,7 @@ package cdu278.repetition.new.data.ui.component
 import cdu278.computable.Computable
 import cdu278.decompose.context.coroutineScope
 import cdu278.repetition.new.data.ui.UiNewPhoneData
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
 import cdu278.ui.input.validated.Validated
@@ -23,15 +23,14 @@ class NewPhoneDataComponent<Error>(
         val empty: Computable<T>,
     )
 
-    private val inputState =
-        State(
-            stateKeeper
-                .consume("input", String.serializer())
-                ?: ""
+    private val state =
+        createState(
+            String.serializer(),
+            initialValue = { "" }
         )
 
     override val dataFlow: StateFlow<Validated<String, Error>> =
-        inputState.handle(
+        state.handle(
             coroutineScope(),
             initialValue = Validated.Invalid(errors.empty())
         ) { input ->
@@ -44,10 +43,10 @@ class NewPhoneDataComponent<Error>(
             }
         }
 
-    private val changePhone = ChangeInput(inputState)
+    private val changePhone = ChangeInput(state)
 
     val uiModelFlow: StateFlow<UiNewPhoneData> =
-        inputState.handle(
+        state.handle(
             coroutineScope(),
             initialValue = UiNewPhoneData(
                 phone =  UiInput(value = "", changePhone)

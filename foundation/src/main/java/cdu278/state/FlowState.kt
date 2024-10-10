@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-fun <T> State(initialValue: T): State<T> = FlowState(initialValue)
-
 class FlowState<T>(initialValue: T) : State<T> {
 
     private val stateFlow = MutableStateFlow(initialValue)

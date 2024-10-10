@@ -4,7 +4,7 @@ import cdu278.computable.Computable
 import cdu278.decompose.context.coroutineScope
 import cdu278.password.ui.ConfirmedPasswordInput
 import cdu278.repetition.new.data.ui.UiNewPasswordData
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.state.prop
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
@@ -25,14 +25,10 @@ class NewPasswordDataComponent<Error>(
     )
 
     private val input =
-        State(
-            stateKeeper.consume("passwordData", ConfirmedPasswordInput.serializer())
-                ?: ConfirmedPasswordInput()
+        createState(
+            ConfirmedPasswordInput.serializer(),
+            initialValue = ::ConfirmedPasswordInput
         )
-
-    init {
-        stateKeeper.register("passwordData", ConfirmedPasswordInput.serializer()) { input.value }
-    }
 
     private val coroutineScope = coroutineScope()
 

@@ -4,7 +4,7 @@ import cdu278.computable.Computable
 import cdu278.decompose.context.coroutineScope
 import cdu278.email.EmailRegex
 import cdu278.repetition.new.data.ui.UiNewEmailData
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
 import cdu278.ui.input.validated.Validated
@@ -27,17 +27,16 @@ class NewEmailDataComponent<Error>(
         val notValid: Computable<T>,
     )
 
-    private val inputState =
-        State(
-            stateKeeper
-                .consume("input", String.serializer())
-                ?: ""
+    private val state =
+        createState(
+            String.serializer(),
+            initialValue = { "" }
         )
 
     private val coroutineScope = coroutineScope()
 
     override val dataFlow: StateFlow<Validated<String, Error>> =
-        inputState.handle(
+        state.handle(
             coroutineScope,
             initialValue = Validated.Invalid(errors.empty())
         ) { input ->
@@ -57,10 +56,10 @@ class NewEmailDataComponent<Error>(
         }
     }
 
-    private val changeEmail = ChangeInput(inputState)
+    private val changeEmail = ChangeInput(state)
 
     val uiModelFlow: StateFlow<UiNewEmailData> =
-        inputState.handle(
+        state.handle(
             coroutineScope,
             initialValue = UiNewEmailData(
                 email = UiInput(value = "", changeEmail)
