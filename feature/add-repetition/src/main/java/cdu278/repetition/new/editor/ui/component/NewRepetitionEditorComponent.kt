@@ -21,7 +21,7 @@ import cdu278.repetition.new.ui.NewRepetitionInput
 import cdu278.repetition.new.ui.UiNewRepetition
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.repetition.stage.RepetitionStage
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.state.prop
 import cdu278.ui.input.UiInput
 import cdu278.ui.input.change.ChangeInput
@@ -44,21 +44,17 @@ class NewRepetitionEditorComponent(
     private val onCreated: suspend () -> Unit,
 ) : IntervalsComponentContext by context {
 
-    private val input =
-        State(
-            stateKeeper.consume("passwordEditor", NewRepetitionInput.serializer())
-                ?: NewRepetitionInput()
+    private val state =
+        createState(
+            NewRepetitionInput.serializer(),
+            initialValue = ::NewRepetitionInput,
         )
 
-    init {
-        stateKeeper.register("passwordEditor", NewRepetitionInput.serializer()) { input.value }
-    }
-
     private val changeLabel =
-        ChangeInput(input.prop(NewRepetitionInput::label) { copy(label = it) })
+        ChangeInput(state.prop(NewRepetitionInput::label) { copy(label = it) })
 
     private val changeHint =
-        ChangeInput(input.prop(NewRepetitionInput::hint) { copy(hint = it) })
+        ChangeInput(state.prop(NewRepetitionInput::hint) { copy(hint = it) })
 
     private val dataUiModel: UiNewRepetitionData<UiError> = run {
         val newSecretComponent by lazy {
@@ -100,11 +96,11 @@ class NewRepetitionEditorComponent(
         get() = _savingFlow
 
     val uiModelFlow: StateFlow<UiNewRepetition> =
-        input.handle(
+        state.handle(
             coroutineScope(),
             initialValue = UiNewRepetition(
-                label = UiInput(value = input.value.label, changeLabel),
-                hint = UiInput(value = input.value.hint, changeHint),
+                label = UiInput(value = state.value.label, changeLabel),
+                hint = UiInput(value = state.value.hint, changeHint),
                 data = dataUiModel,
                 type = Password,
             ),
@@ -145,7 +141,7 @@ class NewRepetitionEditorComponent(
         retainedCoroutineScope.launch {
             _savingFlow.value = true
 
-            val input = input.value
+            val input = state.value
             val dataString = (dataUiModel.component.dataFlow.value as Valid<String>).value
             val data =
                 when (type) {
