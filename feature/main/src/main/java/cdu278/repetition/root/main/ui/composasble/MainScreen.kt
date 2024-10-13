@@ -1,6 +1,7 @@
 package cdu278.repetition.root.main.ui.composasble
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import cdu278.intervals.main.ui.R
+import cdu278.repetition.list.tabs.ui.composable.RepetitionListTabs
 import cdu278.repetition.deletion.dialog.ui.composable.RepetitionsDeletionDialog
 import cdu278.repetition.list.ui.composable.RepetitionList
 import cdu278.repetition.new.flow.ui.UiNewRepetitionFlowState.AddButton
@@ -32,13 +33,13 @@ import cdu278.repetition.new.flow.ui.UiNewRepetitionFlowState.TypeSelection
 import cdu278.repetition.new.flow.ui.composable.NewRepetitionEditor
 import cdu278.repetition.new.flow.ui.composable.NewRepetitionFab
 import cdu278.repetition.new.flow.ui.composable.NewRepetitionTypeSelection
-import cdu278.repetition.root.main.ui.MainTabConfig
-import cdu278.repetition.root.main.ui.MainTabConfig.Active
-import cdu278.repetition.root.main.ui.MainTabConfig.Actual
-import cdu278.repetition.root.main.ui.MainTabConfig.Archive
+import cdu278.repetition.root.main.tab.MainTab
+import cdu278.repetition.root.main.tab.MainTab.Active
+import cdu278.repetition.root.main.tab.MainTab.Actual
+import cdu278.repetition.root.main.tab.MainTab.Archive
 import cdu278.repetition.root.main.ui.UiMainDialog.Deletion
 import cdu278.repetition.root.main.ui.component.MainComponent
-import cdu278.ui.composable.defaultMargin
+import cdu278.ui.composable.halfMargin
 import cdu278.foundation.android.R as FoundationR
 import cdu278.intervals.core.ui.R as CoreR
 import cdu278.repetition.root.main.ui.UiMainMode.Default as ModeDefault
@@ -84,17 +85,17 @@ internal fun MainScreen(
             },
             bottomBar = {
                 NavigationBar {
-                    model.tabs.forEach {
+                    model.navigationTabs.forEach {
                         NavigationBarItem(
                             selected = it.active,
                             onClick = it.activate,
                             icon = {
                                 Icon(
-                                    painter = it.config.iconPainter,
+                                    painter = it.tab.iconPainter,
                                     contentDescription = null,
                                 )
                             },
-                            label = { Text(it.config.title) },
+                            label = { Text(it.tab.title) },
                             enabled = model.mode is ModeDefault,
                         )
                     }
@@ -113,19 +114,31 @@ internal fun MainScreen(
             floatingActionButtonPosition = FabPosition.Center,
             modifier = modifier
         ) { paddings ->
-            Box(
+            Column(
                 modifier = Modifier
                     .padding(paddings)
                     .consumeWindowInsets(paddings)
             ) {
-                val activeTab = remember(model.tabs) {
-                    model.tabs.find { it.active }!!
+                model.listTabsComponent?.let { component ->
+                    RepetitionListTabs(
+                        component,
+                        modifier = Modifier
+                            .padding(
+                                start = halfMargin,
+                                top = halfMargin,
+                                bottom = halfMargin,
+                            )
+                    )
+                }
+
+                val activeNavigationTab = remember(model.navigationTabs) {
+                    model.navigationTabs.find { it.active }!!
                 }
                 RepetitionList(
-                    activeTab.listComponent!!,
+                    activeNavigationTab.listComponent!!,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.TopCenter)
+                        .weight(1f)
                 )
 
                 val dialog =
@@ -159,7 +172,7 @@ internal fun MainScreen(
     }
 }
 
-private val MainTabConfig.iconPainter: Painter
+private val MainTab.iconPainter: Painter
     @Composable
     get() = painterResource(
         id = when (this) {
@@ -169,7 +182,7 @@ private val MainTabConfig.iconPainter: Painter
         }
     )
 
-private val MainTabConfig.title: String
+private val MainTab.title: String
     @Composable
     get() = stringResource(
         id = when (this) {

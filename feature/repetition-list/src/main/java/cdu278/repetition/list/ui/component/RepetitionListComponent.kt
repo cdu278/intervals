@@ -1,12 +1,10 @@
 package cdu278.repetition.list.ui.component
 
 import cdu278.decompose.context.coroutineScope
-import cdu278.intervals.repetition.list.tabs.repository.RepetitionListTabsRepository
-import cdu278.intervals.repetition.list.tabs.ui.component.RepetitionListTabsComponent
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
-import cdu278.intervals.ui.component.context.childContext
 import cdu278.repetition.RepetitionState.Forgotten
 import cdu278.repetition.RepetitionState.Repetition
+import cdu278.repetition.RepetitionType
 import cdu278.repetition.info.ui.UiRepetitionInfo
 import cdu278.repetition.item.RepetitionItem
 import cdu278.repetition.list.ui.RepetitionListState
@@ -21,9 +19,9 @@ import cdu278.state.collectValues
 import cdu278.ui.action.UiAction
 import cdu278.updates.Updates
 import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.lifecycle.doOnResume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
@@ -38,21 +36,17 @@ import cdu278.repetition.list.ui.RepetitionListUi.State.NonEmpty.Mode.Selection.
 class RepetitionListComponent(
     context: IntervalsComponentContext,
     private val repository: RepetitionsRepository,
+    private val selectedTabTypeFlow: Flow<RepetitionType?>,
     private val state: State<RepetitionListState>,
+    private val updates: Updates,
     private val goToRepetition: (repetitionId: Long) -> Unit,
     private val nextRepetitionDateMapping: NextRepetitionDateMapping = NextRepetitionDateMapping(),
 ) : IntervalsComponentContext by context {
-
-    private val updates = Updates()
 
     private val coroutineScope = coroutineScope()
 
     init {
         stateKeeper.register("state", RepetitionListState.serializer()) { state.value }
-
-        lifecycle.doOnResume {
-            updates.post()
-        }
 
         coroutineScope.launch(Dispatchers.Main) {
             var backCallback: BackCallback? = null
@@ -75,17 +69,10 @@ class RepetitionListComponent(
         }
     }
 
-    private val tabsComponent =
-        RepetitionListTabsComponent(
-            childContext("tabs"),
-            updates,
-            RepetitionListTabsRepository(repository),
-        )
-
     internal val uiModelFlow: StateFlow<RepetitionListUi> =
         state.handle(
             coroutineScope,
-            initialValue = RepetitionListUi(tabsComponent, null)
+            initialValue = RepetitionListUi(null)
         ) { state ->
             channelFlow {
                 var job: Job? = null
@@ -94,7 +81,7 @@ class RepetitionListComponent(
                     job =
                         combine(
                             repository.itemsFlow,
-                            tabsComponent.selectedTabTypeFlow,
+                            selectedTabTypeFlow,
                         ) { allItems, selectedType ->
                             val notSortedItems =
                                 selectedType
@@ -104,7 +91,6 @@ class RepetitionListComponent(
                                     ?: allItems
                             send(
                                 RepetitionListUi(
-                                    tabsComponent,
                                     state = if (notSortedItems.isEmpty()) {
                                         RepetitionListUi.State.Empty
                                     } else {

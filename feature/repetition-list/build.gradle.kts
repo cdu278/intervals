@@ -45,7 +45,6 @@ dependencies {
     implementation(project(":foundation:android"))
     implementation(project(":core"))
     implementation(project(":core:ui"))
-    implementation(project(":feature:repetition-list:tabs"))
 
     implementation("androidx.core:core-ktx:${rootProject.extra["coreVersion"]}")
 

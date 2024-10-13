@@ -1,8 +1,8 @@
-package cdu278.intervals.repetition.list.tabs.ui.component
+package cdu278.repetition.list.tabs.ui.component
 
 import cdu278.decompose.context.coroutineScope
-import cdu278.intervals.repetition.list.tabs.repository.RepetitionListTabsRepository
-import cdu278.intervals.repetition.list.tabs.ui.RepetitionTabUi
+import cdu278.repetition.list.tabs.repository.RepetitionListTabsRepository
+import cdu278.repetition.list.tabs.ui.RepetitionTabUi
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.repetition.RepetitionType
 import cdu278.state.State
@@ -44,31 +44,37 @@ class RepetitionListTabsComponent(
         }.launchIn(coroutineScope)
     }
 
-    internal val tabsFlow: StateFlow<List<RepetitionTabUi>?> =
-        selectedTabTypeState.handle(coroutineScope, initialValue = emptyList()) { selectedType ->
+    internal val tabsFlow: StateFlow<List<RepetitionTabUi>> =
+        selectedTabTypeState.handle(
+            coroutineScope,
+            initialValue = listOf(tabUi(type = null, selected = false))
+        ) { selectedType ->
             channelFlow {
                 var updating: Job? = null
                 updates.flow.collect {
                     updating?.cancel()
                     updating = repository.presentRepetitionTypesFlow.onEach { presentTypes ->
+                        println("--- presentTypes=$presentTypes")
                         val typesWithNull = listOf(null) + presentTypes
                         typesWithNull
-                            .takeIf { it.size > 2 }
-                            ?.map { type ->
-                                val selected = type == selectedType
-                                RepetitionTabUi(
-                                    type,
-                                    selected = UiToggleable(
-                                        selected,
-                                        toggle = UiAction(key = type) {
-                                            selectedTabTypeState.update { type }
-                                        }
-                                    )
-                                )
+                            .map { type ->
+                                tabUi(type, selected = type == selectedType)
                             }
                             .let { send(it) }
                     }.launchIn(this)
                 }
             }
         }
+
+    private fun tabUi(type: RepetitionType?, selected: Boolean): RepetitionTabUi {
+        return RepetitionTabUi(
+            type,
+            selected = UiToggleable(
+                selected,
+                toggle = UiAction(key = type) {
+                    selectedTabTypeState.update { type }
+                }
+            )
+        )
+    }
 }

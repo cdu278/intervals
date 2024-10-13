@@ -6,20 +6,19 @@ import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.intervals.ui.component.context.childContext
 import cdu278.intervals.ui.component.context.newContext
 import cdu278.repetition.deletion.dialog.ui.component.RepetitionsDeletionDialogComponent
+import cdu278.repetition.list.tabs.repository.MainRepetitionsTabsRepository
+import cdu278.repetition.list.tabs.ui.component.RepetitionListTabsComponent
 import cdu278.repetition.list.ui.RepetitionListState
 import cdu278.repetition.list.ui.RepetitionListState.Default
 import cdu278.repetition.list.ui.RepetitionListState.Selection
 import cdu278.repetition.list.ui.component.RepetitionListComponent
 import cdu278.repetition.new.flow.ui.component.NewRepetitionFlowComponent
-import cdu278.repetition.root.main.tab.filter.ActiveRepetitionsFilter
+import cdu278.repetition.root.main.tab.MainTab
+import cdu278.repetition.root.main.tab.MainTab.Active
+import cdu278.repetition.root.main.tab.MainTab.Actual
 import cdu278.repetition.root.main.tab.filter.ActualRepetitionsFilter
-import cdu278.repetition.root.main.tab.filter.ArchivedRepetitionsFilter
 import cdu278.repetition.root.main.ui.MainDialogConfig
 import cdu278.repetition.root.main.ui.MainDialogConfig.Deletion
-import cdu278.repetition.root.main.ui.MainTabConfig
-import cdu278.repetition.root.main.ui.MainTabConfig.Active
-import cdu278.repetition.root.main.ui.MainTabConfig.Actual
-import cdu278.repetition.root.main.ui.MainTabConfig.Archive
 import cdu278.repetition.root.main.ui.UiMain
 import cdu278.repetition.root.main.ui.UiMainDialog
 import cdu278.repetition.root.main.ui.UiMainTab
@@ -27,6 +26,7 @@ import cdu278.repetition.s.repository.FilteringRepetitionsItemsRepository
 import cdu278.repetition.s.repository.RepetitionsRepository
 import cdu278.state.State
 import cdu278.ui.action.UiAction
+import cdu278.updates.Updates
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.Pages
 import com.arkivanov.decompose.router.pages.PagesNavigation
@@ -36,11 +36,15 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.essenty.lifecycle.doOnResume
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -55,7 +59,7 @@ internal class MainComponent(
     context: IntervalsComponentContext,
     private val repetitionsRepository: RepetitionsRepository,
     goToRepetition: (repetitionId: Long) -> Unit,
-    private val requestedTabFlow: MutableSharedFlow<MainTabConfig>
+    private val requestedTabFlow: MutableSharedFlow<MainTab>
 ) : IntervalsComponentContext by context {
 
     private val listState =
@@ -103,52 +107,73 @@ internal class MainComponent(
     private val coroutineScope = coroutineScope()
 
     @OptIn(ExperimentalDecomposeApi::class)
-    private val tabsNavigation = PagesNavigation<MainTabConfig>()
+    private val navigationTabsNavigation = PagesNavigation<MainTab>()
+
+    private val updates = Updates()
+
+    init {
+        lifecycle.doOnResume { updates.post() }
+    }
 
     @OptIn(ExperimentalDecomposeApi::class)
-    private val tabsFlow =
+    private val navigationTabsFlow: Flow<List<UiMainTab>> =
         childPages(
-            source = tabsNavigation,
-            serializer = MainTabConfig.serializer(),
+            source = navigationTabsNavigation,
+            serializer = MainTab.serializer(),
             initialPages = {
                 Pages(
-                    items = MainTabConfig.entries.toList(),
+                    items = MainTab.entries.toList(),
                     selectedIndex = 0,
                 )
             },
-        ) { config, componentContext ->
+        ) { tab, componentContext ->
             RepetitionListComponent(
                 newContext(componentContext),
                 FilteringRepetitionsItemsRepository(
                     original = repetitionsRepository,
-                    predicate = when (config) {
-                        Actual -> ActualRepetitionsFilter(currentTime)
-                        Active -> ActiveRepetitionsFilter(currentTime)
-                        Archive -> ArchivedRepetitionsFilter()
-                    },
+                    predicate = tab.repetitionsFilter(currentTime),
                 ),
+                selectedTabTypeFlow = flow {
+                    emitAll(listTabsComponent.selectedTabTypeFlow)
+                },
                 state = listState,
+                updates,
                 goToRepetition = goToRepetition,
             )
         }.asStateFlow(lifecycle).map { pages ->
             pages.items.mapIndexed { index, tab ->
                 UiMainTab(
-                    config = MainTabConfig.entries[index],
+                    tab = MainTab.entries[index],
                     active = pages.selectedIndex == index,
                     activate = UiAction(key = index) {
-                        tabsNavigation.select(index)
+                        navigationTabsNavigation.select(index)
                     },
                     listComponent = tab.instance,
                 )
             }
         }
 
+    private val listTabsComponent =
+        RepetitionListTabsComponent(
+            childContext("listTabs"),
+            updates,
+            MainRepetitionsTabsRepository(
+                repetitionsRepository,
+                filterFlow = navigationTabsFlow.map { tabs ->
+                    tabs
+                        .find { it.active }!!
+                        .tab.repetitionsFilter(currentTime)
+                },
+            ),
+        )
+
+
     init {
         requestedTabFlow
             .onEach { configOfRequested ->
-                val indexOfRequested = MainTabConfig.entries.indexOf(configOfRequested)
+                val indexOfRequested = MainTab.entries.indexOf(configOfRequested)
                 withContext(Dispatchers.Main.immediate) {
-                    tabsNavigation.select(indexOfRequested)
+                    navigationTabsNavigation.select(indexOfRequested)
                 }
             }
             .launchIn(coroutineScope)
@@ -158,8 +183,8 @@ internal class MainComponent(
 
     private fun switchToActiveIfNoActual() {
         coroutineScope.launch {
-            tabsFlow.first()
-                .find { it.config == Actual }!!
+            navigationTabsFlow.first()
+                .find { it.tab == Actual }!!
                 .let {
                     if (!it.active) return@launch
                 }
@@ -171,7 +196,7 @@ internal class MainComponent(
                         items.none { ActualRepetitionsFilter(currentTime).test(it) }
                     if (noActualRepetitions) {
                         withContext(Dispatchers.Main.immediate) {
-                            tabsNavigation.select(MainTabConfig.entries.indexOf(Active))
+                            navigationTabsNavigation.select(MainTab.entries.indexOf(Active))
                         }
                     }
                 }
@@ -182,7 +207,7 @@ internal class MainComponent(
     internal val uiModelFlow: StateFlow<UiMain> =
         listState.handle(coroutineScope, initialValue = UiMain()) { state ->
             combine(
-                tabsFlow,
+                navigationTabsFlow,
                 dialogFlow,
             ) { tabs, dialog ->
                 UiMain(
@@ -201,7 +226,8 @@ internal class MainComponent(
                                 dialog = dialog,
                             )
                     },
-                    tabs = tabs,
+                    navigationTabs = tabs,
+                    listTabsComponent,
                 )
             }
         }

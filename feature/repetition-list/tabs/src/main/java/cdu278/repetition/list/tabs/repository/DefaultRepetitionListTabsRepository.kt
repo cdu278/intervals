@@ -1,4 +1,4 @@
-package cdu278.intervals.repetition.list.tabs.repository
+package cdu278.repetition.list.tabs.repository
 
 import cdu278.repetition.RepetitionType
 import cdu278.repetition.s.repository.RepetitionsRepository
@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-class RepetitionListTabsRepository(
+class DefaultRepetitionListTabsRepository(
     private val repetitionsRepository: RepetitionsRepository,
-) {
+) : RepetitionListTabsRepository {
 
-    val presentRepetitionTypesFlow: Flow<List<RepetitionType>>
+    override val presentRepetitionTypesFlow: Flow<List<RepetitionType>>
         get() = repetitionsRepository.itemsFlow.map { items ->
             items
                 .map { it.type }

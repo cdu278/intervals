@@ -1,4 +1,4 @@
-package cdu278.intervals.repetition.list.tabs.ui
+package cdu278.repetition.list.tabs.ui
 
 import cdu278.repetition.RepetitionType
 import cdu278.ui.input.UiToggleable

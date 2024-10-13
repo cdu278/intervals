@@ -1,4 +1,4 @@
-package cdu278.intervals.repetition.list.tabs.ui.composable
+package cdu278.repetition.list.tabs.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -9,11 +9,12 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import cdu278.intervals.repetition.list.tabs.R
-import cdu278.intervals.repetition.list.tabs.ui.component.RepetitionListTabsComponent
 import cdu278.repetition.RepetitionType
+import cdu278.repetition.list.tabs.ui.component.RepetitionListTabsComponent
 import cdu278.ui.composable.halfMargin
 
 @Composable
@@ -21,8 +22,7 @@ fun RepetitionListTabs(
     component: RepetitionListTabsComponent,
     modifier: Modifier = Modifier,
 ) {
-    val tabsState = component.tabsFlow.collectAsState()
-    val tabs = tabsState.value ?: return
+    val tabs by component.tabsFlow.collectAsState()
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(halfMargin),
         modifier = modifier

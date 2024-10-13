@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(project(":feature:repetition-list"))
+    implementation(project(":feature:repetition-list:tabs"))
     implementation(project(":feature:add-repetition"))
     implementation(project(":feature:repetition"))
 

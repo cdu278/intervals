@@ -14,7 +14,7 @@ import cdu278.decompose.context.coroutineScope
 import cdu278.decompose.util.asStateFlow
 import cdu278.flow.uiModelSharingStarted
 import cdu278.repetition.matching.RepetitionDataMatching
-import cdu278.repetition.root.main.ui.MainTabConfig
+import cdu278.repetition.root.main.tab.MainTab
 import cdu278.repetition.root.main.ui.component.MainComponent
 import cdu278.repetition.root.ui.ScreenConfig
 import cdu278.repetition.root.ui.ScreenConfig.Main
@@ -25,8 +25,8 @@ import cdu278.repetition.s.repository.RepetitionsRepositoryInstance
 import cdu278.repetition.ui.component.RepetitionComponent
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.coroutines.flow.MutableSharedFlow
-import cdu278.repetition.root.main.ui.MainTabConfig.Active as ConfigActive
-import cdu278.repetition.root.main.ui.MainTabConfig.Archive as ConfigArchive
+import cdu278.repetition.root.main.tab.MainTab.Active as ConfigActive
+import cdu278.repetition.root.main.tab.MainTab.Archive as ConfigArchive
 
 class RootComponent(
     context: IntervalsComponentContext,
@@ -43,7 +43,7 @@ class RootComponent(
 
     private val navigation = StackNavigation<ScreenConfig>()
 
-    private val requestedMainTabFlow = MutableSharedFlow<MainTabConfig>()
+    private val requestedMainTabFlow = MutableSharedFlow<MainTab>()
 
     private val childStack =
         childStack(
