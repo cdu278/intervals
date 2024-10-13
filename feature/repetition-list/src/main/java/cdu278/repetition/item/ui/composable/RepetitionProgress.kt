@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import cdu278.ui.composable.halfMargin
 import kotlin.math.max
 
-val RepetitionProgressHeight: Dp = 10.dp
+val RepetitionProgressHeight: Dp = 8.dp
 
 @Composable
 fun RepetitionProgress(
@@ -29,9 +29,9 @@ fun RepetitionProgress(
     val mainSectionMinWidthPx: Float
     with(LocalDensity.current) {
         sectionsPaddingPx = halfMargin.toPx()
-        cornerRadiusPx = 5.dp.toPx()
+        cornerRadiusPx = 4.dp.toPx()
         strokeWidthPx = 2.dp.toPx()
-        mainSectionMinWidthPx = 10.dp.toPx()
+        mainSectionMinWidthPx = 8.dp.toPx()
     }
     Spacer(
         modifier = modifier
