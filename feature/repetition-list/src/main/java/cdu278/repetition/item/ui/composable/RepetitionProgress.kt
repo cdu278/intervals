@@ -22,7 +22,7 @@ fun RepetitionProgress(
     progressRatio: Double,
     modifier: Modifier = Modifier,
 ) {
-    val color = MaterialTheme.colorScheme.primary
+    val color = MaterialTheme.colorScheme.tertiary
     val sectionsPaddingPx: Float
     val cornerRadiusPx: Float
     val strokeWidthPx: Float
