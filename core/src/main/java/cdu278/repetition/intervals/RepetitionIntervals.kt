@@ -17,4 +17,8 @@ class RepetitionIntervals(
         return (clock.now() + with(strategy) { stage.space() })
             .toLocalDateTime(timeZone())
     }
+
+    fun progressRatio(stage: RepetitionStage): Double {
+        return 1 - (4.0 / (stage.value + 4))
+    }
 }

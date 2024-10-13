@@ -26,6 +26,7 @@ internal data class RepetitionListUi(
                         val info: UiRepetitionInfo,
                         val state: UiRepetitionState,
                         val select: UiAction,
+                        val progressRatio: Double?,
                     )
                 }
 
@@ -37,6 +38,7 @@ internal data class RepetitionListUi(
                         val info: UiRepetitionInfo,
                         val selected: Boolean,
                         val toggleSelected: UiAction,
+                        val progressRatio: Double?,
                     )
                 }
             }

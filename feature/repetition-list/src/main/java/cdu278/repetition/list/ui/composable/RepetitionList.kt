@@ -62,7 +62,6 @@ fun RepetitionList(
                                 DefaultRepetitionItem(
                                     item,
                                     accentColor = accentColor,
-                                    modifier = Modifier
                                 )
                             }
                         is Selection ->

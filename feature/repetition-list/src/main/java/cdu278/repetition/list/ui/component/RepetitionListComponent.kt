@@ -46,8 +46,6 @@ class RepetitionListComponent(
     private val coroutineScope = coroutineScope()
 
     init {
-        stateKeeper.register("state", RepetitionListState.serializer()) { state.value }
-
         coroutineScope.launch(Dispatchers.Main) {
             var backCallback: BackCallback? = null
             state.collectValues { state ->
@@ -153,6 +151,7 @@ class RepetitionListComponent(
                         )
                 },
                 select = UiAction(key = item.id) { goToSelectionMode(item.id) },
+                progressRatio = item.progressRatio,
             )
         }
     }
@@ -165,9 +164,14 @@ class RepetitionListComponent(
                 UiRepetitionInfo(item),
                 selected = item.id in idsOfSelected,
                 toggleSelected = UiAction(key = item.id) { toggleSelected(item.id) },
+                item.progressRatio,
             )
         }
     }
+
+    private val RepetitionItem.progressRatio: Double?
+        get() = (this.repetitionState as? Repetition)
+            ?.let { repetitionIntervals.progressRatio(it.stage) }
 
     private fun goToSelectionMode(repetitionId: Long) {
         state.update { Selection(idsOfSelected = listOf(repetitionId)) }

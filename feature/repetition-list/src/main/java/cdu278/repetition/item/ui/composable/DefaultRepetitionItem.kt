@@ -1,5 +1,10 @@
 package cdu278.repetition.item.ui.composable
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
@@ -22,6 +27,43 @@ internal fun DefaultRepetitionItem(
     RepetitionItemCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         onLongClick = item.select,
+        modifier = modifier
+    ) {
+        if (item.progressRatio != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                InfoAndState(
+                    item,
+                    accentColor,
+                )
+                Spacer(Modifier.height(halfMargin))
+                RepetitionProgress(
+                    item.progressRatio,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(RepetitionProgressHeight)
+                )
+            }
+        } else {
+            InfoAndState(
+                item,
+                accentColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+private fun InfoAndState(
+    item: DefaultRepetitionItem,
+    accentColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Row(
         modifier = modifier
     ) {
         RepetitionInfo(
