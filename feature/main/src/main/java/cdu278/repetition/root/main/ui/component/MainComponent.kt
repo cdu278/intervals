@@ -24,7 +24,7 @@ import cdu278.repetition.root.main.ui.UiMainDialog
 import cdu278.repetition.root.main.ui.UiMainTab
 import cdu278.repetition.s.repository.FilteringRepetitionsItemsRepository
 import cdu278.repetition.s.repository.RepetitionsRepository
-import cdu278.state.State
+import cdu278.state.createState
 import cdu278.ui.action.UiAction
 import cdu278.updates.Updates
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -63,10 +63,9 @@ internal class MainComponent(
 ) : IntervalsComponentContext by context {
 
     private val listState =
-        State(
-            stateKeeper
-                .consume("list", RepetitionListState.serializer())
-                ?: Default
+        createState(
+            RepetitionListState.serializer(),
+            initialValue = { Default }
         )
 
     val newRepetitionFlowComponent =

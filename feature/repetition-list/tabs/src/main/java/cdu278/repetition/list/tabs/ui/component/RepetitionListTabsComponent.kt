@@ -6,6 +6,7 @@ import cdu278.repetition.list.tabs.ui.RepetitionTabUi
 import cdu278.intervals.ui.component.context.IntervalsComponentContext
 import cdu278.repetition.RepetitionType
 import cdu278.state.State
+import cdu278.state.createNullableState
 import cdu278.ui.action.UiAction
 import cdu278.ui.input.UiToggleable
 import cdu278.updates.Updates
@@ -24,7 +25,10 @@ class RepetitionListTabsComponent(
 ) : IntervalsComponentContext by context {
 
     private val selectedTabTypeState: State<RepetitionType?> =
-        State(stateKeeper.consume("selectedTab", RepetitionType.serializer()))
+        createNullableState(
+            key = "selectedTab",
+            serializer = RepetitionType.serializer(),
+        )
 
     private val coroutineScope = coroutineScope()
 
